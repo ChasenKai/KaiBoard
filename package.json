@@ -1,0 +1,30 @@
+{
+  "name": "kaiboard",
+  "private": true,
+  "version": "1.0.0-beta",
+  "type": "module",
+  "description": "KaiBoard - 免费开源、本地优先的中文手写风多画布白板（绘图内核基于 Excalidraw）",
+  "scripts": {
+    "fonts": "node scripts/prepare-fonts.mjs",
+    "dev": "node scripts/prepare-fonts.mjs && vite",
+    "build": "node scripts/build-ai.mjs",
+    "build:basic": "node scripts/build-basic.mjs",
+    "preview": "vite preview --host",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@excalidraw/excalidraw": "0.18.1",
+    "@excalidraw/mermaid-to-excalidraw": "2.2.2",
+    "idb": "^8.0.0",
+    "pptxgenjs": "^4.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.0"
+  }
+}

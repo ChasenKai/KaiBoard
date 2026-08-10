@@ -1,0 +1,16 @@
+{
+  "remoteUrl": null,
+  "notices": [
+    {
+      "id": "beta-data-backup",
+      "level": "warn",
+      "text": "KaiBoard 目前为 beta 公测版，画布数据仅保存在本机浏览器或用户新指定位置。请定期通过左侧栏「导出」备份 .excalidraw 文件或顶栏支持全量导出全部（备份），避免误清缓存等情况导致丢失。",
+      "link": null,
+      "linkText": null,
+      "start": "2026-08-09",
+      "end": "2026-12-31",
+      "dismissible": true,
+      "scope": "all"
+    }
+  ]
+}

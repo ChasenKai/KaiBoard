@@ -1,0 +1,52 @@
+node_modules
+# 沙箱内 npm 无法写用户级缓存，安装依赖时用 --cache 指向此处（不进版本库）
+.npm-cache
+dist
+# 构建前旧产物「改名挪走」的归集（prepare-fonts.mjs 首选清理通道，见该脚本注释）
+# 新版统一挪进 _archive/dist-trash-collected/；此处保留通配以兜住历史残留。
+dist*-trash-*
+vite.config.ts.timestamp-*
+.scratch
+.DS_Store
+*.log
+# 开发期测试残留（示例画板/联调 payload/临时脚本），不进版本库
+demos/
+# 双路发布：基础版构建产物（独立路径部署，不进版本库）
+dist-basic/
+
+# 内部自评 / 审计包：不进版本库
+audit/
+
+# 归档区（2026-08-06 集中整理）：迁移工具 / 开发期脚本 / 示例 / 自评包 / 死代码
+# 均为"不参与日常开发但有保留价值"的资料，说明见 _archive/README.md
+_archive/
+
+# 本地预览产物（preview-local.bat / vite preview 生成，临时，非源码）
+# 覆盖 .preview.err / .preview.out / .preview_pid.txt 三种变体
+.preview*
+
+# AI 画图产出（离线生成器生成的 MSA 等架构图：源/版本快照/截图/生成器），非源码
+msa-architecture/
+
+# ============ 内部文档目录：整目录不进公开开源仓 ============
+# 公开 docs/ 仅保留 FEATURES.md 一份对外文档
+# （SECURITY.md / PRIVACY.md 已于 2026-08-10 一并移入 internal/）。
+# 其余所有内部文档（AI 系列、竞品 / 成本 / 战略 / 叙事 / 历程 / 结构树 / DEVLOG 等）
+# 统一归入 internal/ 整目录忽略，仅留本地。AI 系列标记「随 AI 版发布解封」。
+internal/
+
+# 图标选型归档（内部设计过程，不进仓）
+icon-preview/
+
+# 真实 AI 实现（Agent 共绘协议层 / 桥接 / 中继）：仅本地 AI 构建使用，不进公开开源仓。
+# 公开仓仅含 src/_agent_stub（无逻辑桩）+ src/agentIntegration.tsx（门面）。
+src/_agent_private/
+
+# 字体在构建/开发时从 @excalidraw/excalidraw 依赖生成，不进版本库（仓库保持纯文本）
+public/fonts/
+
+# favicon 以 data URI 内联进 index.html 与 src/favicon.ts，源 png 不进版本库
+public/favicon.png
+
+# 社交分享预览图：GitHub 仓库里不存二进制，发布后在 GitHub Settings 上传
+.github/social-preview.png

@@ -1,0 +1,73 @@
+KaiBoard — Third-Party Licenses
+================================
+
+KaiBoard is built on top of the following open-source projects. We are grateful
+to their authors and maintainers.
+
+Note on scope: only libraries that KaiBoard actually depends on / builds upon
+are listed here. Projects that were merely *referenced for inspiration* during
+design (and then independently re-implemented) are NOT listed, because no part
+of their code ships in this repository.
+
+---------------------------------------------------------------------------
+## Excalidraw  (runtime dependency — drawing kernel)
+- Package : @excalidraw/excalidraw  (v0.18.1)
+- License : MIT
+- Source  : https://github.com/excalidraw/excalidraw
+- Copyright (c) Excalidraw and its contributors
+
+KaiBoard uses Excalidraw's canvas / drawing kernel. The surrounding "shell"
+(sidebar file-tree, local & folder storage, trash, comments, Agent co-draw,
+multi-board management) is original work. Excalidraw's promotional links
+(blog / YouTube) and brand were removed from the product UI; its MIT license
+text is preserved here and in ./LICENSE.
+
+## @excalidraw/mermaid-to-excalidraw  (runtime dependency — Mermaid import)
+- Package : @excalidraw/mermaid-to-excalidraw  (v2.2.2)
+- License : MIT
+- Source  : https://github.com/excalidraw/mermaid-to-excalidraw
+
+## React / React DOM  (runtime dependency — UI)
+- Package : react / react-dom  (v18)
+- License : MIT
+- Source  : https://github.com/facebook/react
+
+## idb  (runtime dependency — IndexedDB wrapper)
+- Package : idb  (v8)
+- License : ISC
+- Source  : https://github.com/jakearchibald/idb
+
+## pptxgenjs  (runtime dependency — PPTX export)
+- Package : pptxgenjs  (v4)
+- License : MIT
+- Source  : https://github.com/gitbrent/PptxGenJS
+
+## Xiaolai（小赖体）  (runtime font — Chinese handwriting)
+- 选用   : excalidraw-cn 为中文场景优化的手写体，KaiBoard 画布默认字体
+- License : SIL Open Font License (OFL-1.1)
+- Source  : https://github.com/excalidraw/excalidraw（字体由 excalidraw-cn 选用并子集化）
+
+---------------------------------------------------------------------------
+## Excalidraw MIT License (full text)
+
+MIT License
+
+Copyright (c) Excalidraw and its contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

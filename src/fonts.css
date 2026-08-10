@@ -1,0 +1,8 @@
+/*
+ * 中文手写字体（欢迎屏副标题等 UI 文本）
+ * 采用 Xiaolai（小赖体）——excalidraw-cn 为中文场景优化选用的手写体，
+ * 源自霞鹜(lxgw) SetoFont，SIL OFL-1.1 开源协议，可免费商用。
+ * 子集 @font-face 规则由 src/xiaolai-fonts.css 提供（unicode-range 按各 woff2 的 cmap 计算）。
+ * Excalidraw 本身的 "Virgil" 拉丁手写体由 styles.css 单独定义，互不影响。
+ */
+@import "./xiaolai-fonts.css";
