@@ -1647,6 +1647,7 @@ export default function App() {
             onLinkOpen={handleLinkOpen}
             langCode={getLang()}
             theme={theme}
+            showDeprecatedFonts={false}
             UIOptions={{
               canvasActions: {
                 loadScene: false,
