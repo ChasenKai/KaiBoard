@@ -6,8 +6,7 @@
 //   2. 键帽配色等用 Excalidraw 真实主题变量，做到「看起来和原版一模一样」。
 // 快捷键条目、布局、文案均照原版中文 locale 原样呈现，不做创意发挥。
 
-// beta 公测期间暂不提供 GitHub 仓库外链：源码将随后开源，README 已说明"基于开源 Excalidraw"。
-// 开源仓库就绪后，恢复下方 <a href> 外链并填入真实地址即可。
+// 帮助弹窗顶部展示 KaiBoard GitHub 仓库入口。
 
 // Excalidraw 0.18.1 真实主题变量（取自其编译产物，light / dark 各一套），
 // 直接挂到弹窗根节点，确保内部 .HelpDialog__* 样式拿到正确颜色，不依赖 Excalidraw 的变量级联。
@@ -204,15 +203,18 @@ export default function HelpDialog({ onClose, theme }: HelpDialogProps) {
         <div className="modal-body">
           <div className="HelpDialog">
             <div className="HelpDialog__logo-row">
-              <span
+              <a
                 className="HelpDialog__btn HelpDialog__btn--muted"
-                title="beta 公测期间源码即将开源"
+                href="https://github.com/ChasenKai/KaiBoard"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="前往 GitHub 给 KaiBoard 点个 Star"
               >
                 <span className="HelpDialog__link-icon">
                   <GitHubIcon />
                 </span>
-                源码即将开源
-              </span>
+                给个 GitHub Star 吧
+              </a>
             </div>
             <h3>快捷键</h3>
             <div className="HelpDialog__islands-container">
