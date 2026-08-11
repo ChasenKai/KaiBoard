@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="https://github.com/ChasenKai/KaiBoard/releases/download/v1.0.0-beta/hero.png" alt="KaiBoard — 中文手写风多画布白板" width="100%">
+  <img src="./docs/hero.png" alt="KaiBoard — 中文手写风多画布白板" width="100%">
 </p>
 
 # KaiBoard

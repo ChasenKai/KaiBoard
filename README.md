@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="https://github.com/ChasenKai/KaiBoard/releases/download/v1.0.0-beta/hero.png" alt="KaiBoard — local-first multi-board whiteboard with Chinese handwriting" width="100%">
+  <img src="./docs/hero.png" alt="KaiBoard — local-first multi-board whiteboard with Chinese handwriting" width="100%">
 </p>
 
 # KaiBoard
