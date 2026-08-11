@@ -1,9 +1,4 @@
 # KaiBoard
-
-<p align="center">
-  <img src=".github/social-preview.png" alt="KaiBoard — 中文手写风多画布白板" width="100%">
-</p>
-
 免费开源、本地优先的**中文手写风多画布白板**（绘图内核基于开源 [Excalidraw](https://github.com/excalidraw/excalidraw)）。
 
 > **一句话定位**：无需注册、不上传云端，数据只留在你自己的设备上；为个人单人使用设计，不做实时协同。在绘图内核之上补齐了"多文件 / 多画板管理"这一能力（Excalidraw 原生缺失），并提供回收站与跨设备平行迁移。
