@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ChasenKai/KaiBoard/media/hero.png" alt="KaiBoard — 中文手写风多画布白板" width="100%">
+  <img src="https://github.com/ChasenKai/KaiBoard/releases/download/v1.0.0-beta/hero.png" alt="KaiBoard — 中文手写风多画布白板" width="100%">
 </p>
 
 # KaiBoard
@@ -12,11 +12,11 @@
 
 > **一句话定位**：无需注册、不上传云端，数据只留在你自己的设备上；为个人单人使用设计，不做实时协同。在绘图内核之上补齐了"多文件 / 多画板管理"这一能力（Excalidraw 原生缺失），并提供回收站与跨设备平行迁移。
 
-> **🙏 关于底层与致谢**：KaiBoard 的画布绘图能力（画笔、形状、无限画布、图片、框架等）100% 来自开源项目 [Excalidraw](https://github.com/excalidraw/excalidraw)（MIT 许可）。我们非常感谢 Excalidraw 团队与开源社区提供的高质量绘图内核，让"本地优先的多画板白板"得以在此基础上构建。KaiBoard 在其之上的"多画板组织 / 本地优化 / 壳层能力"为自身新增，详见 [`docs/FEATURES.zh-CN.md`](docs/FEATURES.zh-CN.md)。
+> **🙏 关于底层与致谢**：KaiBoard 的画布绘图能力（画笔、形状、无限画布、图片、框架等）100% 来自开源项目 [Excalidraw](https://github.com/excalidraw/excalidraw)（MIT 许可）。我们非常感谢 Excalidraw 团队与开源社区提供的高质量绘图内核，让"本地优先的多画板白板"得以在此基础上构建。KaiBoard 在其之上的"多画板组织 / 本地优化 / 壳层能力"为自身新增，详见 [`docs/FEATURES.md`](docs/FEATURES.md)。
 
 > **设计参考**：多画板管理的交互范式参考了成熟的多画板白板产品的通用设计；绘图内核与具体工程实现均为 KaiBoard 自身完成。
 
-完整功能说明见 [`docs/FEATURES.zh-CN.md`](docs/FEATURES.zh-CN.md)。
+完整功能说明见 [`docs/FEATURES.md`](docs/FEATURES.md)。
 
 ## ✨ 核心能力（摘要）
 
@@ -31,7 +31,7 @@
 - **上手引导**：首次启动示例结构、空画板欢迎屏、元素批注
 - **无限画布**：继承自 Excalidraw 内核，缩放/平移流畅
 
-> 以上每一项功能的详细说明，见 [`docs/FEATURES.zh-CN.md`](docs/FEATURES.zh-CN.md)。
+> 以上每一项功能的详细说明，见 [`docs/FEATURES.md`](docs/FEATURES.md)。
 
 > **⚙ 两层设置，各管各的**：KaiBoard 现在有两处设置——① **画布内设置**（Excalidraw 自带，如视图缩放、主题、导出、快捷键等，由 Excalidraw 控制）；② **外壳设置**（右上角 ⚙，管语言、存储位置，以及我们新增的导入/导出备份、双链等入口）。两者职责不同、互不影响。
 
@@ -108,7 +108,7 @@ kaiboard/
 ├─ .gitignore               # 忽略规则：构建产物、构建时生成的字体、浏览器缓存等
 ├─ README.md                # 英文版（canonical）
 ├─ README.zh-CN.md          # 本文件（中文版）
-├─ CHANGELOG.zh-CN.md        # 版本变更记录（中文）
+├─ CHANGELOG.md              # 版本变更记录（中英混排）
 ├─ LICENSE                  # MIT 开源许可证
 ├─ THIRD_PARTY_LICENSES     # 第三方依赖版权汇总（Excalidraw 等）
 ├─ index.html               # HTML 入口；设置 window.EXCALIDRAW_ASSET_PATH = "/"
@@ -118,7 +118,7 @@ kaiboard/
 ├─ vite.config.ts           # Vite 构建配置（含 @agent 别名双路切换）
 ├─ tsconfig.json            # TypeScript 类型配置
 ├─ docs/                    # 文档
-│  └─ FEATURES.zh-CN.md      # KaiBoard 功能说明（贡献者/用户必读）
+│  └─ FEATURES.md            # KaiBoard 功能说明（中英混排，贡献者/用户必读）
 ├─ public/                  # 静态资源
 │  ├─ announcements.json    # 公告栏文案
 │  └─ （字体在构建时由 prepare-fonts.mjs 从 @excalidraw/excalidraw 依赖生成到 public/fonts/；favicon 以 data URI 内联）
