@@ -6,6 +6,5 @@
 //    gitignored，不进入公开仓库）。
 //
 // App.tsx 永远只 import 本门面，具体实现由构建通道决定。真正的 AI 实现（src/_agent_private/）不进公开仓；
-// 但源码树内残留的 src/agentBridge.ts / src/agentRelayClient.ts 是未被引用的早期死代码
-// （已被 tree-shake 剔除、不进产物），故「源码树对外零 AI 泄漏」并不准确——公开仓含的是 no-op 桩与死代码，而非可用实现。
+// 公开仓仅含 no-op 桩（src/_agent_stub），不携带任何可用的真实 AI 执行逻辑。
 export * from "@agent/agentIntegration";
