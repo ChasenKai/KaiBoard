@@ -156,7 +156,7 @@ Excalidraw 本身是**单画布**工具：一次只编辑一个场景，没有"�
 ## 四、中文与本地化体验
 
 ### 1. 中文手写字体（Xiaolai / 小赖体）
-- 内置**中文手写字体 Xiaolai（小赖体）**，自托管、离线可用（SIL OFL-1.1，由 excalidraw-cn 为中文场景优化选用）；画布默认即该手写体，无需手动切换。字体随 `@excalidraw/excalidraw` 依赖在构建时生成到 `public/fonts/`，**不进版本库**（仓库保持纯文本）。
+- 内置**中文手写字体 Xiaolai（小赖体）**，自托管、离线可用（SIL OFL-1.1，由 excalidraw-cn 为中文场景优化选用）；画布默认即该手写体，无需手动切换。字体随 `@excalidraw/excalidraw` 依赖在构建时生成到 `public/fonts/`，**不进版本库**。
 - 子集化 `@font-face` 规则按字形按需加载，仅作用于画布与少量 UI 文本。
 
 ### 2. 多语言界面

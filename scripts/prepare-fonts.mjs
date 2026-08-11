@@ -36,7 +36,6 @@ async function exists(p) {
 // 若找不到 Git Bash（其他环境），则回退到 Node fs.rm。
 function findGitBash() {
   const candidates = [
-    "C:/Users/86158/.workbuddy/vendor/PortableGit/usr/bin/bash.exe",
     "C:/Program Files/Git/usr/bin/bash.exe",
     "C:/Program Files/Git/bin/bash.exe",
   ];

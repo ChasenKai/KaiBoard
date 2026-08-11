@@ -34,10 +34,11 @@ npm run dev   # http://localhost:5173
 
 ### Build
 ```bash
-npm run build      # output in dist/
-npm run preview    # or: npx serve dist
+npm run build      # 基础版（对外发布版），产物在 dist-basic/
+npm run build:ai   # 带 AI 版（仅本地，需 gitignored 的 _agent_private），产物在 dist/
+npm run preview    # 本地预览基础版产物（vite preview --outDir dist-basic）
 ```
-> Do not open `dist/index.html` directly (ES modules + fetched fonts are blocked under `file://`).
+> Do not open `dist-basic/index.html` directly (ES modules + fetched fonts are blocked under `file://`).
 
 ### Tech stack
 Vite 5 · React 18.3 · @excalidraw/excalidraw@0.18.1 · IndexedDB (idb) · Xiaolai font (SIL OFL-1.1).
@@ -84,10 +85,10 @@ npm run dev
 
 ```bash
 npm run build
-# 产物在 dist/ —— 整个目录可拷到 U 盘 / 任意静态服务器
+# 基础版产物在 dist-basic/ —— 整个目录可拷到 U 盘 / 任意静态服务器
 ```
 
-⚠️ **不能直接双击 `dist/index.html`**：Excalidraw 0.18+ 为 ES Module 且字体经 `fetch` 加载，`file://` 协议下会被同源 / CORS 策略拦截。请用静态服务器访问：
+⚠️ **不能直接双击 `dist-basic/index.html`**：Excalidraw 0.18+ 为 ES Module 且字体经 `fetch` 加载，`file://` 协议下会被同源 / CORS 策略拦截。请用静态服务器访问：
 
 ```bash
 npm run preview      # 或
@@ -140,34 +141,32 @@ KaiBoard 固定依赖 `@excalidraw/excalidraw@0.18.1`（见上方技术栈）。
 
 ### 顶层文件与目录
 
-这是 `public-release` 开源子集的主要骨架（不含构建产物 `dist/`、`dist-basic/` 与自动生成的字体文件）：
+这是仓库的主要骨架（不含构建产物 `dist/`、`dist-basic/` 与自动生成的字体文件）：
 
 ```
 kaiboard/
-├─ .gitignore               # 忽略规则：dist/、字体产物、favicon 源图、social-preview、internal/ 内部文档、_archive 等不进公开仓
+├─ .gitignore               # 忽略规则：构建产物、构建时生成的字体、浏览器缓存等
 ├─ README.md                # 项目主页（本文件）：功能 / 定位 / 开源声明
 ├─ CHANGELOG.md             # 版本变更记录
 ├─ LICENSE                  # MIT 开源许可证
 ├─ THIRD_PARTY_LICENSES     # 第三方依赖版权汇总（Excalidraw 等）
 ├─ index.html               # HTML 入口；设置 window.EXCALIDRAW_ASSET_PATH = "/"
-├─ package.json             # 依赖与脚本（dev / build / build:basic / preview）
+├─ package.json             # 依赖与脚本（dev / build（基础版）/ build:ai（AI 版）/ preview）
 ├─ package-lock.json        # 依赖锁版本
 ├─ preview-local.bat        # 一键本地预览 AI 版（3000）/ 基础版（3001）
 ├─ vite.config.ts           # Vite 构建配置（含 @agent 别名双路切换）
 ├─ tsconfig.json            # TypeScript 类型配置
-├─ docs/                    # 对外公开文档
+├─ docs/                    # 文档
 │  └─ FEATURES.md           # KaiBoard 功能说明（贡献者/用户必读）
 ├─ public/                  # 静态资源
 │  ├─ announcements.json    # 公告栏文案
-│  └─ （字体与图标均不进版本库：字体由 prepare-fonts.mjs 构建时从 @excalidraw/excalidraw 依赖生成到 public/fonts/；favicon 以 data URI 内联于 index.html 与 src/favicon.ts）
+│  └─ （字体在构建时由 prepare-fonts.mjs 从 @excalidraw/excalidraw 依赖生成到 public/fonts/；favicon 以 data URI 内联）
 ├─ scripts/                 # 构建脚本
 │  ├─ prepare-fonts.mjs     # 字体准备（Excalidraw 官方 + 中文手写）
 │  ├─ build-ai.mjs          # AI 版构建
 │  └─ build-basic.mjs       # 基础版构建（VITE_AI_ENABLED=false）
 └─ src/                     # 源码，详见下一节
 ```
-
-> 以上为对外公开文档；其余内部文档（设计历程、技术决策、战略等）仅本地留存，不随开源发布。
 
 ### 核心源码结构
 

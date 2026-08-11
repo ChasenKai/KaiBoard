@@ -1,5 +1,5 @@
 > 本文件随开源发布，定义如何向 KaiBoard 报告安全漏洞。
-> 内部安全评估（威胁模型 / 风险清单）见 `internal/SECURITY.md`，**不公开**。
+> 威胁模型与详细风险清单为内部评估文档，**不公开**。
 
 # 安全政策（Security Policy）
 
@@ -15,7 +15,6 @@
 请**私下**报告安全问题，不要公开提 issue。
 
 - **推荐**：在 GitHub 仓库 **Security → Report a vulnerability** 使用私有漏洞报告（Private Vulnerability Reporting）。
-- **或**：发送邮件至 `626946786@qq.com`。
 
 ## 响应预期
 

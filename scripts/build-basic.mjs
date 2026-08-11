@@ -1,5 +1,5 @@
 // 跨平台基础版构建脚本（不依赖 shell 内联环境变量语法，Windows/macOS/Linux 通用）
-// 作用：prepare 字体 → 以 VITE_AI_ENABLED=false 构建到 dist-basic/（tree-shaking 剔除 AI 协议层）。
+// 作用：prepare 字体 → 以 VITE_AI_ENABLED=false 构建到 dist-basic/（@agent 指向 _agent_stub 无逻辑桩，基础版产物不含可用 AI 执行逻辑）。
 //
 // ⚠️ 反复踩坑点（见 CKs_PitfallLibrary_Local「E: 卷 safe-delete 钩子阻断 dist 重建」条目）：
 //   1) env 必须在任何 spawnSync 之前定义，否则 TDZ: Cannot access 'env' before initialization。

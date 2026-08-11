@@ -3,9 +3,11 @@ import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
 
 // 构建期「Agent 共绘」实现切换（双路发布核心机制）：
-//  - VITE_AI_ENABLED=true（带 AI 版，仅本地 AI 构建）→ @agent 指向仓库外的 _agent_private（真实实现）
-//  - 否则（基础版，公开仓库默认）→ @agent 指向仓库内的 _agent_stub（无逻辑桩）
-// 这样公开仓不含任何真实 AI 协议 / 桥接 / 中继代码，基础版产物零 AI 符号。
+//  - VITE_AI_ENABLED=true（带 AI 版，仅本地 AI 构建）→ @agent 指向 _agent_private（真实实现，gitignored，不进公开仓）
+//  - 否则（基础版，公开仓库默认）→ @agent 指向 _agent_stub（无逻辑桩：方法皆 no-op，AI 面板渲染为空）
+// 基础版产物不含任何可用的真实 AI 执行逻辑（AI 大脑在 gitignored 的 src/_agent_private/，未被编译进 dist-basic）。
+// 注：源码树另有 src/agentBridge.ts / src/agentRelayClient.ts 等早期协议客户端死代码，未被任何构建路径引用、
+//     已被 tree-shake 剔除、不进产物，不可据此误判为「已泄露完整 AI 实现」。
 const agentTarget =
   process.env.VITE_AI_ENABLED === "true"
     ? fileURLToPath(new URL("./src/_agent_private", import.meta.url))
