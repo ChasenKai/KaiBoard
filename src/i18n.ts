@@ -179,6 +179,9 @@ const zhCN: Dict = {
   ai_more_title: "更多 AI 能力",
   ai_more_desc: "后续新增的 AI 功能会作为本面板里的一项出现，不污染设置与基础体验。",
 
+  // 帮助弹窗
+  help_officialSite: "官网介绍",
+
   // 空画板欢迎屏（P1-A，复用 Excalidraw WelcomeScreen）
   welcome_menuHint: "在左侧文件树新建、整理画板",
   welcome_toolbarHint: "选择左侧工具开始绘制，或按数字键 1–9 切换",
@@ -391,6 +394,9 @@ const zhTW: Dict = {
   ai_mermaid_status: "就緒（於 Agent 工具中使用）",
   ai_more_title: "更多 AI 能力",
   ai_more_desc: "後續新增的 AI 功能會作為本面板裡的一項出現，不污染設定與基礎體驗。",
+
+  // 帮助弹窗
+  help_officialSite: "官方網站",
 
   // 空畫板歡迎屏（P1-A，复用 Excalidraw WelcomeScreen）
   welcome_menuHint: "在左側檔案樹新建、整理畫板",
@@ -607,6 +613,9 @@ const en: Dict = {
   ai_more_title: "More AI features",
   ai_more_desc: "Future AI features appear as one more item in this panel, never touching Settings or the base experience.",
 
+  // Help dialog
+  help_officialSite: "Official Site",
+
   // Empty-board welcome screen (P1-A, reusing Excalidraw WelcomeScreen)
   welcome_menuHint: "Create and organize boards in the file tree on the left",
   welcome_toolbarHint: "Pick a tool on the left to start drawing, or press keys 1–9",
@@ -671,6 +680,15 @@ export function setLang(l: Lang): void {
 
 export function isLang(x: string): x is Lang {
   return x === "zh-CN" || x === "zh-TW" || x === "en";
+}
+
+/** 首次访问时按浏览器语言自动选择。zh-CN/zh-SG 等归到 zh-CN；zh-TW/zh-HK/zh-MO 归到 zh-TW；其余归 en。 */
+export function detectBrowserLang(): Lang {
+  const nav = (typeof navigator !== "undefined" && navigator.language) || "zh-CN";
+  const lo = nav.toLowerCase();
+  if (lo === "zh-tw" || lo === "zh-hk" || lo === "zh-mo") return "zh-TW";
+  if (lo.startsWith("zh")) return "zh-CN";
+  return "en";
 }
 
 /** 画布 Excalidraw 的 locale 与外壳语言一一对应 */

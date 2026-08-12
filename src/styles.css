@@ -308,6 +308,7 @@ body {
 .help-modal .HelpDialog { font-family: var(--ui-font, inherit); }
 
 .HelpDialog__header { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.5rem; }
+.HelpDialog__logo-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.5rem; }
 .HelpDialog__btn {
   display: flex; column-gap: 0.5rem; align-items: center;
   background-color: var(--color-surface-mid);

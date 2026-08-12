@@ -25,7 +25,7 @@ import {
   getBackend,
 } from "./db";
 import type { FileNode, BoardData } from "./db";
-import { t, getLang, setLang, LANGS, isLang, type Lang } from "./i18n";
+import { t, getLang, setLang, LANGS, isLang, detectBrowserLang, type Lang } from "./i18n";
 import { fsSupported, fsCopyFromIdb, fsMergeFromIdb, fsPeekFolder, fsExportAll } from "./fsStore";
 import { useAgentIntegration, AIPanel } from "./agentIntegration";
 import AnnouncementBar from "./AnnouncementBar";
@@ -364,17 +364,16 @@ export default function App() {
         getSetting<number>("sidebarWidth", 260),
         getSetting<boolean>("sidebarCollapsed", false),
         getSetting<Theme>("theme", "light"),
-        getSetting<string>("lang", "zh-CN"),
+        getSetting<string | null>("lang", null),
         getSetting<string>("storageMode", "idb"),
         getSetting<any>("storageFolderHandle", null),
       ]);
       setSidebarWidth(w);
       setSidebarCollapsed(collapsed);
       setTheme(th);
-      if (isLang(savedLang)) {
-        setLang(savedLang);
-        setLangState(savedLang);
-      }
+      const initialLang: Lang = isLang(savedLang) ? savedLang : detectBrowserLang();
+      setLang(initialLang);
+      setLangState(initialLang);
       if (storageMode === "filesystem" && handle) setFolderName(handle.name ?? null);
 
       // 先决定存储后端（IndexedDB / 文件夹），再读数据
