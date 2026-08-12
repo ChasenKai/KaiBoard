@@ -18,6 +18,15 @@
 
 ## 当前版本 / Current version
 
+### v1.0.0-beta.2（2026-08-12）· i18n 与帮助入口优化 / i18n & Help entry improvements
+
+- 首次访问按浏览器语言自动选择界面语言（简中 / 繁中 / 英文），切换后写入本地设置，刷新保持  
+  Auto-detect browser language on first visit (zh-CN / zh-TW / en) and persist the choice in local settings across reloads.
+- 帮助弹窗新增「官网介绍」入口，方便从应用内直达 KaiLab 官网  
+  Help dialog adds an "Official Site" entry for quick access to the KaiLab landing site.
+
+---
+
 ### v1.0.0-beta（2026-08-09）· 基础版公测首发 / First public beta of the base edition
 
 - 多画板文件树 / 侧栏画板多选 + 整组拖入文件夹  
