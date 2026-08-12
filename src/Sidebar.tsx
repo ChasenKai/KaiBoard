@@ -111,28 +111,28 @@ export default function Sidebar({
     return { visibleIds: vis, forceExpand: exp, hitIds: hit };
   }, [nodes, query]);
 
-  // 某文件夹下的全部「画板」id（递归），用于文件夹勾选态计算
-  const descendantBoardIds = (rootId: string): string[] => {
+  // 某节点下的全部「后代」id（递归，含文件夹与画板），用于文件夹勾选态/半选态计算
+  const descendantAllIds = (rootId: string): string[] => {
     const res: string[] = [];
     const stack = [rootId];
     while (stack.length) {
       const cur = stack.pop()!;
       for (const c of childrenMap.get(cur) ?? []) {
-        if (c.type === "board") res.push(c.id);
-        else stack.push(c.id);
+        res.push(c.id);
+        if (c.type === "folder") stack.push(c.id);
       }
     }
     return res;
   };
 
-  // 扁平可见画板序列（用于 Shift 范围多选锚点）
-  const flatBoardOrder = useMemo(() => {
+  // 扁平可见节点序列（含文件夹与画板，用于 Shift 范围多选锚点，可跨文件夹）
+  const flatOrder = useMemo(() => {
     const out: string[] = [];
     const walk = (parentId: string | null) => {
       for (const c of childrenMap.get(parentId) ?? []) {
         if (visibleIds && !visibleIds.has(c.id)) continue;
-        if (c.type === "board") out.push(c.id);
-        else {
+        out.push(c.id);
+        if (c.type === "folder") {
           const open = forceExpand ? forceExpand.has(c.id) || expanded.has(c.id) : expanded.has(c.id);
           if (open) walk(c.id);
         }
@@ -143,11 +143,11 @@ export default function Sidebar({
   }, [childrenMap, expanded, forceExpand, visibleIds]);
 
   const selectRange = (a: string, b: string): string[] => {
-    const i = flatBoardOrder.indexOf(a);
-    const j = flatBoardOrder.indexOf(b);
+    const i = flatOrder.indexOf(a);
+    const j = flatOrder.indexOf(b);
     if (i === -1 || j === -1) return [b];
     const [s, e] = i < j ? [i, j] : [j, i];
-    return flatBoardOrder.slice(s, e + 1);
+    return flatOrder.slice(s, e + 1);
   };
 
   const renderNode = (node: FileNode, depth: number): ReactNode => {
@@ -158,10 +158,12 @@ export default function Sidebar({
     const isOpen = forceExpand ? forceExpand.has(node.id) || expanded.has(node.id) : expanded.has(node.id);
     const isDropTarget = drop?.id === node.id;
     const isExtDrop = extDrop?.id === node.id;
-    const selCount = isFolder ? descendantBoardIds(node.id).filter((id) => selectedIds.has(id)).length : 0;
-    const totalDesc = isFolder ? descendantBoardIds(node.id).length : 0;
-    const checked = isFolder ? totalDesc > 0 && selCount === totalDesc : selectedIds.has(node.id);
-    const indeterminate = isFolder && selCount > 0 && selCount < totalDesc;
+    // 「文件夹 = 整单元」模型：勾选框直接反映该节点是否在选中集；
+    // 半选态 = 文件夹自身未选中、但部分后代被选中。
+    const checked = selectedIds.has(node.id);
+    const totalDesc = isFolder ? descendantAllIds(node.id).length : 0;
+    const selCount = isFolder ? descendantAllIds(node.id).filter((id) => selectedIds.has(id)).length : 0;
+    const indeterminate = isFolder && !checked && selCount > 0;
     const isRenaming = renamingId === node.id;
     const cls = [
       "tree-item",

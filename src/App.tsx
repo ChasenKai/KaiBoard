@@ -800,10 +800,13 @@ export default function App() {
           newOrder = (target.order ?? 0) + 0.5;
         }
       }
+      const oldParent = dragged.parentId;
+      const oldOrder = dragged.order;
       dragged.parentId = newParent;
       dragged.order = newOrder;
       dragged.updatedAt = Date.now();
       await putNode(dragged);
+      pushUndo({ kind: "move", items: [{ id: draggedId, parentId: oldParent, order: oldOrder }], label: dragged.name });
       await refreshNodes();
     },
     [refreshNodes, collectDescendants, showToast]
@@ -862,11 +865,56 @@ export default function App() {
     [saveBoard, clearSaveTimers]
   );
 
+  // 深克隆子树：文件夹递归克隆全部后代（文件夹新建、画板复制内容），返回新根节点 id。
+  // applySuffix 仅作用于被克隆的「这一层」节点；递归进子节点时 suffix 置空（子节点保留原名）。
+  const cloneSubtree = useCallback(
+    async (sourceId: string, targetParentId: string | null, applySuffix: string): Promise<string | undefined> => {
+      const node = await getNode(sourceId);
+      if (!node) return undefined;
+      const newId = crypto.randomUUID();
+      const now = Date.now();
+      const name = applySuffix ? `${node.name}${applySuffix}` : node.name;
+      if (node.type === "board") {
+        const board = await getBoard(sourceId);
+        await putNode({
+          id: newId,
+          type: "board",
+          name,
+          parentId: targetParentId,
+          createdAt: now,
+          updatedAt: now,
+          order: (await getMaxOrder(targetParentId)) + 1,
+        });
+        await putBoard({
+          id: newId,
+          elements: board?.elements ? JSON.parse(JSON.stringify(board.elements)) : [],
+          appState: board?.appState ? JSON.parse(JSON.stringify(board.appState)) : {},
+          files: board?.files ? JSON.parse(JSON.stringify(board.files)) : {},
+        });
+      } else {
+        await putNode({
+          id: newId,
+          type: "folder",
+          name,
+          parentId: targetParentId,
+          createdAt: now,
+          updatedAt: now,
+          order: (await getMaxOrder(targetParentId)) + 1,
+        });
+        const children = await listChildren(sourceId);
+        for (const c of children) await cloneSubtree(c.id, newId, "");
+      }
+      return newId;
+    },
+    [getNode, getBoard, putNode, putBoard, getMaxOrder, listChildren]
+  );
+
+  // 副本：画板 = 复制内容并加「 副本」；文件夹 = 深克隆整棵子树（顶层文件夹加「 副本」）
   const handleDuplicate = useCallback(
     async (nodeId: string) => {
       const node = await getNode(nodeId);
-      if (!node || node.type !== "board") return;
-      if (activeIdRef.current === nodeId && apiRef.current) {
+      if (!node) return;
+      if (node.type === "board" && activeIdRef.current === nodeId && apiRef.current) {
         clearSaveTimers();
         await saveBoard(
           nodeId,
@@ -875,51 +923,52 @@ export default function App() {
           apiRef.current.getFiles()
         );
       }
-      const board = await getBoard(nodeId);
-      const newId = crypto.randomUUID();
-      const now = Date.now();
-      await putNode({
-        id: newId,
-        type: "board",
-        name: `${node.name}${t("name_copy")}`,
-        parentId: node.parentId,
-        createdAt: now,
-        updatedAt: now,
-        order: (await getMaxOrder(node.parentId)) + 1,
-      });
-      await putBoard({
-        id: newId,
-        elements: board?.elements ? JSON.parse(JSON.stringify(board.elements)) : [],
-        appState: board?.appState ? JSON.parse(JSON.stringify(board.appState)) : {},
-        files: board?.files ? JSON.parse(JSON.stringify(board.files)) : {},
-      });
+      const newId = await cloneSubtree(nodeId, node.parentId, t("name_copy"));
       await refreshNodes();
-      await switchBoard(newId);
+      if (newId) pushUndo({ kind: "clone", id: newId, label: node.name });
+      if (newId && node.type === "board") await switchBoard(newId);
+      else if (newId) setExpanded((s) => new Set(s).add(newId));
       showToast(t("toast_duplicated"));
     },
-    [refreshNodes, switchBoard, saveBoard, showToast, clearSaveTimers]
+    [cloneSubtree, refreshNodes, switchBoard, saveBoard, showToast, clearSaveTimers, getNode, t]
   );
 
-  // 画板级剪切 / 复制：把当前侧栏选中（selected）的画板写入剪贴板
-  const handleCut = useCallback(async () => {
-    if (selected.size === 0) return;
-    setClipboard({ ids: Array.from(selected), op: "cut" });
+  // 画板/文件夹级剪切 / 复制：优先用显式传入的节点 id（右键菜单），否则用侧栏选中集
+  const handleCut = useCallback(async (ids?: string[]) => {
+    const sel = ids && ids.length ? ids : Array.from(selected);
+    if (sel.length === 0) return;
+    setClipboard({ ids: sel, op: "cut" });
   }, [selected]);
 
-  const handleCopy = useCallback(async () => {
-    if (selected.size === 0) return;
-    setClipboard({ ids: Array.from(selected), op: "copy" });
+  const handleCopy = useCallback(async (ids?: string[]) => {
+    const sel = ids && ids.length ? ids : Array.from(selected);
+    if (sel.length === 0) return;
+    setClipboard({ ids: sel, op: "copy" });
   }, [selected]);
 
-  // 画板级粘贴：把剪贴板内容落到目标文件夹（folderId=null 表示根目录）
+  // 画板/文件夹级粘贴：把剪贴板内容落到目标文件夹（folderId=null 表示根目录）
   // cut → 逐个移动 parentId 到目标并置末尾，随后清空剪贴板；
-  // copy → 逐个深克隆（新 id、名称加「 副本」）进目标文件夹，剪贴板保留可多次粘贴。
+  // copy → 逐个深克隆子树（cloneSubtree：文件夹递归复制全部后代、画板复制内容）进目标文件夹，剪贴板保留可多次粘贴。
+  // 去重：剪贴板中若同时含某文件夹及其后代，仅保留顶层（避免重复移动/克隆）。
   // 防自我移动：cut 时目标不能是任一被剪切项的子孙（复用 toast_cannotMoveIntoSelf）。
   const handlePaste = useCallback(
     async (targetFolderId: string | null) => {
       if (!clipboard || clipboard.ids.length === 0) return;
+      const byId = new Map(nodes.map((n) => [n.id, n]));
+      const clipSet = new Set(clipboard.ids);
+      const isDescOfClip = (id: string): boolean => {
+        let p = byId.get(id)?.parentId ?? null;
+        while (p) {
+          if (clipSet.has(p)) return true;
+          p = byId.get(p)?.parentId ?? null;
+        }
+        return false;
+      };
+      const topIds = clipboard.ids.filter((id) => !isDescOfClip(id));
+      if (topIds.length === 0) return;
+
       if (clipboard.op === "cut") {
-        for (const id of clipboard.ids) {
+        for (const id of topIds) {
           if (id === targetFolderId) {
             showToast(t("toast_cannotMoveIntoSelf"));
             return;
@@ -933,9 +982,7 @@ export default function App() {
             }
           }
         }
-      }
-      if (clipboard.op === "cut") {
-        for (const id of clipboard.ids) {
+        for (const id of topIds) {
           const node = await getNode(id);
           if (!node) continue;
           node.parentId = targetFolderId;
@@ -945,77 +992,141 @@ export default function App() {
         }
         setClipboard(null);
         await refreshNodes();
-        showToast(t("toast_movedN", { n: clipboard.ids.length }));
+        showToast(t("toast_movedN", { n: topIds.length }));
       } else {
-        for (const id of clipboard.ids) {
+        for (const id of topIds) {
           const node = await getNode(id);
-          if (!node || node.type !== "board") continue;
-          const board = await getBoard(id);
-          const newId = crypto.randomUUID();
-          const now = Date.now();
-          await putNode({
-            id: newId,
-            type: "board",
-            name: `${node.name}${t("name_copy")}`,
-            parentId: targetFolderId,
-            createdAt: now,
-            updatedAt: now,
-            order: (await getMaxOrder(targetFolderId)) + 1,
-          });
-          await putBoard({
-            id: newId,
-            elements: board?.elements ? JSON.parse(JSON.stringify(board.elements)) : [],
-            appState: board?.appState ? JSON.parse(JSON.stringify(board.appState)) : {},
-            files: board?.files ? JSON.parse(JSON.stringify(board.files)) : {},
-          });
+          if (!node) continue;
+          const newId = await cloneSubtree(id, targetFolderId, t("name_copy"));
+          if (newId) pushUndo({ kind: "clone", id: newId, label: node.name });
         }
         await refreshNodes();
-        showToast(t("toast_copiedN", { n: clipboard.ids.length }));
+        showToast(t("toast_copiedN", { n: topIds.length }));
         // copy 保留剪贴板，可多次粘贴；新剪切/复制或 Esc 时重置
       }
     },
-    [clipboard, refreshNodes, showToast, t, getNode, getBoard, putNode, putBoard, getMaxOrder, collectDescendants]
+    [clipboard, refreshNodes, showToast, t, getNode, putNode, getMaxOrder, collectDescendants, cloneSubtree, nodes]
   );
 
-  // 画板级剪切/复制/粘贴键盘快捷键（Ctrl+X / Ctrl+C / Ctrl+V）。
-  // 仅在「侧栏已选中画板」且焦点不在画布文本框 / Excalidraw 画布内时生效，
-  // 避免与 Excalidraw 画布元素的 Ctrl+C/V 冲突。Ctrl+V 粘贴到「当前激活画板所在文件夹」（或根目录）。
+  // onDeleteSelected 在下方定义，键盘处理器通过 ref 持有最新引用，避免「使用前声明」的 TDZ 报错
+  const onDeleteSelectedRef = useRef<() => Promise<void>>(async () => {});
+
+  // ---------- 结构树操作撤销栈（Ctrl+Z，仅针对侧栏树操作；画布内元素编辑仍由 Excalidraw 处理）----------
+  // 入栈操作：删除(restoreNode 还原) / 移动(还原 parentId+order) / 改名(还原 name) /
+  // 新建(软删该节点) / 副本·复制(软删克隆子树)。栈上限 100，超界丢弃最旧。
+  type UndoEntry =
+    | { kind: "delete"; roots: string[]; label: string }
+    | { kind: "move"; items: { id: string; parentId: string | null; order: number }[]; label: string }
+    | { kind: "rename"; id: string; name: string; label: string }
+    | { kind: "create"; id: string; label: string }
+    | { kind: "clone"; id: string; label: string };
+  const undoStack = useRef<UndoEntry[]>([]);
+  const pushUndo = useCallback((e: UndoEntry) => {
+    undoStack.current.push(e);
+    if (undoStack.current.length > 100) undoStack.current.shift();
+  }, []);
+  const undoLast = useCallback(async () => {
+    const entry = undoStack.current.pop();
+    if (!entry) {
+      showToast(t("undo_empty"));
+      return;
+    }
+    if (entry.kind === "delete") {
+      for (const r of entry.roots) await restoreNode(r);
+    } else if (entry.kind === "move") {
+      for (const it of entry.items) {
+        const n = await getNode(it.id);
+        if (n) {
+          n.parentId = it.parentId;
+          n.order = it.order;
+          n.updatedAt = Date.now();
+          await putNode(n);
+        }
+      }
+    } else if (entry.kind === "rename") {
+      const n = await getNode(entry.id);
+      if (n) {
+        n.name = entry.name;
+        n.updatedAt = Date.now();
+        await putNode(n);
+      }
+    } else {
+      // create / clone：撤销 = 软删该节点（含其子树）
+      await trashNode(entry.id);
+    }
+    await refreshNodes();
+    showToast(
+      entry.kind === "delete"
+        ? t("undo_restore", { name: entry.label })
+        : entry.kind === "move"
+        ? t("undo_move", { name: entry.label })
+        : entry.kind === "rename"
+        ? t("undo_rename", { name: entry.label })
+        : entry.kind === "create"
+        ? t("undo_create", { name: entry.label })
+        : t("undo_clone", { name: entry.label })
+    );
+  }, [restoreNode, getNode, putNode, trashNode, refreshNodes, showToast, t]);
+
+  // 侧栏多选键盘快捷键（画板与文件夹通用）：
+  //   Ctrl+X 剪切 / Ctrl+C 复制 / Ctrl+V 粘贴 / Ctrl+A 全选当前树全部节点 / Delete 或 Backspace 删除选中
+  // 焦点在 Excalidraw 画布内时一律放行其原生快捷键；普通输入框放行原生编辑；
+  // 侧栏重命名输入框中：Ctrl+X/C/V 先失焦（提交命名）再处理，Delete/Backspace 则放行编辑文字。
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const ae = document.activeElement as HTMLElement | null;
       const typing = !!ae && (ae.tagName === "INPUT" || ae.tagName === "TEXTAREA" || ae.isContentEditable);
       const inExcalidraw = !!(ae && ae.closest && ae.closest(".excalidraw"));
       const inRenameInput = !!(ae && ae.classList && ae.classList.contains("rename-input"));
-      if (!(e.ctrlKey || e.metaKey) || inExcalidraw) return;
-      // 侧栏重命名输入框中：放行画板级剪切/复制/粘贴（先失焦提交命名），避免抢焦点导致快捷键失效
-      if (typing && !inRenameInput) return;
+      if (inExcalidraw) return; // 画布内：Excalidraw 原生快捷键优先
+      if (typing && !inRenameInput) return; // 普通输入框：原生编辑优先
       const k = e.key.toLowerCase();
-      if (k === "x") {
-        if (selected.size > 0) {
-          if (inRenameInput && ae) ae.blur();
+
+      if (e.ctrlKey || e.metaKey) {
+        if (k === "x") {
+          if (selected.size > 0) {
+            if (inRenameInput && ae) ae.blur();
+            e.preventDefault();
+            void handleCut();
+          }
+        } else if (k === "c") {
+          if (selected.size > 0) {
+            if (inRenameInput && ae) ae.blur();
+            e.preventDefault();
+            void handleCopy();
+          }
+        } else if (k === "v") {
+          if (clipboard) {
+            if (inRenameInput && ae) ae.blur();
+            e.preventDefault();
+            void (async () => {
+              const active = activeIdRef.current ? await getNode(activeIdRef.current) : null;
+              await handlePaste(activeFolderId ?? (active?.parentId ?? null));
+            })();
+          }
+        } else if (k === "a") {
           e.preventDefault();
-          void handleCut();
+          setSelected(new Set(nodes.map((n) => n.id)));
+        } else if (k === "z") {
+          if (inRenameInput) return; // 重命名输入框内：放行原生文本撤销
+          e.preventDefault();
+          void undoLast();
         }
-      } else if (k === "c") {
+        return;
+      }
+
+      // 非组合键：Delete / Backspace 删除选中（重命名输入框中放行文字编辑）
+      if (k === "delete" || k === "backspace") {
+        if (inRenameInput) return;
         if (selected.size > 0) {
-          if (inRenameInput && ae) ae.blur();
           e.preventDefault();
-          void handleCopy();
-        }
-      } else if (k === "v") {
-        if (clipboard) {
-          if (inRenameInput && ae) ae.blur();
-          e.preventDefault();
-          void (async () => {
-            const active = activeIdRef.current ? await getNode(activeIdRef.current) : null;
-            await handlePaste(activeFolderId ?? (active?.parentId ?? null));
-          })();
+          void onDeleteSelectedRef.current();
         }
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [selected, clipboard, handleCut, handleCopy, handlePaste, getNode, activeIdRef, activeFolderId]);
+  }, [selected, clipboard, handleCut, handleCopy, handlePaste, undoLast, getNode, activeIdRef, activeFolderId, nodes]);
 
   // 右键文件夹 / 空白处「导入画板」：支持一次多选多个 .excalidraw 精准落到该文件夹
   const handleImportToFolder = useCallback(
@@ -1128,24 +1239,44 @@ export default function App() {
     [nodes]
   );
 
-  // 侧栏勾选：画板直接切换；文件夹按「其下画板是否全选」整组切换
+  // 侧栏勾选：画板 / 文件夹都是一等选择单元，直接切换自身 id
+  // 「文件夹 = 整单元」选择模型的一致性保证：
+  //  - 勾选/取消某节点时，剥离其所有祖先文件夹的「整单元」选中——部分选会破坏祖先的整单元语义；
+  //  - 勾选一个文件夹时，移除其全部后代的单独勾选——文件夹单元说了算，避免子项被重复勾。
+  // 这样 selected 永远是自洽的：要么某文件夹是整单元（其 id 在集、后代不单独记录），要么不是（后代单独记录、文件夹不在集）。
   const onToggleSelect = useCallback(
     (node: FileNode) => {
+      const byId = new Map(nodes.map((n) => [n.id, n]));
       setSelected((prev) => {
         const next = new Set(prev);
-        if (node.type === "board") {
-          if (next.has(node.id)) next.delete(node.id);
-          else next.add(node.id);
+        // 1) 剥离祖先文件夹单元
+        let p = node.parentId;
+        while (p) {
+          next.delete(p);
+          p = byId.get(p)?.parentId ?? null;
+        }
+        if (next.has(node.id)) {
+          next.delete(node.id);
         } else {
-          const desc = descendantBoardIds(node.id);
-          const allSel = desc.length > 0 && desc.every((id) => next.has(id));
-          if (allSel) desc.forEach((id) => next.delete(id));
-          else desc.forEach((id) => next.add(id));
+          next.add(node.id);
+          // 2) 勾选文件夹 → 移除其全部后代的单独勾选
+          if (node.type === "folder") {
+            const stack = [node.id];
+            while (stack.length) {
+              const cur = stack.pop()!;
+              for (const c of nodes) {
+                if (c.parentId === cur) {
+                  next.delete(c.id);
+                  if (c.type === "folder") stack.push(c.id);
+                }
+              }
+            }
+          }
         }
         return next;
       });
     },
-    [descendantBoardIds]
+    [nodes]
   );
 
   const clearSelection = useCallback(() => setSelected(new Set()), []);
@@ -1165,16 +1296,24 @@ export default function App() {
   // 规则（2026-08-05）：除顶栏总体批量备份外，单/多导入导出一律保持原生 .excalidraw。
   const handleExportSelected = useCallback(async () => {
     if (selected.size === 0) return;
-    const boards = (await getAllBoards()).filter((b) => selected.has(b.id));
-    if (boards.length === 0) return;
+    // 展开选中集：文件夹 → 其下全部画板（递归）
     const byId = new Map(nodes.map((n) => [n.id, n]));
+    const boardIds = new Set<string>();
+    for (const id of selected) {
+      const n = byId.get(id);
+      if (!n) continue;
+      if (n.type === "board") boardIds.add(id);
+      else descendantBoardIds(id).forEach((b) => boardIds.add(b));
+    }
+    const boards = (await getAllBoards()).filter((b) => boardIds.has(b.id));
+    if (boards.length === 0) return;
     for (const b of boards) {
       const name = byId.get(b.id)?.name || "画板";
       await exportBoard(name, b);
     }
     showToast(t("toast_exportedSelected", { n: boards.length }));
     setSelected(new Set());
-  }, [selected, nodes, showToast]);
+  }, [selected, nodes, showToast, descendantBoardIds]);
 
   // ----- 演示型导出（PPTX，按需动态加载，不进主包）-----
   // 对标 Excalidraw+ 的「导出为演示文稿」：画板 → PNG → PPTX(pptxgenjs)。
@@ -1238,9 +1377,16 @@ export default function App() {
       if (activeIdRef.current && selected.has(activeIdRef.current)) await flushIfActive(activeIdRef.current);
       const byId = new Map(nodes.map((n) => [n.id, n]));
       const bById = new Map((await getAllBoards()).map((b) => [b.id, b]));
-      // 按文件树可见顺序排序（descendantBoardIds(null) = 全局顺序），再按勾选集合过滤
+      // 展开选中集：文件夹 → 其下全部画板（递归），再按文件树全局顺序排序
+      const boardIds = new Set<string>();
+      for (const id of selected) {
+        const n = byId.get(id);
+        if (!n) continue;
+        if (n.type === "board") boardIds.add(id);
+        else descendantBoardIds(id).forEach((b) => boardIds.add(b));
+      }
       const items: ExportItem[] = descendantBoardIds(null)
-        .filter((id) => selected.has(id))
+        .filter((id) => boardIds.has(id))
         .map((id) => ({ name: byId.get(id)?.name || "画板", board: bById.get(id)! }))
         .filter((it) => it.board);
       await runPresentationExport(items, "KaiBoard");
@@ -1342,6 +1488,7 @@ export default function App() {
         updatedAt: now,
         order: (await getMaxOrder(parentId)) + 1,
       });
+      pushUndo({ kind: "create", id, label: t("default_folderName") });
       if (parentId) setExpanded((s) => new Set(s).add(parentId));
       await refreshNodes();
       setRenamingId(id); // 创建后直接进入内联重命名
@@ -1364,6 +1511,7 @@ export default function App() {
         order: (await getMaxOrder(parentId)) + 1,
       });
       await putBoard({ id, elements: [], appState: {}, files: {} });
+      pushUndo({ kind: "create", id, label: t("default_boardName") });
       if (parentId) setExpanded((s) => new Set(s).add(parentId));
       await refreshNodes();
       await switchBoard(id);
@@ -1378,9 +1526,11 @@ export default function App() {
       const name = rawName.trim();
       const node = await getNode(id);
       if (!node || !name || name === node.name) return;
+      const oldName = node.name;
       node.name = name;
       node.updatedAt = Date.now();
       await putNode(node);
+      pushUndo({ kind: "rename", id, name: oldName, label: oldName });
       await refreshNodes();
     },
     [refreshNodes]
@@ -1399,6 +1549,7 @@ export default function App() {
       if (!window.confirm(msg)) return;
 
       const wasActive = activeIdRef.current === id;
+      pushUndo({ kind: "delete", roots: [id], label: node.name });
       await trashNode(id);
       const remaining = await listNodes();
       await refreshNodes();
@@ -1412,6 +1563,53 @@ export default function App() {
     },
     [refreshNodes, showToast]
   );
+
+  // 多选删除 = 逐个移入回收站（与单选同逻辑：可还原、二次确认、激活画板切换）。
+  // 「文件夹 = 整单元」模型：selected 直接含文件夹 id 与画板 id。
+  // 去重——若同时选中了某文件夹及其后代，仅删顶层文件夹（trashNode 已级联删子树），避免重复删。
+  //   由 isDescOfSel 剔除「祖先已在选中集」的后代，确保选中子画板不会上溯删父。
+  const onDeleteSelected = useCallback(async () => {
+    if (selected.size === 0) return;
+    const byId = new Map(nodes.map((n) => [n.id, n]));
+    const selSet = new Set(selected);
+    const isDescOfSel = (id: string): boolean => {
+      let p = byId.get(id)?.parentId ?? null;
+      while (p) {
+        if (selSet.has(p)) return true;
+        p = byId.get(p)?.parentId ?? null;
+      }
+      return false;
+    };
+    const targets = Array.from(selected).filter((id) => !isDescOfSel(id));
+    const total = targets.length;
+    if (total === 0) return;
+    if (!window.confirm(t("confirm_moveManyTrash", { n: total }))) return;
+    pushUndo({
+      kind: "delete",
+      roots: targets,
+      label: targets.length === 1 ? byId.get(targets[0])?.name ?? t("undo_items", { n: 1 }) : t("undo_items", { n: total }),
+    });
+    const active = activeIdRef.current;
+    const willDeleteActive = targets.some((id) => {
+      if (id === active) return true;
+      const n = byId.get(id);
+      return n?.type === "folder" && descendantBoardIds(id).includes(active as string);
+    });
+    for (const id of targets) {
+      await trashNode(id);
+    }
+    await refreshNodes();
+    const remaining = await listNodes();
+    if (willDeleteActive || (active != null && !remaining.some((nn) => nn.id === active))) {
+      const firstBoard = remaining.find((nn) => nn.type === "board");
+      activeIdRef.current = firstBoard?.id ?? null;
+      setActiveBoardId(firstBoard?.id ?? null);
+    }
+    showToast(t("toast_toTrashMany", { n: total }));
+    setSelected(new Set());
+  }, [selected, nodes, descendantBoardIds, refreshNodes, showToast]);
+  // 键盘删除处理器通过 ref 调用最新版 onDeleteSelected
+  onDeleteSelectedRef.current = onDeleteSelected;
 
   const handleRestore = useCallback(
     async (id: string) => {
@@ -1728,7 +1926,10 @@ export default function App() {
             setCtxMenu(null);
           }}
           onDelete={() => {
-            if (ctxMenu.nodeId) onDelete(ctxMenu.nodeId);
+            // 统一删除：右键点中的节点在选中集内 → 删整个选中（多选）；否则只删点中的那一个
+            const id = ctxMenu.nodeId;
+            if (id != null && selected.has(id) && selected.size > 0) void onDeleteSelected();
+            else if (id != null) void onDelete(id);
             setCtxMenu(null);
           }}
           onNewBoard={() => {
@@ -1757,11 +1958,11 @@ export default function App() {
           }}
           onCut={() => {
             setCtxMenu(null);
-            void handleCut();
+            if (ctxMenu.nodeId) void handleCut([ctxMenu.nodeId]);
           }}
           onCopy={() => {
             setCtxMenu(null);
-            void handleCopy();
+            if (ctxMenu.nodeId) void handleCopy([ctxMenu.nodeId]);
           }}
           onPaste={() => {
             const target = ctxNode?.type === "folder" ? ctxNode.id : null;

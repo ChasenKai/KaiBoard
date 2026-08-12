@@ -47,7 +47,7 @@ export default function ContextMenu({
   const isBoard = node?.type === "board";
 
   // 按实际项数估算菜单高度，避免贴边溢出屏幕
-  const itemCount = isBlank ? (canPaste ? 4 : 3) : isFolder ? (canPaste ? 8 : 7) : 10;
+  const itemCount = isBlank ? (canPaste ? 4 : 3) : isFolder ? (canPaste ? 12 : 11) : 10;
   const estHeight = itemCount * 34 + 16;
   const left = Math.min(x, window.innerWidth - 190);
   const top = Math.max(8, Math.min(y, window.innerHeight - estHeight - 8));
@@ -88,6 +88,16 @@ export default function ContextMenu({
           <>
             <div className="ctx-item" onClick={onExportPptx}>
               {t("ctx_exportPptx")}
+            </div>
+            <div className="ctx-item" onClick={onDuplicate}>
+              {t("ctx_duplicate")}
+            </div>
+            <div className="ctx-sep" />
+            <div className="ctx-item" onClick={onCut}>
+              {t("ctx_cut")}
+            </div>
+            <div className="ctx-item" onClick={onCopy}>
+              {t("ctx_copy")}
             </div>
           </>
         )}

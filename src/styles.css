@@ -466,6 +466,8 @@ body {
   border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; font-family: inherit;
 }
 .sel-bar button:last-child { background: var(--bg); color: var(--text); border: 1px solid var(--border-strong); }
+.sel-bar button.danger { background: var(--danger); }
+.sel-bar button.danger:hover { filter: brightness(0.94); }
 .sel-bar button:hover { filter: brightness(0.96); }
 
 /* ===== 顶部公告条 AnnouncementBar ===== */

@@ -18,6 +18,17 @@
 
 ## 当前版本 / Current version
 
+### v1.0.0-beta.3（2026-08-12）· 侧栏结构树管理增强 / Sidebar tree management enhancements
+
+- 侧栏结构树：文件夹与画板一致的多选（Ctrl/Shift 点击、勾选框），空文件夹可独立选中  
+  Sidebar tree: folders and boards now share consistent multi-select (Ctrl/Shift click, checkbox); empty folders can be selected on their own.
+- 文件夹 = 整单元：选中文件夹即选中其全部内容；复制 / 剪切 / 粘贴 / 副本对整棵子树生效（深克隆），删除与导出按整单元处理  
+  Folder = whole unit: selecting a folder selects all its contents; copy / cut / paste / duplicate apply to the entire subtree (deep clone); delete and export treat it as one unit.
+- 全套树快捷键：Ctrl+C 复制 / Ctrl+X 剪切 / Ctrl+V 粘贴 / Ctrl+A 全选 / Delete 或 Backspace 删除选中 / Ctrl+Z 撤销树操作（删除 / 移动 / 改名 / 新建 / 副本，toast 报出恢复的节点名）  
+  Full tree shortcuts: Ctrl+C copy / Ctrl+X cut / Ctrl+V paste / Ctrl+A select all / Delete or Backspace delete selection / Ctrl+Z undo tree operations (delete / move / rename / create / duplicate, with a toast naming the restored node).
+- 删除去重保护：同时选中文件夹及其后代时只删顶层文件夹，不会上溯误删父级；误删可经回收站二次还原  
+  Delete de-dup protection: selecting a folder and its descendants deletes only the top folder — it never climbs up to delete the parent; mistaken deletes can be restored from the trash.
+
 ### v1.0.0-beta.2（2026-08-12）· i18n 与帮助入口优化 / i18n & Help entry improvements
 
 - 首次访问按浏览器语言自动选择界面语言（简中 / 繁中 / 英文），切换后写入本地设置，刷新保持  

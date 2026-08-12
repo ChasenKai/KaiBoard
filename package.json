@@ -1,7 +1,7 @@
 {
   "name": "kaiboard",
   "private": true,
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "type": "module",
   "description": "KaiBoard - 免费开源、本地优先的中文手写风多画布白板（绘图内核基于 Excalidraw）",
   "scripts": {
