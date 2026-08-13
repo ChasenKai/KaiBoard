@@ -8,6 +8,6 @@ export default {
       url.hostname = "www.kaibuddy.com";
       return Response.redirect(url.toString(), 301);
     }
-    return context.next();
+    return await context.next();
   },
 };
