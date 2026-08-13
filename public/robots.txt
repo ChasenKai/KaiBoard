@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kaiboard.kaibuddy.com/sitemap.xml
