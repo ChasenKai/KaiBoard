@@ -33,8 +33,8 @@
 
 - 首次访问按浏览器语言自动选择界面语言（简中 / 繁中 / 英文），切换后写入本地设置，刷新保持  
   Auto-detect browser language on first visit (zh-CN / zh-TW / en) and persist the choice in local settings across reloads.
-- 帮助弹窗新增「官网介绍」入口，方便从应用内直达 KaiLab 官网  
-  Help dialog adds an "Official Site" entry for quick access to the KaiLab landing site.
+- 帮助弹窗新增「官网介绍」入口，方便从应用内直达 KaiBuddy 官网  
+  Help dialog adds an "Official Site" entry for quick access to the KaiBuddy landing site.
 
 ---
 
