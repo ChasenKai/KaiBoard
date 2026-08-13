@@ -230,10 +230,10 @@ export default function HelpDialog({ onClose, theme }: HelpDialogProps) {
               </a>
               <a
                 className="HelpDialog__btn HelpDialog__btn--muted"
-                href="https://kailab.pages.dev"
+                href="https://www.kaibuddy.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                title="访问 KaiLab 官网"
+                title="访问 KaiBuddy 官网"
               >
                 <span className="HelpDialog__link-icon">
                   <SiteIcon />
