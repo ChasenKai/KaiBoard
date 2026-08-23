@@ -646,6 +646,9 @@ export default function App() {
         null,
         { refreshDimensions: true, repairBindings: true }
       );
+      // 外部/旧数据可能把 collaborators 序列化为普通对象；Excalidraw 期望 Map，
+      // 残留对象会在渲染时触发 "collaborators.forEach is not a function"。
+      if (restored.appState) delete restored.appState.collaborators;
       // 提示：若有元素因版本不兼容被 restore 丢弃
       if (restored.elements.length < rawEls.length) {
         showToast(t("toast_incompatibleSkipped", { n: rawEls.length - restored.elements.length }));

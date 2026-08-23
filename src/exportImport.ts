@@ -149,10 +149,15 @@ async function importScene(scene: any, fileName: string, defaultParentId: string
     order: maxOrder + 1,
   };
   await putNode(node);
+  // 外部 .excalidraw 的 appState.collaborators 经 JSON 序列化后通常是普通对象，
+  // 而 Excalidraw 内部期望它是 Map；不清理会在首次渲染时触发
+  // "collaborators.forEach is not a function" 崩溃。
+  const appState = scene.appState || {};
+  delete appState.collaborators;
   await putBoard({
     id,
     elements: scene.elements || [],
-    appState: scene.appState || {},
+    appState,
     files: scene.files || {},
   });
   return id;
@@ -186,7 +191,9 @@ async function importWorkspace(files: FileNode[], boards: BoardData[]): Promise<
   for (const b of boards) {
     if (!b.id) continue;
     const bid = newId(b.id);
-    await putBoard({ ...b, id: bid });
+    const appState = b.appState || {};
+    delete appState.collaborators;
+    await putBoard({ ...b, id: bid, appState });
     if (!files.some((f) => f.id === b.id)) {
       fileNodes.push({
         id: bid,

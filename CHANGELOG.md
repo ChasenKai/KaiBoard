@@ -18,6 +18,11 @@
 
 ## 当前版本 / Current version
 
+### v1.0.0-beta.4（2026-08-23）· 导入 .excalidraw 崩溃修复 / Import crash fix
+
+- 修复：导入外部 .excalidraw 后整页崩溃，提示 "appState.collaborators.forEach is not a function"；导入与加载画布时双保险清理 `appState.collaborators`（Excalidraw 内部期望其为 Map，JSON 序列化后变成普通对象会触发崩溃）。
+  Fix: importing an external `.excalidraw` could crash the whole page with "appState.collaborators.forEach is not a function"; `appState.collaborators` is now sanitized both on import and when loading a board (Excalidraw expects a Map, but JSON serialization turns it into a plain object that throws).
+
 ### v1.0.0-beta.3（2026-08-12）· 侧栏结构树管理增强 / Sidebar tree management enhancements
 
 - 侧栏结构树：文件夹与画板一致的多选（Ctrl/Shift 点击、勾选框），空文件夹可独立选中  
