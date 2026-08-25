@@ -12,11 +12,11 @@
 
 ## 一句话定位（可用于 GitHub 简介）
 
-> **KaiBoard** —— 免费开源、本地优先的**中文手写风多画布白板**。无需注册、不上传云端，数据只留在你自己的设备上；为个人单人使用设计，不做实时协同。
+> **KaiBoard** —— 免费开源、本地优先的**中英文手写风多画布白板**。无需注册、不上传云端，数据只留在你自己的设备上；为个人单人使用设计，不做实时协同。
 
 英文版（GitHub About / 英文 README 首行）：
 
-> **KaiBoard** — a free, open-source, local-first multi-board whiteboard with Chinese handwriting fonts. No account, no cloud — your data stays on your own device. Built for personal single-user use; no real-time collaboration.
+> **KaiBoard** — a free, open-source, local-first multi-board whiteboard with Chinese & English handwriting fonts. No account, no cloud — your data stays on your own device. Built for personal single-user use; no real-time collaboration.
 
 ---
 
@@ -27,7 +27,7 @@ KaiBoard 的能力按"用户价值"分为七组，下文逐组展开：
 1. **本地优先与数据安全** —— 数据存你自己的设备、无账号、不上传；可选指向本地文件夹。
 2. **多画板工作区（核心）** —— 文件树式的多文件夹 / 多画板组织、拖拽、回收站、搜索。
 3. **导入 / 导出与跨设备迁移** —— 原生 `.excalidraw` 互交换、工作区备份、平行合并迁移、PPTX 演示导出。
-4. **中文与本地化体验** —— 中文手写字体、简 / 繁 / 英三语、明暗主题。
+4. **中英文手写与本地化体验** —— 中英文手写字体（中文 Xiaolai + 英文 Virgil）、简 / 繁 / 英三语、明暗主题。
 5. **上手与引导** —— 首次启动引导、空画板欢迎屏、元素批注。
 6. **画板间跳转链接（🔶 实验特性）** —— 可用但价值未验证，不作卖点。
 7. **底层、致谢与两层设置** —— 绘图内核来自 Excalidraw、致谢、两层设置边界。
@@ -155,8 +155,8 @@ Excalidraw 本身是**单画布**工具：一次只编辑一个场景，没有"�
 
 ## 四、中文与本地化体验
 
-### 1. 中文手写字体（Xiaolai / 小赖体）
-- 内置**中文手写字体 Xiaolai（小赖体）**，自托管、离线可用（SIL OFL-1.1，由 excalidraw-cn 为中文场景优化选用）；画布默认即该手写体，无需手动切换。字体随 `@excalidraw/excalidraw` 依赖在构建时生成到 `public/fonts/`，**不进版本库**。
+### 1. 中英文手写字体（中文 Xiaolai / 小赖体 + 英文 Virgil）
+- 内置**中英文手写字体**：中文用 Xiaolai（小赖体），英文继承 Excalidraw 默认的 Virgil 手写体；均自托管、离线可用（SIL OFL-1.1，由 excalidraw-cn 为中文场景优化选用）；画布默认即手写体，无需手动切换。字体随 `@excalidraw/excalidraw` 依赖在构建时生成到 `public/fonts/`，**不进版本库**。
 - 子集化 `@font-face` 规则按字形按需加载，仅作用于画布与少量 UI 文本。
 
 ### 2. 多语言界面

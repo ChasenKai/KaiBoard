@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0-beta.4",
   "type": "module",
-  "description": "KaiBoard - 免费开源、本地优先的中文手写风多画布白板（绘图内核基于 Excalidraw）",
+  "description": "KaiBoard - 免费开源、本地优先的中英文手写风多画布白板（绘图内核基于 Excalidraw）",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ChasenKai/KaiBoard.git"

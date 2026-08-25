@@ -3,12 +3,12 @@
 </p>
 
 <p align="center">
-  <img src="./docs/hero.png" alt="KaiBoard — local-first multi-board whiteboard with Chinese handwriting" width="100%">
+  <img src="./docs/hero.png" alt="KaiBoard — local-first multi-board whiteboard with Chinese & English handwriting" width="100%">
 </p>
 
 # KaiBoard
 
-A free, open-source, **local-first multi-board whiteboard with Chinese handwriting fonts**. Its drawing engine is built on open-source [Excalidraw](https://github.com/excalidraw/excalidraw) (MIT).
+A free, open-source, **local-first multi-board whiteboard with Chinese & English handwriting fonts**. Its drawing engine is built on open-source [Excalidraw](https://github.com/excalidraw/excalidraw) (MIT).
 
 > **One-line pitch**: No account, no cloud — your data stays on your own device. Built for personal single-user use; no real-time collaboration. On top of the drawing engine, KaiBoard adds the "multi-file / multi-board management" capability Excalidraw lacks natively, plus trash and cross-device migration.
 
@@ -23,7 +23,7 @@ See [`docs/FEATURES.md`](docs/FEATURES.md) for the full feature list.
 - **Local-first & private** — data in your browser (IndexedDB) or a folder you choose (File System Access API, Chrome/Edge); no account, no upload.
 - **Multi-board workspace (core)** — folder-tree of boards, arbitrarily nested; drag to organize, right-click menu, trash/recovery, sidebar search.
 - **Import / export & migration** — native `.excalidraw` exchange, workspace backup with parallel-merge migration, batch import, PPTX export.
-- **Chinese & i18n** — built-in Xiaolai handwriting font; Simplified / Traditional Chinese / English UI; light & dark themes.
+- **Chinese & English handwriting** — built-in Xiaolai (Chinese) + Virgil (English) handwriting fonts; Simplified / Traditional Chinese / English UI; light & dark themes.
 - **Onboarding** — first-run sample, empty-board welcome, element comments.
 - **Infinite canvas** — inherited from Excalidraw.
 
@@ -59,7 +59,7 @@ npm run preview     # preview base edition (vite preview --outDir dist-basic)
 | Framework | React 18.3 |
 | Canvas | `@excalidraw/excalidraw@0.18.1` |
 | Storage | IndexedDB (idb), db name `kaiboard` |
-| Chinese handwriting font | Xiaolai (小赖体), self-hosted, offline (SIL OFL-1.1; generated at build time from `@excalidraw/excalidraw`, not committed) |
+| Chinese & English handwriting | Chinese Xiaolai (小赖体) + English Virgil (Excalidraw default), self-hosted, offline (SIL OFL-1.1; generated at build time from `@excalidraw/excalidraw`, not committed) |
 
 ## 📂 Data model
 
@@ -113,7 +113,7 @@ kaiboard/
 │  ├─ announcements.json    # announcement bar text
 │  └─ (fonts generated at build time by prepare-fonts.mjs from @excalidraw/excalidraw into public/fonts/; favicon inlined as data URI)
 ├─ scripts/                 # build scripts
-│  ├─ prepare-fonts.mjs     # font prep (Excalidraw official + Chinese handwriting)
+│  ├─ prepare-fonts.mjs     # font prep (Excalidraw official + Chinese & English handwriting)
 │  ├─ build-ai.mjs          # AI edition build
 │  └─ build-basic.mjs       # base edition build (VITE_AI_ENABLED=false)
 └─ src/                     # source (see next)

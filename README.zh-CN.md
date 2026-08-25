@@ -3,12 +3,12 @@
 </p>
 
 <p align="center">
-  <img src="./docs/hero.png" alt="KaiBoard — 中文手写风多画布白板" width="100%">
+  <img src="./docs/hero.png" alt="KaiBoard — 中英文手写风多画布白板" width="100%">
 </p>
 
 # KaiBoard
 
-免费开源、本地优先的**中文手写风多画布白板**（绘图内核基于开源 [Excalidraw](https://github.com/excalidraw/excalidraw)）。
+免费开源、本地优先的**中英文手写风多画布白板**（绘图内核基于开源 [Excalidraw](https://github.com/excalidraw/excalidraw)）。
 
 > **一句话定位**：无需注册、不上传云端，数据只留在你自己的设备上；为个人单人使用设计，不做实时协同。在绘图内核之上补齐了"多文件 / 多画板管理"这一能力（Excalidraw 原生缺失），并提供回收站与跨设备平行迁移。
 
@@ -27,7 +27,7 @@
 - **侧栏搜索**：按名过滤，命中链自动展开并高亮
 - **导入 / 导出与跨设备迁移**：单 / 多画板原生 `.excalidraw` 互交换；工作区 `.json` 备份平行合并迁移；批量导出选中 / 拖拽外部文件夹导入；PPTX 演示导出
 - **画板间跳转链接**（🔶 实验特性，价值未验证、不作卖点）：`kaiboard://<id>` 应用内跳转，设想用于目录画板 / 看板导航
-- **中文手写字体 + 简体/繁体/英文三语 + 离线自托管**
+- **中英文手写（中文 Xiaolai + 英文 Virgil）+ 简体/繁体/英文三语 + 离线自托管**
 - **上手引导**：首次启动示例结构、空画板欢迎屏、元素批注
 - **无限画布**：继承自 Excalidraw 内核，缩放/平移流畅
 
@@ -69,7 +69,7 @@ npx serve dist
 | 框架 | React 18.3 |
 | 画布 | `@excalidraw/excalidraw@0.18.1` |
 | 存储 | IndexedDB（idb），库名 `kaiboard` |
-| 中文手写字体 | Xiaolai（小赖体），自托管、离线可用（SIL OFL-1.1；随 `@excalidraw/excalidraw` 依赖在构建时生成，不进版本库） |
+| 中英文手写字体 | 中文 Xiaolai（小赖体）+ 英文 Virgil（Excalidraw 默认），均自托管、离线可用（SIL OFL-1.1；随 `@excalidraw/excalidraw` 依赖在构建时生成，不进版本库） |
 
 ## 📂 数据模型
 
