@@ -35,6 +35,19 @@ msa-architecture/
 # 统一归入 internal/ 整目录忽略，仅留本地。AI 系列标记「随 AI 版发布解封」。
 internal/
 
+# 官网源（→ GitHub ChasenKai/KaiBuddy-website，独立不公开仓）：不进本公开仓
+website/
+
+# Agent 版总类（umbrella 内子目录）：
+#   agent/internal/ → 本地私有仓（KaiBoard4Agent 专题设计文档，无 remote）
+#   agent/mcp/      → 嵌套 git 仓（ChasenKai/KaiBoard-MCP）
+#   agent/workspace/→ 运行时数据（gitignored）
+# 三者均不进本公开仓，各自管理自身版本（避免父仓误将其作普通文件/子模块跟踪）。
+agent/
+
+# 我方宣传过程/素材（材料粗、可能推翻，外援兄弟后续处理）：暂不入版本，纯本地
+promo/
+
 # 图标选型归档（内部设计过程，不进仓）
 icon-preview/
 
