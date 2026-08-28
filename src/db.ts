@@ -191,6 +191,20 @@ export async function getBoard(id: string): Promise<BoardData | undefined> {
   return (await db.get("boards", id)) as BoardData | undefined;
 }
 
+/** 画板文件最后修改时间（ms）。仅 filesystem 后端有意义；其余返回 0。供外部变化重读判断。 */
+export async function getBoardMtime(id: string): Promise<number> {
+  await ensureStorage();
+  if (backend === "fs") return fs.fsBoardMtime(id);
+  return 0;
+}
+
+/** tree.json 最后修改时间（ms）。仅 filesystem 后端有意义；其余返回 0。供外部变化重读判断。 */
+export async function getTreeMtime(): Promise<number> {
+  await ensureStorage();
+  if (backend === "fs") return fs.fsTreeMtime();
+  return 0;
+}
+
 export async function putBoard(board: BoardData): Promise<void> {
   await ensureStorage();
   if (backend === "fs") return fs.fsPutBoard(board);

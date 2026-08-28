@@ -27,6 +27,7 @@ import {
 import type { FileNode, BoardData } from "./db";
 import { t, getLang, setLang, LANGS, isLang, detectBrowserLang, type Lang } from "./i18n";
 import { fsSupported, fsCopyFromIdb, fsMergeFromIdb, fsPeekFolder, fsExportAll } from "./fsStore";
+import { startFsWatcher } from "./fsWatcher";
 import { useAgentIntegration, AIPanel } from "./agentIntegration";
 import AnnouncementBar from "./AnnouncementBar";
 import Sidebar from "./Sidebar";
@@ -281,6 +282,7 @@ export default function App() {
       await setSetting("storageMode", "filesystem");
       await setSetting("storageFolderHandle", handle);
       setFolderName(handle.name ?? null);
+      agent.reportFolder(handle.name ?? null);
       await refreshNodes();
       showToast(
         mode === "merge"
@@ -290,7 +292,7 @@ export default function App() {
             : t("set_storageSwitched"),
       );
     },
-    [refreshNodes, showToast],
+    [refreshNodes, showToast, agent.reportFolder],
   );
 
   const handleChooseFolder = useCallback(async () => {
@@ -351,9 +353,10 @@ export default function App() {
     await setSetting("storageMode", "idb");
     await setSetting("storageFolderHandle", null);
     setFolderName(null);
+    agent.reportFolder(null);
     await refreshNodes();
     showToast(t("set_storageReset"));
-  }, [refreshNodes, showToast]);
+  }, [refreshNodes, showToast, agent.reportFolder]);
 
   // ----- 初始加载：恢复上次的 UI 状态 -----
   useEffect(() => {
@@ -690,6 +693,19 @@ export default function App() {
       loadBoardIntoCanvas(activeBoardId);
     }
   }, [activeBoardId, apiReady, loadBoardIntoCanvas]);
+
+  // 外部变化重读（M2-3）：文件夹存储下，Agent（或任何外部进程，如 @kaiboard/mcp-server
+  // 的 --dir 绑定）直写 kaiboard-data/ 后让「落板即见」成立。仅 filesystem 后端生效；
+  // IndexedDB 下 startFsWatcher 内部 no-op。树变化实时刷左侧栏；当前画板仅在本标签页
+  // 回到前台且后台被改时重载（避免可见状态下编辑被外部写入冲掉）。
+  useEffect(() => {
+    const handle = startFsWatcher({
+      getActiveBoardId: () => activeIdRef.current,
+      onTreeChanged: refreshNodes,
+      onBoardChanged: (id) => loadBoardIntoCanvas(id),
+    });
+    return () => handle.stop();
+  }, [refreshNodes, loadBoardIntoCanvas]);
 
   const switchBoard = useCallback(
     async (id: string) => {
@@ -2048,6 +2064,7 @@ export default function App() {
                     </span>
                   )}
                 </div>
+                <p className="set-hint">{t("set_dirHint")}</p>
                 <div className="set-row">
                   <button className="btn" onClick={handleResetStorage}>
                     {t("set_resetDefault")}

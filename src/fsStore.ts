@@ -36,13 +36,23 @@ async function writeJson(dir: any, name: string, data: any): Promise<void> {
 }
 
 async function readJson(dir: any, name: string): Promise<any | null> {
-  try {
-    const fh = await dir.getFileHandle(name);
-    const file = await fh.getFile();
-    return JSON.parse(await file.text());
-  } catch {
-    return null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const fh = await dir.getFileHandle(name);
+      const file = await fh.getFile();
+      return JSON.parse(await file.text());
+    } catch (e: any) {
+      // 文件确实不存在 → 直接返回 null（首建文件夹场景）
+      if (e?.name === "NotFoundError") return null;
+      // 否则可能是并发写导致的半截读取：短暂等待后重试，避免兜底成 [] 把整棵 tree 清空
+      if (attempt < 2) {
+        await new Promise((r) => setTimeout(r, 30));
+        continue;
+      }
+      return null;
+    }
   }
+  return null;
 }
 
 async function removeEntry(dir: any, name: string): Promise<void> {
@@ -63,6 +73,30 @@ async function writeTree(nodes: FileNode[]): Promise<void> {
 }
 async function readBoard(id: string): Promise<BoardData | undefined> {
   return await readJson(BOARDS_DIR, id + ".json");
+}
+
+/** 取画板文件最后修改时间（ms）。用于外部变化重读判断；未初始化/缺失返回 0。 */
+export async function fsBoardMtime(id: string): Promise<number> {
+  if (!BOARDS_DIR) return 0;
+  try {
+    const fh = await BOARDS_DIR.getFileHandle(id + ".json");
+    const file = await fh.getFile();
+    return file.lastModified || 0;
+  } catch {
+    return 0;
+  }
+}
+
+/** 取 tree.json 最后修改时间（ms）。用于外部变化重读判断；未初始化/缺失返回 0。 */
+export async function fsTreeMtime(): Promise<number> {
+  if (!DATA_DIR) return 0;
+  try {
+    const fh = await DATA_DIR.getFileHandle("tree.json");
+    const file = await fh.getFile();
+    return file.lastModified || 0;
+  } catch {
+    return 0;
+  }
 }
 async function writeBoard(board: BoardData): Promise<void> {
   await writeJson(BOARDS_DIR, board.id + ".json", board);

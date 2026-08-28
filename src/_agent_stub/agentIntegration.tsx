@@ -53,6 +53,7 @@ export function useAgentIntegration(_deps: AgentIntegrationDeps) {
     updateRelayUrl: async (_url: string) => {},
     updateRelayToken: async (_tok: string) => {},
     rediscover: async () => {},
+    reportFolder: async (_folder: string | null) => {},
     handleApiReady: async (_api: any) => {},
     snapshots: [] as Snapshot[],
     refreshSnapshots: async () => {},
