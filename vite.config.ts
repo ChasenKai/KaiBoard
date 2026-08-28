@@ -8,10 +8,19 @@ import { fileURLToPath } from "node:url";
 // 基础版产物不含任何可用的真实 AI 执行逻辑（AI 大脑在 gitignored 的 src/_agent_private/，未被编译进 dist-basic）。
 // 注：源码树另有 src/agentBridge.ts / src/agentRelayClient.ts 等早期协议客户端死代码，未被任何构建路径引用、
 //     已被 tree-shake 剔除、不进产物，不可据此误判为「已泄露完整 AI 实现」。
-const agentTarget =
-  process.env.VITE_AI_ENABLED === "true"
-    ? fileURLToPath(new URL("./src/_agent_private", import.meta.url))
-    : fileURLToPath(new URL("./src/_agent_stub", import.meta.url));
+const AI_ENABLED = process.env.VITE_AI_ENABLED === "true";
+
+const agentTarget = AI_ENABLED
+  ? fileURLToPath(new URL("./src/_agent_private", import.meta.url))
+  : fileURLToPath(new URL("./src/_agent_stub", import.meta.url));
+
+// P2 整合（2026-08-29）：命令内核单一真源 = agent/mcp/packages/core/src。
+// 页面端（_agent_private）不再自带 core 副本，改为经 @agent-core 引用同一份。
+//
+// ⚠️ 安全闸：@agent-core **仅在 AI 版构建时定义**。基础版构建时该 alias 不存在，
+// 若基础版代码意外引用了 core，会直接构建失败（fail fast），而不是静默把
+// core 里的「Agent 共绘」活动文案打进公开产物——这是「基础版零 AI 字样」的硬要求。
+const coreTarget = fileURLToPath(new URL("./agent/mcp/packages/core/src", import.meta.url));
 
 // KaiBoard 构建配置
 // - base 设为 "/"：配合 window.EXCALIDRAW_ASSET_PATH="/"，字体/资源从站点根 /fonts 加载（离线自托管）
@@ -22,6 +31,8 @@ export default defineConfig({
   resolve: {
     alias: {
       "@agent": agentTarget,
+      // 仅 AI 版：命令内核单一真源（基础版不给，引用即报错）
+      ...(AI_ENABLED ? { "@agent-core": coreTarget } : {}),
     },
   },
   base: "/",
