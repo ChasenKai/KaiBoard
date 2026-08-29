@@ -41,7 +41,6 @@ npm run dev
 
 ```bash
 npm run build       # base edition (public release), output in dist-basic/
-npm run build:ai    # AI edition (local only, needs gitignored _agent_private), output in dist/
 npm run preview     # preview base edition (vite preview --outDir dist-basic)
 ```
 
@@ -86,7 +85,7 @@ KaiBoard pins `@excalidraw/excalidraw@0.18.1` (see Tech stack). On "what happens
 
 - **No auto-follow**: npm deps are pinned; unless we actively change `package.json` and reinstall, it stays at 0.18.1 — we control upgrade timing.
 - **Upgrades are deliberate + need evaluation**: Excalidraw has breaking changes across versions (e.g. `appState` structure, `restore()` signature, collaboration API). KaiBoard wraps the engine (e.g. official `restore()` to fix cross-version white-screen, bind `langCode`, take over `onChange` auto-save, dual-backend storage); a major upgrade needs re-regression of our shell integration.
-- **Excalidraw's "AI / diagram" advanced features are NOT in the open-source npm package**: they exist only on hosted excalidraw.com / Excalidraw+. Even upgrading the npm package won't auto-grant their AI — that would require KaiBoard to wire an LLM itself.
+- **Excalidraw's hosted advanced features (e.g. smart diagrams) are NOT in the open-source npm package**: they exist only on hosted excalidraw.com / Excalidraw+. Even upgrading the npm package won't grant those — that would require KaiBoard to wire such capabilities itself.
 - **Recommended**: keep pinned versions for stability; when a specific new capability is truly needed, scope an upgrade evaluation + regression (incl. white-screen fallback, dual-backend storage, i18n) before release.
 
 ## 📁 Project structure
@@ -102,10 +101,9 @@ kaiboard/
 ├─ LICENSE                  # MIT
 ├─ THIRD_PARTY_LICENSES     # third-party license summary (Excalidraw, etc.)
 ├─ index.html               # HTML entry; sets window.EXCALIDRAW_ASSET_PATH = "/"
-├─ package.json             # deps & scripts (dev / build (base) / build:ai (AI) / preview)
+├─ package.json             # deps & scripts (dev / build / preview)
 ├─ package-lock.json        # locked deps
-├─ preview-local.bat        # one-click local preview (AI 3000 / base 3001)
-├─ vite.config.ts           # Vite config (incl. @agent alias dual-path switch)
+├─ vite.config.ts           # Vite config
 ├─ tsconfig.json            # TypeScript config
 ├─ docs/                    # docs
 │  └─ FEATURES.md           # KaiBoard feature details (must-read for contributors/users)
@@ -114,7 +112,6 @@ kaiboard/
 │  └─ (fonts generated at build time by prepare-fonts.mjs from @excalidraw/excalidraw into public/fonts/; favicon inlined as data URI)
 ├─ scripts/                 # build scripts
 │  ├─ prepare-fonts.mjs     # font prep (Excalidraw official + Chinese & English handwriting)
-│  ├─ build-ai.mjs          # AI edition build
 │  └─ build-basic.mjs       # base edition build (VITE_AI_ENABLED=false)
 └─ src/                     # source (see next)
 ```

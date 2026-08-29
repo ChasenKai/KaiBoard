@@ -96,7 +96,7 @@ KaiBoard 固定依赖 `@excalidraw/excalidraw@0.18.1`（见上方技术栈）。
 
 - **不会自动跟随更新**：npm 依赖是固定版本，除非我们主动改 `package.json` 并重新安装，否则始终停留在 0.18.1，升级时机完全由我们控制。
 - **升级是"手动 + 需评估"的刻意动作**：Excalidraw 不同版本间存在破坏性变更（如 `appState` 结构、`restore()` 签名、协作 API 等）。KaiBoard 对内核做了封装（例如用官方 `restore()` 修复跨版本导入白屏、绑定 `langCode`、接管 `onChange` 自动保存、双后端存储），升级大版本需要重新回归测试我们的壳层集成。
-- **Excalidraw 的"AI / 图表"等高级功能不在开源 npm 包里**：那些只存在于托管的 excalidraw.com / Excalidraw+。即使升级 npm 包，也不会自动获得它们的 AI 能力——这类能力若需要，得由 KaiBoard 自己对接 LLM 实现。
+- **Excalidraw 托管的"高级功能"（如智能图表）不在开源 npm 包里**：那些只存在于托管的 excalidraw.com / Excalidraw+。即使升级 npm 包，也不会自动获得——这类能力若需要，得由 KaiBoard 自己对接相关模型实现。
 - **建议做法**：保持固定版本以保证稳定；当确实需要 Excalidraw 新版本里的某项能力时，再单独立项评估升级、跑回归（含白屏兜底、双后端存储、i18n），确认无误后再发布。
 
 ## 📁 项目结构
@@ -112,10 +112,9 @@ kaiboard/
 ├─ LICENSE                  # MIT 开源许可证
 ├─ THIRD_PARTY_LICENSES     # 第三方依赖版权汇总（Excalidraw 等）
 ├─ index.html               # HTML 入口；设置 window.EXCALIDRAW_ASSET_PATH = "/"
-├─ package.json             # 依赖与脚本（dev / build（基础版）/ build:ai（AI 版）/ preview）
+├─ package.json             # 依赖与脚本（dev / build / preview）
 ├─ package-lock.json        # 依赖锁版本
-├─ preview-local.bat        # 一键本地预览 AI 版（3000）/ 基础版（3001）
-├─ vite.config.ts           # Vite 构建配置（含 @agent 别名双路切换）
+├─ vite.config.ts           # Vite 构建配置
 ├─ tsconfig.json            # TypeScript 类型配置
 ├─ docs/                    # 文档
 │  └─ FEATURES.md            # KaiBoard 功能说明（中英混排，贡献者/用户必读）
@@ -124,7 +123,6 @@ kaiboard/
 │  └─ （字体在构建时由 prepare-fonts.mjs 从 @excalidraw/excalidraw 依赖生成到 public/fonts/；favicon 以 data URI 内联）
 ├─ scripts/                 # 构建脚本
 │  ├─ prepare-fonts.mjs     # 字体准备（Excalidraw 官方 + 中文手写）
-│  ├─ build-ai.mjs          # AI 版构建
 │  └─ build-basic.mjs       # 基础版构建（VITE_AI_ENABLED=false）
 └─ src/                     # 源码，详见下一节
 ```
