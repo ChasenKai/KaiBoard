@@ -16,7 +16,7 @@ export const LANGS: { code: Lang; label: string }[] = [
 
 type Dict = Record<string, string>;
 
-const AI_ENABLED = import.meta.env.VITE_AI_ENABLED !== "false";
+export const AI_ENABLED = import.meta.env.VITE_AI_ENABLED !== "false";
 
 const agentStrings = {
   agent_title: "Agent 共绘",
@@ -48,6 +48,15 @@ const agentStrings = {
   agent_snapshotMeta: "共 {n} 个元素",
   agent_snapshotRestore: "恢复此版本",
   agent_snapshotRestored: "已恢复快照（{n} 个元素，可 Ctrl+Z 再撤销）",
+  set_dirHint: "此文件夹即 Agent 的 --dir 工作目录：在 Agent 的 MCP 配置里把 --dir 指向此文件夹的真实路径，Agent 用 KaiBoard MCP（kbfs_* 工具）写入的画板即落在此处、KaiBoard 中可见。两者不一致时 Agent 会提示「需显式导入才可见」。",
+  ai_panel_title: "AI 面板",
+  ai_panel_subtitle: "所有 AI 能力集中在此。基础体验（设置 / 画布 / 工具栏）与此面板无关，两版完全一致。",
+  ai_experimental: "实验性",
+  ai_mermaid_title: "Mermaid → 画板",
+  ai_mermaid_desc: "由 Agent 工具驱动：在 Agent 对话里给出 Mermaid 文本或自然语言，Agent 生成可编辑图元并推到当前画板。KaiBoard 自身不调用任何大模型 API。",
+  ai_mermaid_status: "就绪（在 Agent 工具中使用）",
+  ai_more_title: "更多 AI 能力",
+  ai_more_desc: "后续新增的 AI 功能会作为本面板里的一项出现，不污染设置与基础体验。",
 };
 
 const zhCN: Dict = {
@@ -152,7 +161,6 @@ const zhCN: Dict = {
     "默认使用浏览器内置数据库（位于系统盘）。可选择本地文件夹（如 E 盘或云盘同步目录），数据将以文件形式存放，从而节省系统盘空间，并在多台电脑间通过云盘同步。仅面向个人多机先后使用，不支持多人实时协同编辑。",
   set_chooseFolder: "选择文件夹…",
   set_currentFolder: "当前位置：",
-  set_dirHint: "此文件夹即 Agent 的 --dir 工作目录：在 Agent 的 MCP 配置里把 --dir 指向此文件夹的真实路径，Agent 用 KaiBoard MCP（kbfs_* 工具）写入的画板即落在此处、KaiBoard 中可见。两者不一致时 Agent 会提示「需显式导入才可见」。",
   set_resetDefault: "恢复浏览器默认存储",
   set_experimental: "（实验性：仅 Chrome / Edge 支持；Firefox / Safari 不支持，将自动沿用浏览器默认存储）",
   set_close: "关闭",
@@ -184,16 +192,6 @@ const zhCN: Dict = {
   ...(AI_ENABLED ? agentStrings : {}),
 
   // P0-1：快照还原（Agent 共绘安全网）
-
-  // AI 面板（独立入口，从设置迁出；基础体验与设置保持零 AI 知识）
-  ai_panel_title: "AI 面板",
-  ai_panel_subtitle: "所有 AI 能力集中在此。基础体验（设置 / 画布 / 工具栏）与此面板无关，两版完全一致。",
-  ai_experimental: "实验性",
-  ai_mermaid_title: "Mermaid → 画板",
-  ai_mermaid_desc: "由 Agent 工具驱动：在 Agent 对话里给出 Mermaid 文本或自然语言，Agent 生成可编辑图元并推到当前画板。KaiBoard 自身不调用任何大模型 API。",
-  ai_mermaid_status: "就绪（在 Agent 工具中使用）",
-  ai_more_title: "更多 AI 能力",
-  ai_more_desc: "后续新增的 AI 功能会作为本面板里的一项出现，不污染设置与基础体验。",
 
   // 帮助弹窗
   help_officialSite: "官网介绍",
@@ -278,6 +276,15 @@ const agentStringsTw = {
   agent_snapshotMeta: "共 {n} 個元素",
   agent_snapshotRestore: "恢復此版本",
   agent_snapshotRestored: "已恢復快照（{n} 個元素，可 Ctrl+Z 再撤銷）",
+  set_dirHint: "此資料夾即 Agent 的 --dir 工作目錄：在 Agent 的 MCP 設定裡把 --dir 指向此資料夾的真實路徑，Agent 用 KaiBoard MCP（kbfs_* 工具）寫入的畫板即落在此處、KaiBoard 中可見。兩者不一致時 Agent 會提示「需顯式匯入才可見」。",
+  ai_panel_title: "AI 面板",
+  ai_panel_subtitle: "所有 AI 能力集中於此。基礎體驗（設定 / 畫布 / 工具列）與此面板無關，兩版完全一致。",
+  ai_experimental: "實驗性",
+  ai_mermaid_title: "Mermaid → 畫板",
+  ai_mermaid_desc: "由 Agent 工具驅動：在 Agent 對話裡給出 Mermaid 文字或自然語言，Agent 生成可編輯圖元並推到目前畫板。KaiBoard 自身不呼叫任何大模型 API。",
+  ai_mermaid_status: "就緒（於 Agent 工具中使用）",
+  ai_more_title: "更多 AI 能力",
+  ai_more_desc: "後續新增的 AI 功能會作為本面板裡的一項出現，不污染設定與基礎體驗。",
 };
 
 const zhTW: Dict = {
@@ -382,7 +389,6 @@ const zhTW: Dict = {
     "預設使用瀏覽器內建資料庫（位於系統磁碟）。可選擇本機資料夾（如 E 槽或雲端同步目錄），資料將以檔案形式存放，從而節省系統磁碟空間，並在多台電腦間透過雲端同步。僅面向個人多機先後使用，不支援多人即時協同編輯。",
   set_chooseFolder: "選擇資料夾…",
   set_currentFolder: "目前位置：",
-  set_dirHint: "此資料夾即 Agent 的 --dir 工作目錄：在 Agent 的 MCP 設定裡把 --dir 指向此資料夾的真實路徑，Agent 用 KaiBoard MCP（kbfs_* 工具）寫入的畫板即落在此處、KaiBoard 中可見。兩者不一致時 Agent 會提示「需顯式匯入才可見」。",
   set_resetDefault: "恢復瀏覽器預設儲存",
   set_experimental: "（實驗性：僅 Chrome / Edge 支援；Firefox / Safari 不支援，將自動沿用瀏覽器預設儲存）",
   set_close: "關閉",
@@ -414,16 +420,6 @@ const zhTW: Dict = {
   ...(AI_ENABLED ? agentStringsTw : {}),
 
   // P0-1：快照還原（Agent 共繪安全網）
-
-  // AI 面板（獨立入口，自設定遷出；基礎體驗與設定保持零 AI 知識）
-  ai_panel_title: "AI 面板",
-  ai_panel_subtitle: "所有 AI 能力集中於此。基礎體驗（設定 / 畫布 / 工具列）與此面板無關，兩版完全一致。",
-  ai_experimental: "實驗性",
-  ai_mermaid_title: "Mermaid → 畫板",
-  ai_mermaid_desc: "由 Agent 工具驅動：在 Agent 對話裡給出 Mermaid 文字或自然語言，Agent 生成可編輯圖元並推到目前畫板。KaiBoard 自身不呼叫任何大模型 API。",
-  ai_mermaid_status: "就緒（於 Agent 工具中使用）",
-  ai_more_title: "更多 AI 能力",
-  ai_more_desc: "後續新增的 AI 功能會作為本面板裡的一項出現，不污染設定與基礎體驗。",
 
   // 帮助弹窗
   help_officialSite: "官方網站",
@@ -508,6 +504,15 @@ const agentStringsEn = {
   agent_snapshotMeta: "{n} elements",
   agent_snapshotRestore: "Restore this version",
   agent_snapshotRestored: "Snapshot restored ({n} elements; Ctrl+Z to undo again)",
+  set_dirHint: "This folder is the Agent's --dir working directory: point --dir in your Agent's MCP config to this folder's real path, and boards the Agent writes via KaiBoard MCP (kbfs_* tools) land here and show up in KaiBoard. If they differ, the Agent warns that writes need an explicit import to become visible.",
+  ai_panel_title: "AI Panel",
+  ai_panel_subtitle: "All AI capabilities live here. The base experience (Settings / canvas / toolbar) is untouched and identical across builds.",
+  ai_experimental: "Experimental",
+  ai_mermaid_title: "Mermaid → Board",
+  ai_mermaid_desc: "Agent-driven: give Mermaid text or natural language in your Agent chat; the Agent generates editable elements and pushes them to the current board. KaiBoard itself calls no LLM API.",
+  ai_mermaid_status: "Ready (use from your Agent tool)",
+  ai_more_title: "More AI features",
+  ai_more_desc: "Future AI features appear as one more item in this panel, never touching Settings or the base experience.",
 };
 
 const en: Dict = {
@@ -613,7 +618,6 @@ const en: Dict = {
     "By default KaiBoard uses the browser's built-in database (on the system drive). You can choose a local folder (e.g. drive E or a cloud-sync folder) so data is stored as files — saving system-disk space and syncing across PCs via the cloud. For personal use across your own PCs only; multi-user real-time co-editing is not supported.",
   set_chooseFolder: "Choose folder…",
   set_currentFolder: "Current location: ",
-  set_dirHint: "This folder is the Agent's --dir working directory: point --dir in your Agent's MCP config to this folder's real path, and boards the Agent writes via KaiBoard MCP (kbfs_* tools) land here and show up in KaiBoard. If they differ, the Agent warns that writes need an explicit import to become visible.",
   set_resetDefault: "Reset to browser default storage",
   set_experimental: "(Experimental: only Chrome/Edge are supported; Firefox/Safari are not and will automatically fall back to browser default storage)",
   set_close: "Close",
@@ -646,16 +650,6 @@ const en: Dict = {
   ...(AI_ENABLED ? agentStringsEn : {}),
 
   // P0-1: snapshot restore (safety net for Agent replace board)
-
-  // AI panel (standalone entry, moved out of Settings; base UI & Settings stay AI-free)
-  ai_panel_title: "AI Panel",
-  ai_panel_subtitle: "All AI capabilities live here. The base experience (Settings / canvas / toolbar) is untouched and identical across builds.",
-  ai_experimental: "Experimental",
-  ai_mermaid_title: "Mermaid → Board",
-  ai_mermaid_desc: "Agent-driven: give Mermaid text or natural language in your Agent chat; the Agent generates editable elements and pushes them to the current board. KaiBoard itself calls no LLM API.",
-  ai_mermaid_status: "Ready (use from your Agent tool)",
-  ai_more_title: "More AI features",
-  ai_more_desc: "Future AI features appear as one more item in this panel, never touching Settings or the base experience.",
 
   // Help dialog
   help_officialSite: "Official Site",

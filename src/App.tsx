@@ -25,10 +25,10 @@ import {
   getBackend,
 } from "./db";
 import type { FileNode, BoardData } from "./db";
-import { t, getLang, setLang, LANGS, isLang, detectBrowserLang, type Lang } from "./i18n";
+import { t, getLang, setLang, LANGS, isLang, detectBrowserLang, AI_ENABLED, type Lang } from "./i18n";
 import { fsSupported, fsCopyFromIdb, fsMergeFromIdb, fsPeekFolder, fsExportAll } from "./fsStore";
 import { startFsWatcher } from "./fsWatcher";
-import { useAgentIntegration, AIPanel } from "./agentIntegration";
+import { useIntegration, CollabPanel } from "./agentIntegration";
 import AnnouncementBar from "./AnnouncementBar";
 import Sidebar from "./Sidebar";
 
@@ -213,7 +213,7 @@ export default function App() {
 
   // Agent 共绘（Mode B / B2 + B2.1）集成层：state、回调、副作用、设置面板全部在 ./agentIntegration 内。
   // onTreeChanged：桥在「非当前画板」上建板/落图后刷新左侧树（N3 寻址不切画布，故需显式刷新）。
-  const agent = useAgentIntegration({
+  const agent = useIntegration({
     apiRef,
     activeIdRef,
     showToast,
@@ -2064,7 +2064,7 @@ export default function App() {
                     </span>
                   )}
                 </div>
-                <p className="set-hint">{t("set_dirHint")}</p>
+                {AI_ENABLED && <p className="set-hint">{t("set_dirHint")}</p>}
                 <div className="set-row">
                   <button className="btn" onClick={handleResetStorage}>
                     {t("set_resetDefault")}
@@ -2088,7 +2088,7 @@ export default function App() {
         </>
       )}
 
-      {showAIPanel && AI_ENABLED && <AIPanel {...agent} onClose={() => setShowAIPanel(false)} />}
+      {showAIPanel && AI_ENABLED && <CollabPanel {...agent} onClose={() => setShowAIPanel(false)} />}
 
       {folderConflict && (
         <>

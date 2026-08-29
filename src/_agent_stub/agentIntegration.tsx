@@ -1,14 +1,14 @@
-// KaiBoard 基础版「Agent 共绘」门面桩。
+// KaiBoard 基础版「协同共绘」门面桩。
 //
 // 构建期由 vite resolve.alias 的 @agent 指向本文件（基础版），真实实现位于
 // 仓库外（gitignored 的 src/_agent_private，仅本地 AI 构建使用），不进入公开仓库。
 //
-// 本桩不携带任何真实 AI 协议 / 桥接 / 中继代码：所有方法为 no-op，<AIPanel> 渲染为空。
+// 本桩不携带任何真实协议 / 桥接 / 中继代码：所有方法为 no-op，<CollabPanel> 渲染为空。
 // 其对外 API 形状与真实实现保持一致，使 App.tsx 在基础版下仍能编译、运行且不报错。
 
-export type AgentRelayStatus = "idle" | "connecting" | "connected" | "error";
+export type RelayStatus = "idle" | "connecting" | "connected" | "error";
 
-export interface AgentIntegrationDeps {
+export interface IntegrationDeps {
   apiRef: { current: any };
   activeIdRef: { current: string | null };
   showToast: (msg: string) => void;
@@ -24,15 +24,15 @@ export interface Snapshot {
   elements: unknown[];
 }
 
-/** 设置面板组件所需的全部 prop（由 useAgentIntegration 的返回值直接展开传入）。 */
-export interface AgentCollabProps {
-  agentEnabled: boolean;
-  agentToken: string | null;
-  agentRelayUrl: string;
-  agentRelayToken: string;
-  agentRelayStatus: AgentRelayStatus;
-  toggleAgentCollab: (on: boolean) => void;
-  copyRelayToken: () => void;
+/** 设置面板组件所需的全部 prop（由 useIntegration 的返回值直接展开传入）。 */
+export interface CollabProps {
+  enabled: boolean;
+  token: string | null;
+  relayUrl: string;
+  relayToken: string;
+  relayStatus: RelayStatus;
+  toggleCollab: (on: boolean) => void;
+  copyToken: () => void;
   updateRelayUrl: (url: string) => void;
   updateRelayToken: (tok: string) => void;
   rediscover: () => void;
@@ -41,15 +41,15 @@ export interface AgentCollabProps {
   restoreSnapshot: (snap: Snapshot) => void;
 }
 
-export function useAgentIntegration(_deps: AgentIntegrationDeps) {
+export function useIntegration(_deps: IntegrationDeps) {
   return {
-    agentEnabled: false,
-    agentToken: null,
-    agentRelayUrl: "http://127.0.0.1:8787",
-    agentRelayToken: "",
-    agentRelayStatus: "idle" as AgentRelayStatus,
-    toggleAgentCollab: async (_on: boolean) => {},
-    copyRelayToken: async () => {},
+    enabled: false,
+    token: null,
+    relayUrl: "http://127.0.0.1:8787",
+    relayToken: "",
+    relayStatus: "idle" as RelayStatus,
+    toggleCollab: async (_on: boolean) => {},
+    copyToken: async () => {},
     updateRelayUrl: async (_url: string) => {},
     updateRelayToken: async (_tok: string) => {},
     rediscover: async () => {},
@@ -61,7 +61,7 @@ export function useAgentIntegration(_deps: AgentIntegrationDeps) {
   };
 }
 
-/** 独立 AI 面板（基础版下渲染为空）。 */
-export function AIPanel(_props: AgentCollabProps & { onClose: () => void }) {
+/** 独立协同面板（基础版下渲染为空）。 */
+export function CollabPanel(_props: CollabProps & { onClose: () => void }) {
   return null;
 }
