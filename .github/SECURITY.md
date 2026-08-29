@@ -10,8 +10,8 @@
 
 | 版本 / Version | 安全更新 / Security updates |
 | --- | --- |
-| `v1.0.0-beta.4`（最新 / latest） | ✅ 支持 / Supported |
-| 更早版本 / Earlier versions | ❌ 不再维护 / Not maintained |
+| `v1.0.0`（最新 / latest） | ✅ 支持 / Supported |
+| 更早版本（含 `v1.0.0-beta.*`）/ Earlier versions (incl. `v1.0.0-beta.*`) | ❌ 不再维护 / Not maintained |
 
 ## 报告漏洞 / Reporting a vulnerability
 

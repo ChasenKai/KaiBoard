@@ -8,6 +8,17 @@
       "link": null,
       "linkText": null,
       "start": "2026-08-09",
+      "end": "2026-08-28",
+      "dismissible": true,
+      "scope": "all"
+    },
+    {
+      "id": "v1.0.0-release",
+      "level": "update",
+      "text": "KaiBoard v1.0.0 正式版已发布 —— 首个稳定版，聚焦基础白板能力。画布数据仅保存在本机，请定期通过左侧栏「导出」备份 .excalidraw 文件，或用顶栏「导出全部（备份）」保存整个工作区，避免误清缓存等情况导致丢失。",
+      "link": null,
+      "linkText": null,
+      "start": "2026-08-29",
       "end": "2026-12-31",
       "dismissible": true,
       "scope": "all"

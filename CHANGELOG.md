@@ -18,6 +18,41 @@
 
 ## 当前版本 / Current version
 
+### v1.0.0（2026-08-29）· 首个正式稳定版 / First stable release
+
+KaiBoard 的第一个正式稳定版。本版聚焦基础白板能力，公测阶段的能力至此全部收敛为稳定版。
+This is KaiBoard's first stable release. It focuses on core whiteboard capabilities, promoting everything from the public beta to stable.
+
+- 「落板即见」：文件夹存储模式下，画板文件被外部程序（如同步盘、脚本或其它编辑器）改动后，切回 KaiBoard 或定时检查时会自动同步更新，无需手动刷新或重新导入。
+  "See-it-on-land": in folder-storage mode, when board files are modified by an external program (a sync drive, a script, or another editor), KaiBoard picks the changes up automatically — either when you return to the tab or on a periodic check. No manual refresh or re-import needed.
+
+- 稳定性：修复文件夹存储下并发读写偶发导致的 `tree.json` 半截读取（极端情况可能把整棵画板树清空），改为带重试与缺失兜底。
+  Stability: fixed a race in folder storage where concurrent read/write could read a half-written `tree.json` (in the worst case able to wipe the entire board tree). Reads now retry, and fall back safely when the file is missing.
+
+#### v1.0.0 功能基准 / Feature baseline
+
+> 以下为 v1.0.0 已稳定提供的能力（自公测以来累积，构成本正式版的功能基线）。
+> Stable capabilities shipped in v1.0.0 (accumulated across the public beta, forming the baseline of this stable release).
+
+- 本地优先：浏览器内置数据库（IndexedDB）与本地文件夹双存储；无账号、不注册，数据不出本机。
+  Local-first: dual storage via the browser's built-in database (IndexedDB) or a local folder; no account, no sign-up, data never leaves your device.
+- 多画板文件树：文件夹与画板任意层级嵌套、多选与拖拽整理、回收站可二次还原。
+  Multi-board file tree: folders and boards nested at any depth, multi-select and drag to organise, trash with one-click restore.
+- 统一导入导出：单画板为原生 `.excalidraw`，工作区备份为 `.json`；可往返，也可被 excalidraw.com 等第三方直接消费。
+  Unified import & export: native `.excalidraw` per board, workspace backup as `.json`; round-trippable and directly consumable by third parties such as excalidraw.com.
+- PPTX 演示导出（按需懒加载，不进主包）。
+  PPTX presentation export (lazy-loaded on demand, not in the main bundle).
+- 元素批注：随画板本地保存，随 `.excalidraw` 一起导出。
+  Element comments: saved locally with the board and exported alongside the `.excalidraw`.
+- 中英文手写风（中文 Xiaolai + 英文 Virgil）、简 / 繁 / 英三语界面、明暗双主题。
+  Chinese & English handwriting style (Xiaolai for Chinese, Virgil for English), Simplified / Traditional Chinese / English UI, light & dark themes.
+- 导入外部 `.excalidraw` 不再因 `appState.collaborators` 导致整页崩溃。
+  Importing an external `.excalidraw` no longer crashes the page on `appState.collaborators`.
+
+---
+
+## 历史版本 / Previous releases
+
 ### v1.0.0-beta.4（2026-08-23）· 导入 .excalidraw 崩溃修复 / Import crash fix
 
 - 修复：导入外部 .excalidraw 后整页崩溃，提示 "appState.collaborators.forEach is not a function"；导入与加载画布时双保险清理 `appState.collaborators`（Excalidraw 内部期望其为 Map，JSON 序列化后变成普通对象会触发崩溃）。
