@@ -19,12 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-This project is based on Excalidraw (https://github.com/excalidraw/excalidraw),
-which is also distributed under the MIT License.
-Copyright (c) Excalidraw and its contributors.
-KaiBoard's use of Excalidraw is governed by the MIT License; Excalidraw's
-copyright notice and permission notice are preserved above and in
-THIRD_PARTY_LICENSES.
