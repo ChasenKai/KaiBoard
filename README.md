@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="https://kaibuddy.com/og-image.png" alt="KaiBoard — free, open-source, local-first infinite whiteboard with Chinese & English handwriting" width="100%">
+  <img src="./assets/hero.png" alt="KaiBoard — free, open-source, local-first infinite whiteboard with Chinese & English handwriting" width="100%">
 </p>
 
 # KaiBoard
@@ -30,6 +30,18 @@ See [`docs/FEATURES.md`](docs/FEATURES.md) for the full feature list.
 - **Chinese & English handwriting** — built-in Xiaolai (Chinese) + Virgil (English) handwriting fonts; Simplified / Traditional Chinese / English UI; light & dark themes.
 - **Onboarding** — first-run sample, empty-board welcome, element comments.
 - **Infinite canvas** — inherited from Excalidraw.
+
+## 📸 Screenshots
+
+<p align="center">
+  <img src="./assets/screenshot-welcome.png" alt="KaiBoard welcome screen with sidebar file tree" width="100%">
+</p>
+<p align="center"><em>Welcome screen with the multi-board sidebar file tree.</em></p>
+
+<p align="center">
+  <img src="./assets/screenshot-howto.png" alt="How to use KaiBoard — basic features walkthrough" width="100%">
+</p>
+<p align="center"><em>How to use KaiBoard — a quick tour of the basics.</em></p>
 
 ## 🚀 Quick start
 

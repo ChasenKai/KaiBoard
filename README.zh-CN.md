@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="https://kaibuddy.com/og-image.png" alt="KaiBoard — 免费开源、本地优先的中英文手写风无限白板" width="100%">
+  <img src="./assets/hero.png" alt="KaiBoard — 免费开源、本地优先的中英文手写风无限白板" width="100%">
 </p>
 
 # KaiBoard
@@ -36,6 +36,18 @@
 - **无限画布**：继承自 Excalidraw 内核，缩放/平移流畅
 
 > 以上每一项功能的详细说明，见 [`docs/FEATURES.md`](docs/FEATURES.md)。
+
+## 📸 截图
+
+<p align="center">
+  <img src="./assets/screenshot-welcome.png" alt="KaiBoard 空欢迎界面与侧栏文件树" width="100%">
+</p>
+<p align="center"><em>空欢迎界面与侧栏多画板文件树。</em></p>
+
+<p align="center">
+  <img src="./assets/screenshot-howto.png" alt="如何使用 KaiBoard · 基础功能导览" width="100%">
+</p>
+<p align="center"><em>如何使用 KaiBoard —— 基础功能快速导览。</em></p>
 
 > **⚙ 两层设置，各管各的**：KaiBoard 现在有两处设置——① **画布内设置**（Excalidraw 自带，如视图缩放、主题、导出、快捷键等，由 Excalidraw 控制）；② **外壳设置**（右上角 ⚙，管语言、存储位置，以及我们新增的导入/导出备份、双链等入口）。两者职责不同、互不影响。
 
