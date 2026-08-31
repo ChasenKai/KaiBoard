@@ -3,10 +3,14 @@
 </p>
 
 <p align="center">
-  <img src="./docs/hero.png" alt="KaiBoard — 中英文手写风多画布白板" width="100%">
+  <img src="https://kaibuddy.com/og-image.png" alt="KaiBoard — 免费开源、本地优先的中英文手写风无限白板" width="100%">
 </p>
 
 # KaiBoard
+
+<p align="center">
+  <a href="https://kaiboard.kaibuddy.com" target="_blank" rel="noopener"><strong>🚀 在线试用 KaiBoard</strong></a>
+</p>
 
 免费开源、本地优先的**中英文手写风多画布白板**（绘图内核基于开源 [Excalidraw](https://github.com/excalidraw/excalidraw)）。
 
@@ -141,6 +145,10 @@ src/
 ├─ TrashPanel.tsx        # 回收站弹窗（还原 / 彻底删除 / 清空）
 └─ exportImport.ts       # 导出（工作区备份 / 单画板 .excalidraw）、导入（平行合并、必建树节点、剥离回收站标记）
 ```
+
+## 💬 反馈
+
+有问题、报 bug 或提功能建议，欢迎通过 [GitHub Issues](https://github.com/ChasenKai/KaiBoard/issues) 反馈。
 
 ## 📄 许可
 

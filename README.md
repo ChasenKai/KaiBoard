@@ -3,10 +3,14 @@
 </p>
 
 <p align="center">
-  <img src="./docs/hero.png" alt="KaiBoard — local-first multi-board whiteboard with Chinese & English handwriting" width="100%">
+  <img src="https://kaibuddy.com/og-image.png" alt="KaiBoard — free, open-source, local-first infinite whiteboard with Chinese & English handwriting" width="100%">
 </p>
 
 # KaiBoard
+
+<p align="center">
+  <a href="https://kaiboard.kaibuddy.com" target="_blank" rel="noopener"><strong>🚀 Try KaiBoard online</strong></a>
+</p>
 
 A free, open-source, **local-first multi-board whiteboard with Chinese & English handwriting fonts**. Its drawing engine is built on open-source [Excalidraw](https://github.com/excalidraw/excalidraw) (MIT).
 
@@ -21,7 +25,7 @@ See [`docs/FEATURES.md`](docs/FEATURES.md) for the full feature list.
 ## ✨ Key features
 
 - **Local-first & private** — data in your browser (IndexedDB) or a folder you choose (File System Access API, Chrome/Edge); no account, no upload.
-- **Multi-board workspace (core)** — folder-tree of boards, arbitrarily nested; drag to organize, right-click menu, trash/recovery, sidebar search.
+- **Multi-board workspace** — folder-tree of boards, arbitrarily nested; drag to organize, right-click menu, trash/recovery, sidebar search.
 - **Import / export & migration** — native `.excalidraw` exchange, workspace backup with parallel-merge migration, batch import, PPTX export.
 - **Chinese & English handwriting** — built-in Xiaolai (Chinese) + Virgil (English) handwriting fonts; Simplified / Traditional Chinese / English UI; light & dark themes.
 - **Onboarding** — first-run sample, empty-board welcome, element comments.
@@ -130,6 +134,10 @@ src/
 ├─ TrashPanel.tsx        # trash modal (restore / permanent delete / empty)
 └─ exportImport.ts       # export (workspace backup / single board .excalidraw), import (parallel merge, mandatory tree node, strip trash markers)
 ```
+
+## 💬 Feedback
+
+Questions, bug reports, and feature requests are welcome via [GitHub Issues](https://github.com/ChasenKai/KaiBoard/issues).
 
 ## 📄 License
 
