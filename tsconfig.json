@@ -18,10 +18,9 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@agent/*": ["src/_agent_stub/*"],
-      "@agent-core/*": ["agent/mcp/packages/core/src/*"]
+      "@agent-core/*": ["../mcp/packages/core/src/*"]
     }
   },
-  "include": ["src", "agent/mcp/packages/core/src"],
+  "include": ["src", "../mcp/packages/core/src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

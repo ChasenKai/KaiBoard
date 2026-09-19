@@ -20,11 +20,6 @@ if not exist "dist\index.html" (
 
 start "KaiBoard-AI-3000" cmd /k npx vite preview --outDir dist --port 3000 --strictPort
 
-if exist "dist-basic\index.html" (
-  start "KaiBoard-Basic-3001" cmd /k npx vite preview --outDir dist-basic --port 3001 --strictPort
-) else (
-  echo [i] dist-basic not found, skipping basic version.
-)
 
 timeout /t 3 >nul
 start "" http://localhost:3000

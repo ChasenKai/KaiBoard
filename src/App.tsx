@@ -25,16 +25,14 @@ import {
   getBackend,
 } from "./db";
 import type { FileNode, BoardData } from "./db";
-import { t, getLang, setLang, LANGS, isLang, detectBrowserLang, AI_ENABLED, type Lang } from "./i18n";
+import { t, getLang, setLang, LANGS, isLang, detectBrowserLang, type Lang } from "./i18n";
 import { fsSupported, fsCopyFromIdb, fsMergeFromIdb, fsPeekFolder, fsExportAll } from "./fsStore";
 import { startFsWatcher } from "./fsWatcher";
-import { useIntegration, CollabPanel } from "./agentIntegration";
+import { useIntegration, CollabPanel } from "./agent/agentIntegration";
 import AnnouncementBar from "./AnnouncementBar";
 import Sidebar from "./Sidebar";
 
-// 双路发布开关：默认开启（带 AI 版）；基础版构建用 VITE_AI_ENABLED=false。
 // 仅控制「是否渲染 Agent 共绘设置面板」；真正的 AI 协议层隔离在 agentIntegration.tsx 内（动态 import）。
-const AI_ENABLED = import.meta.env.VITE_AI_ENABLED !== "false";
 
 // 版本号真源 = package.json 的 version（与 CHANGELOG / 关于口径一致，不剧透构建通道 / AI 版）
 const APP_VERSION = (pkg as any).version as string;
@@ -86,6 +84,14 @@ export default function App() {
   const [nodes, setNodes] = useState<FileNode[]>([]);
   const [trashItems, setTrashItems] = useState<FileNode[]>([]);
   const [activeBoardId, setActiveBoardId] = useState<string | null>(null);
+  // Agent 活跃态静默窗口（ms）：距最后一次 Agent 写入超过此值，即视为「本批停手」，高亮淡出。
+  // 取 20s 的理由（实测反馈）：Agent 单批动作很快，10s 常常「还没感受到就没了」；
+  // 20s 让用户来得及注意到「哪块板正在被 Agent 动」。而它仍是**滑动窗口**——
+  // 连续多步绘制期间一直亮（这解决"中途断亮"），停手 20s 内必然淡出，不会退化成常驻噪声。
+  // 想更长/更短就改这一个数（画布侧同类参数见 agentBridge.ts 的 AGENT_PRESENCE_MS，两者宜同步）。
+  const AGENT_ACTIVE_IDLE_MS = 20000;
+  const [highlightId, setHighlightId] = useState<string | null>(null);
+  const highlightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [ctxMenu, setCtxMenu] = useState<CtxMenu>(null);
   const [apiReady, setApiReady] = useState(false);
@@ -205,20 +211,46 @@ export default function App() {
     toastTimer.current = window.setTimeout(() => setToast(null), 2600);
   }, []);
 
+  // Agent 在「非当前画板」上的活跃态 —— 左侧文件树对应节点持续高亮。
+  // 语义 = 滑动窗口：每次写入即置位**并续期**，因此连续多步绘制期间一直在亮，
+  // 只有停手 AGENT_ACTIVE_IDLE_MS 之后才淡出（此前是一次性 2.5s 闪，会中途断亮）。
+  const triggerHighlight = useCallback((boardId: string) => {
+    setHighlightId(boardId);
+    if (highlightTimer.current) clearTimeout(highlightTimer.current);
+    highlightTimer.current = setTimeout(() => setHighlightId(null), AGENT_ACTIVE_IDLE_MS);
+  }, []);
+
+  // 纯刷新文件树。**刻意不再带 boardId**：「点亮哪块板」已改由 agent activity 事件驱动
+  // （见下方 onAgentActivity），因为它必须覆盖「当前画板也被 Agent 改动」的情形，
+  // 而「刷新树」与「哪块板在活跃」本来就是两件事，此前耦合在一起正是该指示失效的原因之一。
   const refreshNodes = useCallback(async () => {
     const [ns, tr] = await Promise.all([listNodes(), listTrashRoots()]);
     setNodes(ns);
     setTrashItems(tr);
   }, []);
 
-  // Agent 共绘（Mode B / B2 + B2.1）集成层：state、回调、副作用、设置面板全部在 ./agentIntegration 内。
-  // onTreeChanged：桥在「非当前画板」上建板/落图后刷新左侧树（N3 寻址不切画布，故需显式刷新）。
+  useEffect(() => () => { if (highlightTimer.current) clearTimeout(highlightTimer.current); }, []);
+
+  // Agent 共绘集成层：state、回调、副作用、设置面板全部在 ./agentIntegration 内。
+  // onTreeChanged：桥建板 / 落图后刷新左侧树（寻址不切画布，故需显式刷新）。
+  // onAgentActivity：桥**每次写入**都报「哪块板活跃」→ 点亮该节点（**含当前画板**），停手后自动淡出。
+  // 兜底：桥通常会带上 boardId；万一它取不到（例如适配器创建时当前画板未知），
+  // 退回「当前画板」——因为**不带 boardId 的写入在语义上就是写当前画板**，不该哑火。
+  const handleAgentActivity = useCallback(
+    (boardId?: string) => {
+      const target = boardId || activeIdRef.current;
+      if (target) triggerHighlight(target);
+    },
+    [triggerHighlight]
+  );
+
   const agent = useIntegration({
     apiRef,
     activeIdRef,
     showToast,
     activeBoardId,
     onTreeChanged: refreshNodes,
+    onAgentActivity: handleAgentActivity,
   });
 
   // 全局 Escape：关闭所有浮层（右键菜单 / 设置 / 回收站 / 批注 / 冲突弹窗）。
@@ -694,7 +726,7 @@ export default function App() {
     }
   }, [activeBoardId, apiReady, loadBoardIntoCanvas]);
 
-  // 外部变化重读（M2-3）：文件夹存储下，Agent（或任何外部进程，如 @kaiboard/mcp-server
+  // 外部变化重读：文件夹存储下，Agent（或任何外部进程，如 @kaibuddy/kaiboard-mcp
   // 的 --dir 绑定）直写 kaiboard-data/ 后让「落板即见」成立。仅 filesystem 后端生效；
   // IndexedDB 下 startFsWatcher 内部 no-op。树变化实时刷左侧栏；当前画板仅在本标签页
   // 回到前台且后台被改时重载（避免可见状态下编辑被外部写入冲掉）。
@@ -1223,7 +1255,7 @@ export default function App() {
     [importFile, refreshNodes, showToast, listNodes]
   );
 
-  // P1-A：空画板欢迎屏「打开文件」——导入单个 .excalidraw/JSON 画板并跳转到它
+  // 空画板欢迎屏「打开文件」——导入单个 .excalidraw/JSON 画板并跳转到它
   // 收集某节点下所有「画板」id（递归），按文件树可见顺序（order 升序 → 名称）返回。
   // 传入 null 可拿到「全局」可见顺序，用于多选导出排序。
   const descendantBoardIds = useCallback(
@@ -1312,7 +1344,7 @@ export default function App() {
   );
 
   // 导出选中：逐个画板导出为原生 .excalidraw（与单画板右键导出同格式）
-  // 规则（2026-08-05）：除顶栏总体批量备份外，单/多导入导出一律保持原生 .excalidraw。
+  // 规则：除顶栏总体批量备份外，单/多导入导出一律保持原生 .excalidraw。
   const handleExportSelected = useCallback(async () => {
     if (selected.size === 0) return;
     // 展开选中集：文件夹 → 其下全部画板（递归）
@@ -1772,10 +1804,24 @@ export default function App() {
         </div>
 
         <div className="toolbar-right">
-          {AI_ENABLED && (
+          {(
             <button className="ai-btn" title={t("ai_panel_title")} onClick={() => setShowAIPanel((v) => !v)}>
               ✨ AI
             </button>
+          )}
+          {(agent.relayStatus === "connecting" || agent.relayStatus === "connected") && (
+            <span
+              className={
+                `agent-live agent-live-${agent.relayStatus}` +
+                // 「Agent 正在写」= 树侧活跃窗口非空。同一信号在顶栏只做**呼吸点**，
+                // 不改角标文案/层级：顶栏回答「通道是否在线」，活跃细节留给树与画布。
+                (highlightId ? " agent-live-active" : "")
+              }
+              title={agent.relayStatus === "connected" ? t("ai_live_badge") : t("ai_live_connecting")}
+            >
+              <span className="agent-live-dot" aria-hidden="true"></span>
+              {agent.relayStatus === "connected" ? t("ai_live_badge") : t("ai_live_connecting")}
+            </span>
           )}
           <button onClick={onExport} title={t("ui_exportAllTitle")}>
             {t("ui_exportAll")}
@@ -1820,6 +1866,7 @@ export default function App() {
             <div className="sidebar-host" style={{ width: sidebarWidth }}>
               <Sidebar
                 nodes={nodes}
+                highlightId={highlightId}
                 activeBoardId={activeBoardId}
                 expanded={expanded}
                 onToggle={toggleExpand}
@@ -2064,7 +2111,7 @@ export default function App() {
                     </span>
                   )}
                 </div>
-                {AI_ENABLED && <p className="set-hint">{t("set_dirHint")}</p>}
+                {<p className="set-hint">{t("set_dirHint")}</p>}
                 <div className="set-row">
                   <button className="btn" onClick={handleResetStorage}>
                     {t("set_resetDefault")}
@@ -2088,7 +2135,7 @@ export default function App() {
         </>
       )}
 
-      {showAIPanel && AI_ENABLED && <CollabPanel {...agent} onClose={() => setShowAIPanel(false)} />}
+      {showAIPanel && <CollabPanel {...agent} onClose={() => setShowAIPanel(false)} />}
 
       {folderConflict && (
         <>

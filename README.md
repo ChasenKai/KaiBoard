@@ -20,7 +20,7 @@ A free, open-source, **local-first multi-board whiteboard with Chinese & English
 
 > **Design reference**: The interaction paradigm for multi-board management references the general design of mature multi-board whiteboard products; the drawing engine and concrete engineering implementation are completed by KaiBoard itself.
 
-See [`docs/FEATURES.md`](docs/FEATURES.md) for the full feature list.
+See [`docs/FEATURES.md`](docs/FEATURES.md) for the full feature list, [`docs/AGENT.md`](docs/AGENT.md) for Agent co-draw, [`docs/PRIVACY.md`](docs/PRIVACY.md) for the privacy model, and [`docs/SECURITY.md`](docs/SECURITY.md) for the security model.
 
 ## ✨ Key features
 
@@ -56,11 +56,11 @@ npm run dev
 ## 📦 Build to a static directory
 
 ```bash
-npm run build       # base edition (public release), output in dist-basic/
-npm run preview     # preview base edition (vite preview --outDir dist-basic)
+npm run build       # production build, output in dist/
+npm run preview     # preview the build (vite preview --outDir dist)
 ```
 
-> Do not open `dist-basic/index.html` directly — Excalidraw 0.18+ is ESM and loads fonts via `fetch`, which `file://` blocks by CORS. Use a static server:
+> Do not open `dist/index.html` directly — Excalidraw 0.18+ is ESM and loads fonts via `fetch`, which `file://` blocks by CORS. Use a static server:
 > ```bash
 > npm run preview   # or
 > npx serve dist
@@ -121,14 +121,17 @@ kaiboard/
 ├─ package-lock.json        # locked deps
 ├─ vite.config.ts           # Vite config
 ├─ tsconfig.json            # TypeScript config
-├─ docs/                    # docs
-│  └─ FEATURES.md           # KaiBoard feature details (must-read for contributors/users)
+├─ docs/                    # public docs
+│  ├─ FEATURES.md           # feature details (must-read for contributors/users)
+│  ├─ AGENT.md              # Agent co-draw: what it is, how to connect, security boundary
+│  ├─ SECURITY.md           # data locations, threat model, known limitations
+│  └─ PRIVACY.md            # where data lives, no-upload promise, how to self-verify
 ├─ public/                  # static assets
 │  ├─ announcements.json    # announcement bar text
 │  └─ (fonts generated at build time by prepare-fonts.mjs from @excalidraw/excalidraw into public/fonts/; favicon inlined as data URI)
 ├─ scripts/                 # build scripts
 │  ├─ prepare-fonts.mjs     # font prep (Excalidraw official + Chinese & English handwriting)
-│  └─ build-basic.mjs       # base edition build (VITE_AI_ENABLED=false)
+│  └─ build.mjs             # production build (fonts prep + vite build)
 └─ src/                     # source (see next)
 ```
 

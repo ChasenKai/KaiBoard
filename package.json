@@ -15,9 +15,8 @@
   "scripts": {
     "fonts": "node scripts/prepare-fonts.mjs",
     "dev": "node scripts/prepare-fonts.mjs && vite",
-    "build": "node scripts/build-basic.mjs",
-    "build:ai": "node scripts/build-ai.mjs",
-    "preview": "vite preview --host --outDir dist-basic",
+    "build": "node scripts/build.mjs",
+    "preview": "vite preview --host --outDir dist",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

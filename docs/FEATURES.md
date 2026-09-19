@@ -229,6 +229,6 @@ Excalidraw 本身是**单画布**工具：一次只编辑一个场景，没有"�
 
 ## 八、规划中
 
-- 当前基础版聚焦本地优先白板能力；更多扩展能力仍在内部评估与验证，成熟后随版本升级逐步释放，不在当前发布说明中提前预告。
+- 更多扩展能力仍在评估与验证中，成熟后随版本升级逐步释放，不在发布说明中提前预告。
 
 **🇬🇧 English.** The current base edition focuses on local-first whiteboard capabilities; further extensions are under internal evaluation. Mature ones ship gradually in later versions — not pre-announced in this release.

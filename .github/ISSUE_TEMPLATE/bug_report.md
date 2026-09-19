@@ -26,7 +26,6 @@ What actually happened (attach screenshots / screen recordings if available).
 **环境 / Environment**
 - 浏览器 / 操作系统 / Browser / OS:
 - KaiBoard 版本（设置 → 关于）/ KaiBoard version (Settings → About):
-- 构建通道（基础版 / AI 版）/ Build channel (basic / AI):
 
 **其他 / Additional context**
 相关日志、链接等补充信息。  

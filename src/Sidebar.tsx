@@ -4,6 +4,12 @@ import { t } from "./i18n";
 
 interface Props {
   nodes: FileNode[];
+  /**
+   * Agent 当前**活跃**的画板 id（每次写入置位并续期，**含用户当前打开的画板**）。
+   * 对应节点加 `.agent-changed` 持续高亮；与 `.active`（用户当前画板）、
+   * `.selected`（勾选导出）是三条互相独立、**可叠加**的视觉通道，互不覆盖。
+   */
+  highlightId?: string | null;
   activeBoardId: string | null;
   expanded: Set<string>;
   onToggle: (id: string) => void;
@@ -36,6 +42,7 @@ interface Props {
 
 export default function Sidebar({
   nodes,
+  highlightId,
   activeBoardId,
   expanded,
   onToggle,
@@ -167,6 +174,7 @@ export default function Sidebar({
     const isRenaming = renamingId === node.id;
     const cls = [
       "tree-item",
+      highlightId && node.id === highlightId ? "agent-changed" : "",
       !isFolder && node.id === activeBoardId ? "active" : "",
       selectedIds.has(node.id) ? "selected" : "",
       isFolder && checked ? "selected-folder" : "",
