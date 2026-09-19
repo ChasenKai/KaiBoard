@@ -393,7 +393,7 @@ body {
   .set-snapshot-time { flex: 1; color: var(--text-dim, #6b7280); }
   .set-snapshot-meta { color: var(--text-dim, #6b7280); white-space: nowrap; }
 
-  /* P1-A：空画板欢迎屏描述文本 */
+  /* 空画板欢迎屏描述文本 */
   .welcome-desc {
     color: var(--color-text);
     opacity: 0.72;
@@ -407,7 +407,7 @@ body {
     opacity: 0.55;
     font-size: 13px;
   }
-  /* P1-A 欢迎屏：品牌 + 操作 + 文件树指引 + 快捷键/帮助（对齐修正） */
+  /* 欢迎屏：品牌 + 操作 + 文件树指引 + 快捷键/帮助（对齐修正） */
   .kb-brand {
     display: flex; align-items: center; justify-content: center; gap: 12px;
     margin: 0 auto 6px;
@@ -524,6 +524,102 @@ body {
 }
 .ai-btn:hover { background: var(--accent-soft, #f3f4f6); }
 .ai-btn:active { transform: translateY(1px); }
+
+/* 顶栏常驻共绘角标：relay connected 时出现在 ✨ AI 按钮旁 */
+.agent-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border: 1px solid var(--ok, #3b6d11);
+  border-radius: 999px;
+  color: var(--ok, #3b6d11);
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.agent-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ok, #3b6d11);
+}
+/* 连接中：同一槽位、琥珀色（比绿色浅一档，提示"正在建立"，不告警） */
+.agent-live.agent-live-connecting {
+  color: var(--warn, #b7791f);
+  border-color: var(--warn, #b7791f);
+}
+.agent-live.agent-live-connecting .agent-live-dot {
+  background: var(--warn, #b7791f);
+}
+
+/* 「Agent 正在写入」呼吸点：复用树侧的**同一个活跃窗口信号**（App.tsx 的 highlightId）。
+   刻意只做呼吸、不改角标文案与层级 —— 顶栏的语义始终是「Agent 通道是否在线」，
+   「哪块板 / 哪些元素」分别由左侧树与画布两层回答。一处信号、三层呈现、各答一个问题。 */
+@media (prefers-reduced-motion: no-preference) {
+  .agent-live.agent-live-active .agent-live-dot {
+    animation: agentLiveBreathe 1.4s ease-in-out infinite;
+  }
+}
+@keyframes agentLiveBreathe {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
+  }
+}
+
+/* Agent 在某画板上活跃期间，左侧文件树对应节点持续高亮。
+   三条硬要求：
+     ① 必须与「用户自己的选中」区分开 —— 不抢 .active（当前画板）与 .selected（勾选导出）的语义；
+     ② 无论 Agent 动的是不是用户当前打开的板，都要能看出是哪块板；
+     ③ 与 .active 可能**同时命中同一节点**（用户用的板 = Agent 正在动的板），两者都要读得出来。
+   实现：用 background-image 叠一层半透明绿，而**不是**改 background-color ——
+   这样它与 .active 的底色是「叠加」关系而非互相覆盖，同时命中时两条信息都在；
+   再用「左侧绿竖条 + 名字后缀 · Agent」做一条与用户选中完全不同的识别通道。
+   ⚠️ 刻意不用 animation：animation 会在固定秒数跑完并 forwards 停住，多步绘制时必然中途断亮
+   （这正是此前的缺陷）。改为**常亮**，「何时熄灭」完全交给 JS 滑动窗口判定
+   （App.tsx triggerHighlight / AGENT_ACTIVE_IDLE_MS）。 */
+.tree-item.agent-changed {
+  /* 底色只做很淡的一层（0.14），让**外围原本的行色仍能透出来** —— 反馈：
+     只靠变色分不清，要"外面是原色、里面（或外面）有一圈框"才认得出。 */
+  background-image: linear-gradient(rgba(34, 197, 94, 0.14), rgba(34, 197, 94, 0.14));
+  /* 圈：outline + 负 offset = **内缩一圈**的小框，且 outline 不参与布局、不会挤动邻居。
+     比 box-shadow 更贴合"小一点的框"的意图；border-radius 会让它跟着圆角走。 */
+  border-radius: 4px;
+  outline: 1.5px solid rgba(34, 197, 94, 0.95);
+  outline-offset: -2px;
+  /* 左侧粗竖条：作为与「用户当前画板 / 勾选导出」完全不同的识别通道 */
+  box-shadow: inset 3px 0 0 0 #22c55e;
+}
+.tree-item.agent-changed .label::after {
+  content: " · Agent";
+  color: #16a34a;
+  font-size: 11px;
+  opacity: 0.85;
+  margin-left: 2px;
+}
+/* 轻呼吸：只动**圈的透明度**（不碰底色），表达"正在活动中"。
+   ⚠️ 用 infinite 而非 X forwards —— 后者会在固定秒数自己跑完并停住，与"持续"语义冲突
+   （这正是上一版的缺陷）。熄灭仍完全由 JS 的滑动窗口决定。 */
+@media (prefers-reduced-motion: no-preference) {
+  .tree-item.agent-changed {
+    animation: agentRingBreathe 1.8s ease-in-out infinite;
+  }
+}
+@keyframes agentRingBreathe {
+  0%,
+  100% {
+    outline-color: rgba(34, 197, 94, 0.95);
+  }
+  50% {
+    outline-color: rgba(34, 197, 94, 0.3);
+  }
+}
 
 /* 独立浮层：固定右侧、不铺满画布（边画边用），不挡主界面 */
 .ai-panel {

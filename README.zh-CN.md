@@ -20,7 +20,7 @@
 
 > **设计参考**：多画板管理的交互范式参考了成熟的多画板白板产品的通用设计；绘图内核与具体工程实现均为 KaiBoard 自身完成。
 
-完整功能说明见 [`docs/FEATURES.md`](docs/FEATURES.md)。
+完整功能说明见 [`docs/FEATURES.md`](docs/FEATURES.md)；Agent 共绘见 [`docs/AGENT.md`](docs/AGENT.md)；隐私与安全见 [`docs/PRIVACY.md`](docs/PRIVACY.md)、[`docs/SECURITY.md`](docs/SECURITY.md)。
 
 ## ✨ 核心能力（摘要）
 
@@ -67,10 +67,10 @@ npm run dev
 
 ```bash
 npm run build
-# 基础版产物在 dist-basic/ —— 整个目录可拷到 U 盘 / 任意静态服务器
+# 产物在 dist/ —— 整个目录可拷到 U 盘 / 任意静态服务器
 ```
 
-⚠️ **不能直接双击 `dist-basic/index.html`**：Excalidraw 0.18+ 为 ES Module 且字体经 `fetch` 加载，`file://` 协议下会被同源 / CORS 策略拦截。请用静态服务器访问：
+⚠️ **不能直接双击 `dist/index.html`**：Excalidraw 0.18+ 为 ES Module 且字体经 `fetch` 加载，`file://` 协议下会被同源 / CORS 策略拦截。请用静态服务器访问：
 
 ```bash
 npm run preview      # 或
@@ -132,14 +132,17 @@ kaiboard/
 ├─ package-lock.json        # 依赖锁版本
 ├─ vite.config.ts           # Vite 构建配置
 ├─ tsconfig.json            # TypeScript 类型配置
-├─ docs/                    # 文档
-│  └─ FEATURES.md            # KaiBoard 功能说明（中英混排，贡献者/用户必读）
+├─ docs/                    # 公开文档
+│  ├─ FEATURES.md            # 功能说明（中英混排，贡献者/用户必读）
+│  ├─ AGENT.md               # Agent 共绘：是什么、怎么接、安全边界
+│  ├─ SECURITY.md            # 数据位置、威胁模型、已知限制
+│  └─ PRIVACY.md             # 数据存哪、不上传承诺、怎么自查
 ├─ public/                  # 静态资源
 │  ├─ announcements.json    # 公告栏文案
 │  └─ （字体在构建时由 prepare-fonts.mjs 从 @excalidraw/excalidraw 依赖生成到 public/fonts/；favicon 以 data URI 内联）
 ├─ scripts/                 # 构建脚本
 │  ├─ prepare-fonts.mjs     # 字体准备（Excalidraw 官方 + 中文手写）
-│  └─ build-basic.mjs       # 基础版构建（VITE_AI_ENABLED=false）
+│  └─ build.mjs             # 生产构建（字体准备 + vite build）
 └─ src/                     # 源码，详见下一节
 ```
 

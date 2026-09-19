@@ -95,7 +95,7 @@ async function main() {
   //    ② Git Bash 文件级 rm -rf dir/*（次选，非 WorkBuddy 环境或 rename 失败时）；
   //    ③ Node fs.rm 递归（最后兜底，非沙箱环境才可能成功）。
   //    outDir 由构建脚本经环境变量 KAIBOARD_OUTDIR 传入（默认 dist）；
-  //    AI 版构建清 dist，基础版构建清 dist-basic，互不误伤（不再写死 dist）。
+  //    由构建脚本经 KAIBOARD_OUTDIR 指定要清空的产物目录（不再写死）。
   const outDirName = process.env.KAIBOARD_OUTDIR || "dist";
   const outDir = path.join(root, outDirName);
   if (await exists(outDir)) {

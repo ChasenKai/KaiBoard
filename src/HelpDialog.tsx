@@ -9,6 +9,10 @@ import { t } from "./i18n";
 // 快捷键条目、布局、文案均照原版中文 locale 原样呈现，不做创意发挥。
 
 // 帮助弹窗顶部展示 KaiBoard GitHub 仓库入口。
+//
+// AI·Agent 帮助入口（占位预留）：按钮位已就位，指向官网的 Agent 指南落地页。
+// 该页由网站侧产出；上线前若要避免死链，可先把此常量指向站内文档或站首页。
+const AGENT_GUIDE_URL = "https://kaiboard.kaibuddy.com/agent";
 
 // Excalidraw 0.18.1 真实主题变量（取自其编译产物，light / dark 各一套），
 // 直接挂到弹窗根节点，确保内部 .HelpDialog__* 样式拿到正确颜色，不依赖 Excalidraw 的变量级联。
@@ -43,6 +47,17 @@ function GitHubIcon() {
       <path
         fill="currentColor"
         d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+      />
+    </svg>
+  );
+}
+
+function AgentIcon() {
+  return (
+    <svg viewBox="0 0 16 16" width="1rem" height="1rem" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M8 1.5a1.25 1.25 0 0 1 1.2.92l1.03-.6a.75.75 0 1 1 .75 1.3l-1.03.6c.03.13.05.27.05.4h1.25a.75.75 0 0 1 0 1.5H10.5v1.13h.75a.75.75 0 0 1 0 1.5H10.5v.5h1.25a.75.75 0 0 1 0 1.5H10.5v.5a1.75 1.75 0 0 1-1.75 1.75h-1.5A1.75 1.75 0 0 1 5.5 11.75v-.5H4.25a.75.75 0 0 1 0-1.5H5.5v-.5H4.25a.75.75 0 0 1 0-1.5H5.5V6.62H4.25a.75.75 0 0 1 0-1.5H5.5c0-.13.02-.27.05-.4l-1.03-.6a.75.75 0 1 1 .75-1.3l1.03.6A1.25 1.25 0 0 1 8 1.5Zm-.75 3.25v2.5h1.5v-2.5h-1.5Zm-1.5 4.5v1.5h4.5v-1.5h-4.5Z"
       />
     </svg>
   );
@@ -239,6 +254,18 @@ export default function HelpDialog({ onClose, theme }: HelpDialogProps) {
                   <SiteIcon />
                 </span>
                 {t("help_officialSite")}
+              </a>
+              <a
+                className="HelpDialog__btn HelpDialog__btn--muted"
+                href={AGENT_GUIDE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={t("help_agentGuide")}
+              >
+                <span className="HelpDialog__link-icon">
+                  <AgentIcon />
+                </span>
+                {t("help_agentGuide")}
               </a>
             </div>
             <h3>快捷键</h3>

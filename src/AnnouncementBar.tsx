@@ -5,7 +5,7 @@
 //
 // 过滤规则：
 //  - 按当前日期落在 start~end 区间；
-//  - scope 匹配（all 两版本都显示；basic 仅基础版；ai 仅带 AI 版）；
+//  - scope 匹配（all 全部显示；ai 仅 AI 相关构建）；
 //  - 已被用户关闭（localStorage）的不显示；
 //  - 数组靠前的优先（新公告放前面）。
 //
@@ -33,7 +33,6 @@ interface AnnouncementData {
 }
 
 // 与 App.tsx / agentIntegration.tsx 同义的构建开关：决定 scope 匹配。
-const AI_ENABLED = import.meta.env.VITE_AI_ENABLED !== "false";
 const DISMISS_KEY = "kb_announcement_dismissed";
 
 async function loadAnnouncements(url: string): Promise<AnnouncementData | null> {
@@ -53,7 +52,7 @@ export default function AnnouncementBar() {
     let cancelled = false;
     const dismissed: string[] = JSON.parse(localStorage.getItem(DISMISS_KEY) || "[]");
     const now = Date.now();
-    const scope = AI_ENABLED ? "ai" : "basic";
+    const scope = "ai";
 
     (async () => {
       let data = await loadAnnouncements("./announcements.json");

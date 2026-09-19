@@ -1,6 +1,6 @@
-// 外部变化重读（M2-3 · 「落板即见」关键一环）
+// 外部变化重读（「落板即见」关键一环）
 //
-// 文件夹存储（filesystem）模式下，Agent（或任何外部进程，如 @kaiboard/mcp-server 的
+// 文件夹存储（filesystem）模式下，Agent（或任何外部进程，如 @kaibuddy/kaiboard-mcp 的
 // `--dir` 绑定）会直写 <文件夹>/kaiboard-data/ 下的 tree.json 与 boards/<id>.json。
 // 应用本体此前只在「操作时」重读（见 fsStore 的 readTree 调用点），Agent 写入后用户
 // 不操作就看不到。本模块补上「切前台 / 定时」重读：
