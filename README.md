@@ -158,5 +158,5 @@ Questions, bug reports, and feature requests are welcome via [GitHub Issues](htt
 
 - KaiBoard itself is released under the **MIT License**; full text in [LICENSE](./LICENSE).
 - Third-party dependencies (including Excalidraw as the drawing engine) licenses in [THIRD_PARTY_LICENSES](./THIRD_PARTY_LICENSES).
-- This product is built on open-source [Excalidraw](https://github.com/excalidraw/excalidraw) (MIT), follows its MIT and retains its copyright notices; its official promotional links (blog / YouTube) and brand have been removed from the product UI, but the license text is fully retained.
+- This product is built on open-source [Excalidraw](https://github.com/excalidraw/excalidraw) (MIT). It follows the MIT license and retains Excalidraw's copyright and license notices in full.
 - The Chinese handwriting font (Xiaolai 小赖体, chosen/optimized by excalidraw-cn for Chinese scenarios) follows the SIL Open Font License.
