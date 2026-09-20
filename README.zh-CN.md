@@ -124,10 +124,10 @@ kaiboard/
 ├─ .gitignore               # 忽略规则：构建产物、构建时生成的字体、浏览器缓存等
 ├─ README.md                # 英文版（canonical）
 ├─ README.zh-CN.md          # 本文件（中文版）
-├─ CHANGELOG.md              # 版本变更记录（中英混排）
+├─ CHANGELOG.md             # 版本变更记录（中英混排）
 ├─ LICENSE                  # MIT 开源许可证
 ├─ CREDITS.md               # 上游致谢（中英对照）
-├─ THIRD_PARTY_LICENSES.md     # 第三方依赖版权汇总（Excalidraw 等）
+├─ THIRD_PARTY_LICENSES.md  # 第三方依赖版权汇总（Excalidraw 等）
 ├─ index.html               # HTML 入口；设置 window.EXCALIDRAW_ASSET_PATH = "/"
 ├─ package.json             # 依赖与脚本（dev / build / preview）
 ├─ package-lock.json        # 依赖锁版本
