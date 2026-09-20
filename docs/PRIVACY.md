@@ -21,7 +21,7 @@
 
 ## 3. 你可以自己验证
 
-- **开源内核**：绘图能力来自开源 [Excalidraw](https://github.com/excalidraw/excalidraw)（MIT 许可），KaiBoard 的多画板管理 / 本地优化层为自研并同样开源。完整依赖见 [`THIRD_PARTY_LICENSES`](../THIRD_PARTY_LICENSES)。
+- **开源内核**：绘图能力来自开源 [Excalidraw](https://github.com/excalidraw/excalidraw)（MIT 许可），KaiBoard 的多画板管理 / 本地优化层为自研并同样开源。完整依赖见 [`THIRD_PARTY_LICENSES.md`](../THIRD_PARTY_LICENSES.md)。
 - **离线可用**：字体、资源全部自托管，断网也能用。
 - **自己查**：打开浏览器开发者工具 → Network 面板，正常使用 KaiBoard（画图、保存、导出）时，你**看不到**任何指向 KaiBoard 域名的画布数据外发请求。
   （例外：你主动把存储目录选在云盘同步盘时，那是云盘厂商在同步你的文件，与 KaiBoard 无关。）

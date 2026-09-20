@@ -1,6 +1,6 @@
 # KaiBoard 功能说明
 
-> 📄 本文档说明 KaiBoard 提供了哪些能力，以及它在 [Excalidraw](https://github.com/excalidraw/excalidraw) 绘图内核之上新增 / 增强了哪些部分。（Excalidraw 以 MIT 开源，KaiBoard 遵循其 MIT 协议并完整保留版权声明，详见 [THIRD_PARTY_LICENSES](../THIRD_PARTY_LICENSES)。）
+> 📄 本文档说明 KaiBoard 提供了哪些能力，以及它在 [Excalidraw](https://github.com/excalidraw/excalidraw) 绘图内核之上新增 / 增强了哪些部分。（Excalidraw 以 MIT 开源，KaiBoard 遵循其 MIT 协议并完整保留版权声明，详见 [THIRD_PARTY_LICENSES.md](../THIRD_PARTY_LICENSES.md)。）
 
 > KaiBoard 是一个**免费开源、本地优先（local-first）的多画布白板**，补齐了"多文件 / 多画板管理"这一能力（Excalidraw 原生缺失），并围绕本地数据安全、跨设备迁移、中文书写体验做了增强。其绘图内核基于 [Excalidraw](https://github.com/excalidraw/excalidraw) 0.18.1。
 >
