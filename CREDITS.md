@@ -40,6 +40,7 @@ Ideas we drew on, and re-implemented ourselves:
 | Source | What we took from it |
 |---|---|
 | [Mermaid](https://mermaid.js.org) | The idea of turning plain text into a diagram — the starting point for our text-to-board path. |
+| [Revezone](https://revezone.com) | The **multi-board + folder tree** shape — seeing it work convinced us this need was real, and it set the direction for KaiBoard's workspace. |
 | The broader multi-board whiteboard category | Its general interaction paradigm for organising many boards. The concrete design and engineering here are our own. |
 
 If you believe your work is used here without proper credit, please open an issue — we will fix it.
@@ -82,6 +83,7 @@ KaiBoard 站在别人的肩膀上。感谢以下每一位。
 | 来源 | 我们从中取用的 |
 |---|---|
 | [Mermaid](https://mermaid.js.org) | 「把纯文本变成图」的思路 —— 我们「文本 → 画板」路径的起点。 |
+| [Revezone](https://revezone.com) | **多画板 + 结构树**这一产品形态 —— 见到它做成什么样，让我们确信这个需求真实存在，也为 KaiBoard 的工作区定了方向。 |
 | 多画板白板这一品类 | 组织大量画板时的通用交互范式。此处的具体设计与工程实现为我们自研。 |
 
 若你认为你的成果在此被使用而未获恰当署名，请开 issue —— 我们会修正。
