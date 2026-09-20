@@ -169,5 +169,5 @@ src/
 
 - KaiBoard 本身以 **MIT 许可**发布，完整文本见 [LICENSE](./LICENSE)。
 - 第三方依赖（含作为绘图内核的 Excalidraw）的许可证见 [THIRD_PARTY_LICENSES](./THIRD_PARTY_LICENSES)。
-- 本产品基于开源 [Excalidraw](https://github.com/excalidraw/excalidraw)（MIT）构建，遵循其 MIT 协议并保留了其版权声明；其官方推广链接（博客 / YouTube）与品牌已从产品 UI 中移除，但许可证文本完整保留。
+- 本产品基于开源 [Excalidraw](https://github.com/excalidraw/excalidraw)（MIT）构建，遵循其 MIT 协议，并完整保留其版权与许可声明。
 - 中文手写字体（Xiaolai 小赖体，由 excalidraw-cn 为中文场景优化选用）遵循 SIL Open Font License。

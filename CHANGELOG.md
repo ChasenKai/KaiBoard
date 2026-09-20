@@ -18,6 +18,25 @@
 
 ## 当前版本 / Current version
 
+### v2.0.0-beta（2026-09-20）· Agent 共绘公测版 / Agent co-draw public beta
+
+本版把「Agent 共绘」内建为 KaiBoard 的一部分：AI Agent 可以直接在你正在看的画布上作图。**默认关闭，开关始终在你手上。**
+This release builds Agent co-draw into KaiBoard: an AI Agent can draw directly on the board you have open. **Off by default; the switch is always yours.**
+
+- **实时共绘**：在设置里开启后，Agent 直接作用于你当前打开的画板，增删改元素当场可见、可撤销，无需导出 / 导入的来回。
+  **Live co-draw**: once enabled in Settings, the Agent works on the board you have open — changes appear immediately and stay undoable, with no export/import round-trip.
+- **一键接入**：面板里点「复制配置给 Agent」，把整段内容发给你的助手，重启客户端加载配置即可；换令牌只需点「更新令牌并重新复制」。
+  **One-click setup**: click "Copy config to Agent" and hand the block to your assistant, then restart the client. To rotate the token, click "Update token & re-copy".
+- **活跃指示**：Agent 在某块画板上写入时，左侧文件树对应节点会持续高亮一段时间，停手后自动淡出；顶栏同时显示共绘状态点。
+  **Activity indicator**: while the Agent writes to a board, its node in the sidebar stays highlighted and fades out after it stops; the top bar shows a co-draw status dot.
+- **安全网**：整板替换前自动留存快照（最多 20 份），可随时还原；中继只监听本机回环地址，画布数据不出本机。
+  **Safety net**: whole-board replacements keep an automatic snapshot (up to 20) that you can restore; the relay binds to localhost only, so board data never leaves your machine.
+- **文档**：新增 [`docs/AGENT.md`](docs/AGENT.md)（怎么接、能做什么、边界在哪）、[`docs/SECURITY.md`](docs/SECURITY.md)、[`docs/PRIVACY.md`](docs/PRIVACY.md)。
+  **Docs**: added [`docs/AGENT.md`](docs/AGENT.md), [`docs/SECURITY.md`](docs/SECURITY.md), and [`docs/PRIVACY.md`](docs/PRIVACY.md).
+
+> 升级说明 / Upgrade note：本版为公测版（beta）。画布数据仍只保存在你自己的设备上，升级前建议先「导出全部（备份）」。
+> This is a public beta. Your boards still live only on your own device; back up with "Export all" before upgrading.
+
 ### v1.0.0（2026-08-29）· 首个正式稳定版 / First stable release
 
 KaiBoard 的第一个正式稳定版。本版聚焦基础白板能力，公测阶段的能力至此全部收敛为稳定版。

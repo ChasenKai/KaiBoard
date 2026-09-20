@@ -18,9 +18,8 @@ of their code ships in this repository.
 
 KaiBoard uses Excalidraw's canvas / drawing kernel. The surrounding "shell"
 (sidebar file-tree, local & folder storage, trash, comments, Agent co-draw,
-multi-board management) is original work. Excalidraw's promotional links
-(blog / YouTube) and brand were removed from the product UI; its MIT license
-text is preserved here and in ./LICENSE.
+multi-board management) is original work. Excalidraw's MIT license text is
+preserved here and in ./LICENSE.
 
 ## @excalidraw/mermaid-to-excalidraw  (runtime dependency — Mermaid import)
 - Package : @excalidraw/mermaid-to-excalidraw  (v2.2.2)
