@@ -14,7 +14,7 @@
 
 A free, open-source, **local-first multi-board whiteboard with Chinese & English handwriting fonts**. Its drawing engine is built on open-source [Excalidraw](https://github.com/excalidraw/excalidraw) (MIT).
 
-> **One-line pitch**: No account, no cloud — your data stays on your own device. Built for personal single-user use; no real-time collaboration. On top of the drawing engine, KaiBoard adds the "multi-file / multi-board management" capability Excalidraw lacks natively, plus trash and cross-device migration.
+> **One-line pitch**: No account, no cloud — your data stays on your own device. Built for personal single-user use; no real-time collaboration. On top of the drawing engine, KaiBoard adds the "multi-file / multi-board management" capability Excalidraw lacks natively, plus trash and cross-device migration. **Optional** Agent co-draw is available if you want it — **off by default**.
 
 > **🙏 About the engine & credits**: KaiBoard's canvas drawing abilities (pen, shapes, infinite canvas, images, frames, etc.) are 100% from open-source [Excalidraw](https://github.com/excalidraw/excalidraw) (MIT). We are grateful to the Excalidraw team and the open-source community for the high-quality drawing engine that makes "local-first multi-board whiteboard" possible. KaiBoard's additions on top — multi-board organization, local optimization, and shell capabilities — are its own. See [`docs/FEATURES.md`](docs/FEATURES.md).
 
