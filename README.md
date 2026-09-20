@@ -30,6 +30,7 @@ See [`docs/FEATURES.md`](docs/FEATURES.md) for the full feature list, [`docs/AGE
 - **Chinese & English handwriting** — built-in Xiaolai (Chinese) + Virgil (English) handwriting fonts; Simplified / Traditional Chinese / English UI; light & dark themes.
 - **Onboarding** — first-run sample, empty-board welcome, element comments.
 - **Infinite canvas** — inherited from Excalidraw.
+- **Agent co-draw (optional)** — let an AI Agent draw on the board you have open: live edits, undoable, no export/import round-trip. Off by default; it talks only to a relay on `127.0.0.1`, so board data never leaves your machine. See [`docs/AGENT.md`](docs/AGENT.md).
 
 ## 📸 Screenshots
 
