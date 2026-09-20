@@ -120,4 +120,4 @@ Agent 共绘是一个**可选**能力：让 AI Agent 在你的画布上实时增
 - [`docs/AGENT.md`](./AGENT.md) —— Agent 共绘怎么用、安全边界在哪
 - [`docs/PRIVACY.md`](./PRIVACY.md) —— 数据存哪、不上传承诺、怎么自查
 - [`docs/FEATURES.md`](./FEATURES.md) —— 完整功能说明（含产品边界）
-- [`THIRD_PARTY_LICENSES`](../THIRD_PARTY_LICENSES) —— 第三方依赖与许可
+- [`THIRD_PARTY_LICENSES.md`](../THIRD_PARTY_LICENSES.md) —— 第三方依赖与许可
