@@ -115,6 +115,7 @@ kaiboard/
 ├─ README.zh-CN.md          # Chinese version
 ├─ CHANGELOG.md             # version history
 ├─ LICENSE                  # MIT
+├─ CREDITS.md               # thanks to upstream projects
 ├─ THIRD_PARTY_LICENSES     # third-party license summary (Excalidraw, etc.)
 ├─ index.html               # HTML entry; sets window.EXCALIDRAW_ASSET_PATH = "/"
 ├─ package.json             # deps & scripts (dev / build / preview)
@@ -160,3 +161,4 @@ Questions, bug reports, and feature requests are welcome via [GitHub Issues](htt
 - Third-party dependencies (including Excalidraw as the drawing engine) licenses in [THIRD_PARTY_LICENSES](./THIRD_PARTY_LICENSES).
 - This product is built on open-source [Excalidraw](https://github.com/excalidraw/excalidraw) (MIT). It follows the MIT license and retains Excalidraw's copyright and license notices in full.
 - The Chinese handwriting font (Xiaolai 小赖体, chosen/optimized by excalidraw-cn for Chinese scenarios) follows the SIL Open Font License.
+- Full thanks to the upstream projects and everyone behind them: [CREDITS.md](./CREDITS.md).

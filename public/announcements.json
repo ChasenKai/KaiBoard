@@ -26,7 +26,7 @@
     {
       "id": "v2.0.0-beta",
       "level": "update",
-      "text": "KaiBoard v2.0.0-beta（公测版）已发布 —— 新增「Agent 共绘」：开启后 AI Agent 可直接在你当前画布上作图，默认关闭、开关在你手上。画布数据仍只保存在本机，升级前建议先用顶栏「导出全部（备份）」备份一次。",
+      "text": "KaiBoard v2.0.0-beta（公测版）已发布 —— 新增「Agent 共绘」：开启后 AI Agent 可直接在你当前画布上作图，默认关闭、开关在你手上。画布数据仍只保存在本机，建议用顶栏「导出全部（备份）」定期留一份备份。",
       "link": "https://github.com/ChasenKai/KaiBoard/blob/HEAD/CHANGELOG.md",
       "linkText": "查看更新日志",
       "start": "2026-09-20",

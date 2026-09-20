@@ -34,8 +34,8 @@ This release builds Agent co-draw into KaiBoard: an AI Agent can draw directly o
 - **文档**：新增 [`docs/AGENT.md`](docs/AGENT.md)（怎么接、能做什么、边界在哪）、[`docs/SECURITY.md`](docs/SECURITY.md)、[`docs/PRIVACY.md`](docs/PRIVACY.md)。
   **Docs**: added [`docs/AGENT.md`](docs/AGENT.md), [`docs/SECURITY.md`](docs/SECURITY.md), and [`docs/PRIVACY.md`](docs/PRIVACY.md).
 
-> 升级说明 / Upgrade note：本版为公测版（beta）。画布数据仍只保存在你自己的设备上，升级前建议先「导出全部（备份）」。
-> This is a public beta. Your boards still live only on your own device; back up with "Export all" before upgrading.
+> 说明 / Note：本版为公测版（beta）。画布数据仍只保存在你自己的设备上；建议用「导出全部（备份）」定期留一份备份。
+> This is a public beta. Your boards still live only on your own device; use "Export all" to keep a periodic backup.
 
 ### v1.0.0（2026-08-29）· 首个正式稳定版 / First stable release
 

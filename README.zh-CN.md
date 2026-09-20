@@ -126,6 +126,7 @@ kaiboard/
 ├─ README.zh-CN.md          # 本文件（中文版）
 ├─ CHANGELOG.md              # 版本变更记录（中英混排）
 ├─ LICENSE                  # MIT 开源许可证
+├─ CREDITS.md               # 上游致谢（中英对照）
 ├─ THIRD_PARTY_LICENSES     # 第三方依赖版权汇总（Excalidraw 等）
 ├─ index.html               # HTML 入口；设置 window.EXCALIDRAW_ASSET_PATH = "/"
 ├─ package.json             # 依赖与脚本（dev / build / preview）
@@ -171,3 +172,4 @@ src/
 - 第三方依赖（含作为绘图内核的 Excalidraw）的许可证见 [THIRD_PARTY_LICENSES](./THIRD_PARTY_LICENSES)。
 - 本产品基于开源 [Excalidraw](https://github.com/excalidraw/excalidraw)（MIT）构建，遵循其 MIT 协议，并完整保留其版权与许可声明。
 - 中文手写字体（Xiaolai 小赖体，由 excalidraw-cn 为中文场景优化选用）遵循 SIL Open Font License。
+- 对上游项目与每一位作者的完整致谢见 [CREDITS.md](./CREDITS.md)。
