@@ -76,7 +76,7 @@ const agentStrings = {
   agent_relayMismatch: "令牌不一致：中继里存的令牌与本地不同（可能已轮换）。请点「更新令牌并重新复制」把新令牌发给 Agent。",
   // —— 完整接入指令（指令步骤 + 内嵌含令牌的 MCP 配置，整段复制给 Agent）——
   agent_instruction: "请帮我把 KaiBoard 白板接进来。若你之前已经接过，只需更新令牌，其余跳过。\n\n①【MCP 服务端】把下面这段合并进你的 mcpServers（按你客户端的要求写入，例如 Claude Desktop / Cursor / VS Code / Codex / WorkBuddy）：",
-  agent_instructionAfter: "②【Skill】把 https://github.com/ChasenKai/kaiboard-skills 里的 skills/kaiboard-draw 装进你的 skills 目录（支持 Agent Skills 的客户端适用；已装过就跳过）。\n\n③【前提】你与 KaiBoard 页面须在同一台机器（均可访问 127.0.0.1:8787），且用户已打开 KaiBoard 网页并开启「Agent 共绘」—— 中继只在该页面会话期间运行。\n\n装完请调一次 kbfs_list_capabilities 确认 pageConnected=true，然后提醒用户重启客户端以加载新配置。要操作哪块画板，让用户在 KaiBoard 里打开它即可。",
+  agent_instructionAfter: "②【Skill】把 https://github.com/ChasenKai/kaiboard-skills 里的 skills/kaiboard-draw 装进你的 skills 目录（支持 Agent Skills 的客户端适用；已装过就跳过）。\n\n③【前提】你与 KaiBoard 页面须在同一台机器（均可访问 127.0.0.1:8787），且用户已打开 KaiBoard 网页并开启「Agent 共绘」—— 中继只在该页面会话期间运行。\n\n写完配置、装好 Skill 后，请先提醒用户重启客户端（MCP 客户端要重启才会加载新配置 —— 重启前你调不到 kbfs_* 工具）。重启后请再调一次 kbfs_list_capabilities 确认 pageConnected=true。要操作哪块画板，让用户在 KaiBoard 里打开它即可。",
   agent_instructionTokenOnly: "旧令牌已失效。只需把 KaiBoard MCP 配置里的 KAIBOARD_TOKEN 换成下面这个，其余不用动：\n\n若你还没接过 KaiBoard，请让用户回面板点「复制配置给 Agent」取完整接入指令。\n\n新令牌：",
   agent_viewInstruction: "查看接入指令",
   agent_advanced: "高级设置",
@@ -330,7 +330,7 @@ const agentStringsTw = {
   agent_relayMismatch: "令牌不一致：中繼裡存的令牌與本地不同（可能已輪換）。請點「更新令牌並重新複製」把新令牌發給 Agent。",
   // —— 完整接入指令（指令步驟 + 內嵌含令牌的 MCP 配置，整段複製給 Agent）——
   agent_instruction: "請幫我把 KaiBoard 白板接進來。若你之前已經接過，只需更新令牌，其餘跳過。\n\n①【MCP 伺服端】把下面這段合併進你的 mcpServers（依你客戶端的要求寫入，例如 Claude Desktop / Cursor / VS Code / Codex / WorkBuddy）：",
-  agent_instructionAfter: "②【Skill】把 https://github.com/ChasenKai/kaiboard-skills 裡的 skills/kaiboard-draw 裝進你的 skills 目錄（支援 Agent Skills 的客戶端適用；已裝過就跳過）。\n\n③【前提】你與 KaiBoard 頁面須在同一台機器（均可存取 127.0.0.1:8787），且使用者已開啟 KaiBoard 網頁並開啟「Agent 共繪」—— 中繼只在該頁面工作階段期間執行。\n\n裝完請呼叫一次 kbfs_list_capabilities 確認 pageConnected=true，然後提醒使用者重新啟動客戶端以載入新設定。要操作哪塊畫板，讓使用者在 KaiBoard 裡開啟它即可。",
+  agent_instructionAfter: "②【Skill】把 https://github.com/ChasenKai/kaiboard-skills 裡的 skills/kaiboard-draw 裝進你的 skills 目錄（支援 Agent Skills 的客戶端適用；已裝過就跳過）。\n\n③【前提】你與 KaiBoard 頁面須在同一台機器（均可存取 127.0.0.1:8787），且使用者已開啟 KaiBoard 網頁並開啟「Agent 共繪」—— 中繼只在該頁面工作階段期間執行。\n\n寫完設定、裝好 Skill 後，請先提醒使用者重新啟動客戶端（MCP 客戶端要重新啟動才會載入新設定 —— 重啟前你呼叫不到 kbfs_* 工具）。重啟後請再呼叫一次 kbfs_list_capabilities 確認 pageConnected=true。要操作哪塊畫板，讓使用者在 KaiBoard 裡開啟它即可。",
   agent_instructionTokenOnly: "舊令牌已失效。只需把 KaiBoard MCP 設定裡的 KAIBOARD_TOKEN 換成下面這個，其餘不用動：\n\n若你還沒接過 KaiBoard，請讓使用者回面板點複製設定動作取完整接入指令。\n\n新令牌：",
   agent_viewInstruction: "查看接入指令",
   agent_advanced: "進階設定",
@@ -584,7 +584,7 @@ const agentStringsEn = {
   agent_relayMismatch: "Token mismatch: the relay holds a different token than this page (it may have been rotated). Click 'Update token & re-copy' to send the new token to your Agent.",
   // —— Full access instruction (NL steps + embedded MCP config with token, copy whole block to Agent) ——
   agent_instruction: "Please wire KaiBoard's whiteboard tools into my setup. If you have already connected before, just update the token and skip the rest.\n\n① [MCP server] Merge the block below into your mcpServers (write it the way your client expects — e.g. Claude Desktop / Cursor / VS Code / Codex / WorkBuddy):",
-  agent_instructionAfter: "② [Skill] Install skills/kaiboard-draw from https://github.com/ChasenKai/kaiboard-skills into your skills directory (for clients that support Agent Skills; skip if already installed).\n\n③ [Prerequisite] You and the KaiBoard page must be on the same machine (both can reach 127.0.0.1:8787), and the user must have the KaiBoard web page open with \"Agent co-draw\" enabled — the relay runs only while that page session is alive.\n\nWhen done, call kbfs_list_capabilities once and confirm pageConnected=true, then remind the user to restart their client so the new config loads. To work on a board, just ask the user to open it in KaiBoard.",
+  agent_instructionAfter: "② [Skill] Install skills/kaiboard-draw from https://github.com/ChasenKai/kaiboard-skills into your skills directory (for clients that support Agent Skills; skip if already installed).\n\n③ [Prerequisite] You and the KaiBoard page must be on the same machine (both can reach 127.0.0.1:8787), and the user must have the KaiBoard web page open with \"Agent co-draw\" enabled — the relay runs only while that page session is alive.\n\nOnce the config is written and the Skill installed, first remind the user to restart their client — MCP clients only pick up new config on restart, so until then you cannot call any kbfs_* tool. After the restart, call kbfs_list_capabilities once and confirm pageConnected=true. To work on a board, just ask the user to open it in KaiBoard.",
   agent_instructionTokenOnly: "The old token is no longer valid. Just replace KAIBOARD_TOKEN in the KaiBoard MCP config with the value below — nothing else needs to change:\n\nIf you have never connected to KaiBoard before, ask the user to go back to the panel and copy the full setup instructions instead.\n\nNew token:",
   agent_viewInstruction: "View access instruction",
   agent_advanced: "Advanced",
