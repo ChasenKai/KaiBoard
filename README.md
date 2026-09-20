@@ -116,7 +116,7 @@ kaiboard/
 ├─ CHANGELOG.md             # version history
 ├─ LICENSE                  # MIT
 ├─ CREDITS.md               # thanks to upstream projects
-├─ THIRD_PARTY_LICENSES.md     # third-party license summary (Excalidraw, etc.)
+├─ THIRD_PARTY_LICENSES.md  # third-party license summary (Excalidraw, etc.)
 ├─ index.html               # HTML entry; sets window.EXCALIDRAW_ASSET_PATH = "/"
 ├─ package.json             # deps & scripts (dev / build / preview)
 ├─ package-lock.json        # locked deps
