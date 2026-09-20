@@ -12,11 +12,11 @@
 
 ## 一句话定位（可用于 GitHub 简介）
 
-> **KaiBoard** —— 免费开源、本地优先的**中英文手写风多画布白板**。无需注册、不上传云端，数据只留在你自己的设备上；为个人单人使用设计，不做实时协同。
+> **KaiBoard** —— 免费开源、本地优先的**中英文手写风多画布白板**。无需注册、不上传云端，数据只留在你自己的设备上；为个人单人使用设计，不做实时协同。**可选**外接 AI Agent 共绘（默认关闭）。
 
 英文版（GitHub About / 英文 README 首行）：
 
-> **KaiBoard** — a free, open-source, local-first multi-board whiteboard with Chinese & English handwriting fonts. No account, no cloud — your data stays on your own device. Built for personal single-user use; no real-time collaboration.
+> **KaiBoard** — a free, open-source, local-first multi-board whiteboard with Chinese & English handwriting fonts. No account, no cloud — your data stays on your own device. Built for personal single-user use; no real-time collaboration. **Optional** Agent co-draw (off by default).
 
 ---
 
