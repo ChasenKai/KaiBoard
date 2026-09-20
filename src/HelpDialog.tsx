@@ -12,7 +12,8 @@ import { t } from "./i18n";
 //
 // AI·Agent 帮助入口（占位预留）：按钮位已就位，指向官网的 Agent 指南落地页。
 // 该页由网站侧产出；上线前若要避免死链，可先把此常量指向站内文档或站首页。
-const AGENT_GUIDE_URL = "https://kaiboard.kaibuddy.com/agent";
+// 帮助页（通用）：Agent 共绘指南是其中一节，后续其他帮助也由该页承接。
+const HELP_URL = "https://kaiboard.kaibuddy.com/help";
 
 // Excalidraw 0.18.1 真实主题变量（取自其编译产物，light / dark 各一套），
 // 直接挂到弹窗根节点，确保内部 .HelpDialog__* 样式拿到正确颜色，不依赖 Excalidraw 的变量级联。
@@ -257,7 +258,7 @@ export default function HelpDialog({ onClose, theme }: HelpDialogProps) {
               </a>
               <a
                 className="HelpDialog__btn HelpDialog__btn--muted"
-                href={AGENT_GUIDE_URL}
+                href={HELP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 title={t("help_agentGuide")}

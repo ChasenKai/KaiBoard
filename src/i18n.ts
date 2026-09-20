@@ -71,10 +71,13 @@ const agentStrings = {
   agent_testBad: "连接失败：HTTP {code}",
   agent_testUnreachable: "无法连接：本地中继未运行。请先在 Agent 对话里让它启动中继，再点「重新检测」。",
   agent_instructionCopied: "已复制 ✓ 粘贴给 Agent 并提醒重启客户端加载新配置",
+  agent_tokenUpdatedToast: "已复制 ✓ 把新令牌发给你的 Agent —— 它会替换 MCP 配置里的 KAIBOARD_TOKEN",
   agent_relayRegen: "重新生成",
   agent_relayMismatch: "令牌不一致：中继里存的令牌与本地不同（可能已轮换）。请点「更新令牌并重新复制」把新令牌发给 Agent。",
   // —— 完整接入指令（指令步骤 + 内嵌含令牌的 MCP 配置，整段复制给 Agent）——
-  agent_instruction: "请将以下配置加入你的 MCP 设置（以你客户端的方式写入 mcpServers，例如 Claude Desktop / Cursor / Cline / WorkBuddy 的配置文件）。\n\nKAIBOARD_TOKEN 是本页面生成的固定令牌（你无需也不能修改）。写入后请提醒用户重启其 Agent 客户端以加载新配置，并保持 KaiBoard 网页在浏览器中打开、已开启「Agent 共绘」（中继仅在该页面会话期间运行）。\n\n前提：Agent 客户端须与 KaiBoard 页面同一台机器（均可访问 127.0.0.1:8787）。连接后你将获得 12 个工具（前缀 kbfs_）：kbfs_list_boards 列出画板、kbfs_get_board 读取元素、kbfs_add_element 写入元素等；可先调 kbfs_list_capabilities 查看全部能力。先在 KaiBoard 打开要操作的画板即可使用。\n\n若之后用户点过「重新生成令牌」，旧令牌失效（页面显示不匹配），请用户回面板点「更新令牌并重新复制」把新令牌发给你。\n\n配置如下：",
+  agent_instruction: "请帮我把 KaiBoard 白板接进来。若你之前已经接过，只需更新令牌，其余跳过。\n\n①【MCP 服务端】把下面这段合并进你的 mcpServers（按你客户端的要求写入，例如 Claude Desktop / Cursor / VS Code / Codex / WorkBuddy）：",
+  agent_instructionAfter: "②【Skill】把 https://github.com/ChasenKai/kaiboard-skills 里的 skills/kaiboard-draw 装进你的 skills 目录（支持 Agent Skills 的客户端适用；已装过就跳过）。\n\n③【前提】你与 KaiBoard 页面须在同一台机器（均可访问 127.0.0.1:8787），且用户已打开 KaiBoard 网页并开启「Agent 共绘」—— 中继只在该页面会话期间运行。\n\n装完请调一次 kbfs_list_capabilities 确认 pageConnected=true，然后提醒用户重启客户端以加载新配置。要操作哪块画板，让用户在 KaiBoard 里打开它即可。",
+  agent_instructionTokenOnly: "旧令牌已失效。只需把 KaiBoard MCP 配置里的 KAIBOARD_TOKEN 换成下面这个，其余不用动：\n\n若你还没接过 KaiBoard，请让用户回面板点「复制配置给 Agent」取完整接入指令。\n\n新令牌：",
   agent_viewInstruction: "查看接入指令",
   agent_advanced: "高级设置",
   agent_relayUrlHint: "一般用户无需改动。仅当默认的 127.0.0.1:8787 端口被其它程序占用、连接不上时，才需要在这里改成其它地址并点「测试连接」。",
@@ -216,7 +219,7 @@ const zhCN: Dict = {
 
   // 帮助弹窗
   help_officialSite: "官网介绍",
-  help_agentGuide: "Agent 共绘指南",
+  help_agentGuide: "帮助与指南",
 
   // 空画板欢迎屏（复用 Excalidraw WelcomeScreen）
   welcome_menuHint: "在左侧文件树新建、整理画板",
@@ -322,10 +325,13 @@ const agentStringsTw = {
   agent_testBad: "連線失敗：HTTP {code}",
   agent_testUnreachable: "無法連線：本地中繼未執行。請先在 Agent 對話裡讓它啟動中繼，再點「重新偵測」。",
   agent_instructionCopied: "已複製 ✓ 貼給 Agent 並提醒重新啟動客戶端載入新設定",
+  agent_tokenUpdatedToast: "已複製 ✓ 把新令牌發給你的 Agent —— 它會替換 MCP 設定裡的 KAIBOARD_TOKEN",
   agent_relayRegen: "重新生成",
   agent_relayMismatch: "令牌不一致：中繼裡存的令牌與本地不同（可能已輪換）。請點「更新令牌並重新複製」把新令牌發給 Agent。",
   // —— 完整接入指令（指令步驟 + 內嵌含令牌的 MCP 配置，整段複製給 Agent）——
-  agent_instruction: "請將以下配置加入你的 MCP 設定（以你客戶端的方式寫入 mcpServers，例如 Claude Desktop / Cursor / Cline / WorkBuddy 的設定檔）。\n\nKAIBOARD_TOKEN 是本頁面生成的固定令牌（你無需也不能修改）。寫入後請提醒使用者重新啟動其 Agent 客戶端以載入新設定，並保持 KaiBoard 網頁在瀏覽器中開啟、已開啟「Agent 共繪」（中繼僅在該頁面會話期間運行）。\n\n前提：Agent 客戶端須與 KaiBoard 頁面同一台機器（均可存取 127.0.0.1:8787）。連線後你將獲得 12 個工具（前綴 kbfs_）：kbfs_list_boards 列出畫板、kbfs_get_board 讀取元素、kbfs_add_element 寫入元素等；可先呼叫 kbfs_list_capabilities 檢視全部能力。先在 KaiBoard 開啟要操作的畫板即可使用。\n\n若之後使用者點過「重新生成令牌」，舊令牌失效（頁面顯示不匹配），請使用者回面板點「更新令牌並重新複製」把新令牌發給你。\n\n配置如下：",
+  agent_instruction: "請幫我把 KaiBoard 白板接進來。若你之前已經接過，只需更新令牌，其餘跳過。\n\n①【MCP 伺服端】把下面這段合併進你的 mcpServers（依你客戶端的要求寫入，例如 Claude Desktop / Cursor / VS Code / Codex / WorkBuddy）：",
+  agent_instructionAfter: "②【Skill】把 https://github.com/ChasenKai/kaiboard-skills 裡的 skills/kaiboard-draw 裝進你的 skills 目錄（支援 Agent Skills 的客戶端適用；已裝過就跳過）。\n\n③【前提】你與 KaiBoard 頁面須在同一台機器（均可存取 127.0.0.1:8787），且使用者已開啟 KaiBoard 網頁並開啟「Agent 共繪」—— 中繼只在該頁面工作階段期間執行。\n\n裝完請呼叫一次 kbfs_list_capabilities 確認 pageConnected=true，然後提醒使用者重新啟動客戶端以載入新設定。要操作哪塊畫板，讓使用者在 KaiBoard 裡開啟它即可。",
+  agent_instructionTokenOnly: "舊令牌已失效。只需把 KaiBoard MCP 設定裡的 KAIBOARD_TOKEN 換成下面這個，其餘不用動：\n\n若你還沒接過 KaiBoard，請讓使用者回面板點複製設定動作取完整接入指令。\n\n新令牌：",
   agent_viewInstruction: "查看接入指令",
   agent_advanced: "進階設定",
   agent_relayUrlHint: "一般使用者無需改動。僅當預設的 127.0.0.1:8787 連接埠被其它程式佔用、連不上時，才需要在這裡改成其它位址並點「測試連線」。",
@@ -467,7 +473,7 @@ const zhTW: Dict = {
 
   // 帮助弹窗
   help_officialSite: "官方網站",
-  help_agentGuide: "Agent 共繪指南",
+  help_agentGuide: "幫助與指南",
 
   // 空畫板歡迎屏（复用 Excalidraw WelcomeScreen）
   welcome_menuHint: "在左側檔案樹新建、整理畫板",
@@ -573,10 +579,13 @@ const agentStringsEn = {
   agent_testBad: "Connection failed: HTTP {code}",
   agent_testUnreachable: "Unreachable: the local relay is not running. Ask your Agent to start the relay first, then click 'Re-detect'.",
   agent_instructionCopied: "Copied ✓ paste into your Agent's MCP config and remind the user to restart the client",
+  agent_tokenUpdatedToast: "Copied ✓ Send the new token to your Agent — it will replace KAIBOARD_TOKEN in the MCP config",
   agent_relayRegen: "Regenerate",
   agent_relayMismatch: "Token mismatch: the relay holds a different token than this page (it may have been rotated). Click 'Update token & re-copy' to send the new token to your Agent.",
   // —— Full access instruction (NL steps + embedded MCP config with token, copy whole block to Agent) ——
-  agent_instruction: "Add the following config to your MCP settings (write it into mcpServers the way your client expects — e.g. Claude Desktop / Cursor / Cline / WorkBuddy config file).\n\nKAIBOARD_TOKEN is a fixed token generated by this page (you don't need to and cannot change it). After writing it, remind the user to restart their Agent client so the new config loads, and keep the KaiBoard web page open in the browser with \"Agent Collab\" enabled (the relay only runs while that page session is alive).\n\nPrerequisite: the Agent client and the KaiBoard page must run on the same machine (both can reach 127.0.0.1:8787). Once connected you get 12 tools (prefix kbfs_): kbfs_list_boards to list boards, kbfs_get_board to read elements, kbfs_add_element to write elements, etc.; call kbfs_list_capabilities first to discover all capabilities. Open the board you want to work on in KaiBoard and you're ready.\n\nIf the user later clicks \"Regenerate token\", the old token becomes invalid (the page shows a mismatch) — ask the user to return to the panel and click \"Update token & re-copy\" to send you the new token.\n\nConfig:",
+  agent_instruction: "Please wire KaiBoard's whiteboard tools into my setup. If you have already connected before, just update the token and skip the rest.\n\n① [MCP server] Merge the block below into your mcpServers (write it the way your client expects — e.g. Claude Desktop / Cursor / VS Code / Codex / WorkBuddy):",
+  agent_instructionAfter: "② [Skill] Install skills/kaiboard-draw from https://github.com/ChasenKai/kaiboard-skills into your skills directory (for clients that support Agent Skills; skip if already installed).\n\n③ [Prerequisite] You and the KaiBoard page must be on the same machine (both can reach 127.0.0.1:8787), and the user must have the KaiBoard web page open with \"Agent co-draw\" enabled — the relay runs only while that page session is alive.\n\nWhen done, call kbfs_list_capabilities once and confirm pageConnected=true, then remind the user to restart their client so the new config loads. To work on a board, just ask the user to open it in KaiBoard.",
+  agent_instructionTokenOnly: "The old token is no longer valid. Just replace KAIBOARD_TOKEN in the KaiBoard MCP config with the value below — nothing else needs to change:\n\nIf you have never connected to KaiBoard before, ask the user to go back to the panel and copy the full setup instructions instead.\n\nNew token:",
   agent_viewInstruction: "View access instruction",
   agent_advanced: "Advanced",
   agent_relayUrlHint: "Most users never need to change this. Only edit it (and click 'Test connection') if the default 127.0.0.1:8787 port is taken by another app and the connection fails.",
@@ -720,7 +729,7 @@ const en: Dict = {
 
   // Help dialog
   help_officialSite: "Official Site",
-  help_agentGuide: "Agent Co-draw Guide",
+  help_agentGuide: "Help & guides",
 
   // Empty-board welcome screen (reusing Excalidraw WelcomeScreen)
   welcome_menuHint: "Create and organize boards in the file tree on the left",

@@ -74,7 +74,17 @@ function buildAgentInstruction(token: string): string {
     null,
     2,
   );
-  return `${t("agent_instruction")}\n${cfg}`;
+  // 结构：① 说明（含 MCP 段）→ JSON 配置 → ② Skill 安装 + ③ 前提 + 收尾自检。
+  return `${t("agent_instruction")}\n${cfg}\n\n${t("agent_instructionAfter")}`;
+}
+
+/**
+ * 「换令牌」短版：页面**确实知道**用户刚点过「更新令牌并重新复制」，此时 Skill 多半已装好、
+ * MCP 也配过 —— 只需让 Agent 改一个环境变量，不必再来一遍整套安装步骤。
+ * （设计依据：OFFICIAL_SKILL_PLAN §2.2(b)）
+ */
+function buildAgentTokenUpdate(token: string): string {
+  return `${t("agent_instructionTokenOnly")}\n${token}`;
 }
 
 export function useIntegration(deps: AgentIntegrationDeps) {
@@ -276,8 +286,9 @@ export function useIntegration(deps: AgentIntegrationDeps) {
     await setSetting("agentRelayToken", nt);
     await discoverRelayToken(agentRelayUrl);
     try {
-      await navigator.clipboard.writeText(buildAgentInstruction(nt));
-      showToast(t("agent_instructionCopied"));
+      // 轮换场景 → 用「短版」：只让 Agent 换 token，不给整套安装步骤。
+      await navigator.clipboard.writeText(buildAgentTokenUpdate(nt));
+      showToast(t("agent_tokenUpdatedToast"));
     } catch {
       showToast(t("agent_copyFail"));
     }
