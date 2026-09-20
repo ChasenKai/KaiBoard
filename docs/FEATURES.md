@@ -22,7 +22,7 @@
 
 ## 功能总览
 
-KaiBoard 的能力按"用户价值"分为七组，下文逐组展开：
+KaiBoard 的能力按"用户价值"分为八组，下文逐组展开：
 
 1. **本地优先与数据安全** —— 数据存你自己的设备、无账号、不上传；可选指向本地文件夹。
 2. **多画板工作区（核心）** —— 文件树式的多文件夹 / 多画板组织、拖拽、回收站、搜索。
@@ -30,18 +30,20 @@ KaiBoard 的能力按"用户价值"分为七组，下文逐组展开：
 4. **中英文手写与本地化体验** —— 中英文手写字体（中文 Xiaolai + 英文 Virgil）、简 / 繁 / 英三语、明暗主题。
 5. **上手与引导** —— 首次启动引导、空画板欢迎屏、元素批注。
 6. **画板间跳转链接（🔶 实验特性）** —— 可用但价值未验证，不作卖点。
-7. **底层、致谢与两层设置** —— 绘图内核来自 Excalidraw、致谢、两层设置边界。
+7. **Agent 共绘（可选）** —— 让 AI Agent 直接在你当前打开的的画板上作图；默认关闭，不用它完全无感。
+8. **底层、致谢与两层设置** —— 绘图内核来自 Excalidraw、致谢、两层设置边界。
 
-> 关于"规划中"的能力，见文末「八、规划中」。
+> 关于"规划中"的能力，见文末「九、规划中」。
 
-**English — seven groups:**
+**English — eight groups:**
 1. **Local-first & data safety** — data on your device, no account, no upload; optional folder storage.
 2. **Multi-board workspace (core)** — folder-tree of boards, drag, trash, search.
 3. **Import / export & cross-device migration** — native `.excalidraw` exchange, workspace backup, parallel-merge migration, PPTX export.
 4. **Chinese & localization** — Chinese handwriting font, Simplified/Traditional/English UI, light & dark themes.
 5. **Onboarding** — first-run guide, empty-board welcome, element comments.
 6. **Inter-board links (🔶 experimental)** — usable but value unverified; not a selling point.
-7. **Engine, credits & two settings layers** — drawing engine from Excalidraw, credits, two settings boundaries.
+7. **Agent co-draw (optional)** — let an AI Agent draw on the board you have open; off by default, invisible if you don't use it.
+8. **Engine, credits & two settings layers** — drawing engine from Excalidraw, credits, two settings boundaries.
 
 ---
 
@@ -205,7 +207,27 @@ Excalidraw 本身是**单画布**工具：一次只编辑一个场景，没有"�
 
 ---
 
-## 七、底层、致谢与两层设置
+## 七、Agent 共绘（可选）
+
+> **默认关闭。** 不用它的人完全无感 —— 不开就没有任何 AI 相关的界面与网络行为。
+
+开启后，AI Agent 可以直接在你**当前打开的画板**上作图：
+
+- **实时共绘**：Agent 在你的画布上实时增删改元素 —— 当场可见，并且可以 `Ctrl+Z` 撤销，不需要导出 / 导入的来回。
+- **一键接入**：设置面板里点「复制配置给 Agent」，把拿到的那段内容交给你的 AI 助手，重启客户端加载配置即可；要换令牌，点「更新令牌并重新复制」。
+- **活跃指示**：Agent 在某块画板上写入时，左侧文件树对应节点会持续高亮一段时间，停手后自动淡出；顶栏另有共绘状态点。
+- **安全网**：整板替换前自动留存快照（最多 20 份），可随时还原。
+- **数据不出本机**：中继只监听 `127.0.0.1`，画布数据不向任何外部服务器发送；令牌由你显式授权，关闭开关即断开。
+
+**边界**：需要外部的 MCP 客户端配合；不在本机启动中继时，KaiBoard 自身**不开任何监听端口**。
+
+**🇬🇧 English.** Optional — **off by default**, with no AI surface and no extra network behavior unless you turn it on. Once enabled, an AI Agent can draw directly on the board you have open: live edits, undoable with `Ctrl+Z`, and no export/import round-trip. Setup is one click ("Copy config to Agent"), and a token-rotation button re-copies it for you. While the Agent writes to a board, its sidebar node stays highlighted and fades out after it stops; the top bar shows a co-draw status dot. Whole-board replacements keep an automatic snapshot (up to 20) that you can restore. All traffic stays on `127.0.0.1` — board data never leaves your machine; turning the switch off disconnects. It requires an external MCP client; KaiBoard itself opens no listening port.
+
+**相关文档**：[`docs/AGENT.md`](./AGENT.md)（怎么接、能做什么、边界在哪）· [`docs/SECURITY.md`](./SECURITY.md)（安全模型）
+
+---
+
+## 八、底层、致谢与两层设置
 
 ### 1. 关于底层与致谢
 - **画布内核 100% 来自开源 Excalidraw**：画笔、形状、文本、箭头、图片、框架、无限画布等绘图能力，均由 [Excalidraw](https://github.com/excalidraw/excalidraw)（MIT 许可）提供。KaiBoard 在其之上补齐"多画板组织 / 本地优化 / 壳层能力"，绘图内核未做修改。
@@ -227,8 +249,8 @@ Excalidraw 本身是**单画布**工具：一次只编辑一个场景，没有"�
 
 ---
 
-## 八、规划中
+## 九、规划中
 
 - 更多扩展能力仍在评估与验证中，成熟后随版本升级逐步释放，不在发布说明中提前预告。
 
-**🇬🇧 English.** The current base edition focuses on local-first whiteboard capabilities; further extensions are under internal evaluation. Mature ones ship gradually in later versions — not pre-announced in this release.
+**🇬🇧 English.** Further extensions are under evaluation and verification. Mature ones ship gradually in later versions — not pre-announced in this release.
