@@ -31,7 +31,7 @@ KaiBoard stands on the work of others. Our thanks to everyone below.
 
 > **This repository does not redistribute font binaries.** They are generated at build time from the installed `@excalidraw/excalidraw` dependency — see `scripts/prepare-fonts.mjs`. The repository itself stays plain text.
 >
-> Full licence texts and per-dependency attributions: [`THIRD_PARTY_LICENSES`](./THIRD_PARTY_LICENSES).
+> Full licence texts and per-dependency attributions: [`THIRD_PARTY_LICENSES.md`](./THIRD_PARTY_LICENSES.md).
 
 ### Inspiration
 
@@ -73,7 +73,7 @@ KaiBoard 站在别人的肩膀上。感谢以下每一位。
 
 > **本仓不重新分发字体二进制**。它们在构建时从已安装的 `@excalidraw/excalidraw` 依赖生成 —— 见 `scripts/prepare-fonts.mjs`。仓库本身保持纯文本。
 >
-> 完整许可文本与逐依赖署名：[`THIRD_PARTY_LICENSES`](./THIRD_PARTY_LICENSES)。
+> 完整许可文本与逐依赖署名：[`THIRD_PARTY_LICENSES.md`](./THIRD_PARTY_LICENSES.md)。
 
 ### 灵感来源
 
@@ -88,4 +88,4 @@ KaiBoard 站在别人的肩膀上。感谢以下每一位。
 
 ---
 
-> 📎 相关：[`THIRD_PARTY_LICENSES`](./THIRD_PARTY_LICENSES)（逐依赖许可与署名）· [`LICENSE`](./LICENSE)（本产品 MIT）
+> 📎 相关：[`THIRD_PARTY_LICENSES.md`](./THIRD_PARTY_LICENSES.md)（逐依赖许可与署名）· [`LICENSE`](./LICENSE)（本产品 MIT）
