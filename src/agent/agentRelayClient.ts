@@ -24,6 +24,8 @@ interface RelayCmd {
   ids?: string[] | string;
   name?: string;
   parentId?: string | null;
+  /** renameFolder：目标文件夹 id */
+  folderId?: string;
   mermaid?: string;
   source?: KbSource | string;
   opts?: CmdMsg["opts"];
@@ -92,6 +94,7 @@ async function pollLoop() {
             ids: relayCmd.ids,
             name: relayCmd.name,
             parentId: relayCmd.parentId,
+            folderId: relayCmd.folderId,
             mermaid: relayCmd.mermaid,
             source: relayCmd.source,
             opts: relayCmd.opts,
