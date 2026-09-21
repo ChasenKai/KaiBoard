@@ -94,6 +94,8 @@ export interface CmdMsg {
   /** A1 createBoard：新画板名 / 目标父文件夹（缺省根层） */
   name?: string;
   parentId?: string | null;
+  /** renameFolder：目标文件夹 id */
+  folderId?: string;
   /** fromMermaid：mermaid 源码 */
   mermaid?: string;
   /** 源随图走 */
