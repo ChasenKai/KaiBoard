@@ -21,6 +21,8 @@ import {
   listNodes as dbListNodes,
   getMaxOrder as dbGetMaxOrder,
   trashNode as dbTrashNode,
+  listTrashRoots as dbListTrashRoots,
+  restoreNode as dbRestoreNode,
 } from "../db";
 import type { BoardData, FileNode } from "../db";
 // 仅类型导入（编译期擦除、零运行时成本）：把 BridgeAPI 锚定到 Excalidraw 的**真实签名**，
@@ -94,8 +96,12 @@ export interface CmdMsg {
   /** A1 createBoard：新画板名 / 目标父文件夹（缺省根层） */
   name?: string;
   parentId?: string | null;
-  /** renameFolder：目标文件夹 id */
+  /** renameFolder / deleteFolder：目标文件夹 id */
   folderId?: string;
+  /** moveNode / reorderNode / restoreNode：目标节点 id */
+  nodeId?: string;
+  /** reorderNode：同层排序权重 */
+  order?: number;
   /** fromMermaid：mermaid 源码 */
   mermaid?: string;
   /** 源随图走 */
@@ -445,7 +451,16 @@ export function createAppStorageAdapter(api: BridgeAPI, currentBoardId: string |
       broadcastTreeChanged(id);
       broadcastAgentActivity(id);
     },
-    /** deleteBoard：软删除（进回收站，可还原），随后刷新文件树。
+    /** listTrash：回收站顶层条目（仅用户直接删除的那一层）。 */
+    async listTrash(): Promise<FileNode[]> {
+      return dbListTrashRoots();
+    },
+    /** restoreNode：从回收站递归还原，随后刷新文件树。 */
+    async restoreNode(id: string): Promise<void> {
+      await dbRestoreNode(id);
+      broadcastTreeChanged(id);
+    },
+    /** deleteBoard / deleteFolder：软删除（进回收站，可还原），随后刷新文件树。
      *  刻意不发活跃事件：该节点随即从树上消失，点它没有意义。 */
     async trashNode(id: string): Promise<void> {
       await dbTrashNode(id);
