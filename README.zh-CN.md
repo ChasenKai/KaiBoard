@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="./assets/hero.png" alt="KaiBoard — 免费开源、本地优先的中英文手写风无限白板" width="100%">
+  <img src="./assets/hero.png" alt="KaiBoard — 免费开源、本地优先的中英文手写风无限白板；可选 Agent 共绘" width="100%">
 </p>
 
 # KaiBoard
