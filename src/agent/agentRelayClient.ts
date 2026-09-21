@@ -24,8 +24,12 @@ interface RelayCmd {
   ids?: string[] | string;
   name?: string;
   parentId?: string | null;
-  /** renameFolder：目标文件夹 id */
+  /** renameFolder / deleteFolder：目标文件夹 id */
   folderId?: string;
+  /** moveNode / reorderNode / restoreNode：目标节点 id */
+  nodeId?: string;
+  /** reorderNode：同层排序权重 */
+  order?: number;
   mermaid?: string;
   source?: KbSource | string;
   opts?: CmdMsg["opts"];
@@ -83,22 +87,9 @@ async function pollLoop() {
         reportStatus("connected");
         const relayCmd = (await res.json()) as RelayCmd;
         if (relayCmd && relayCmd.cmd) {
-          const cmdMsg: CmdMsg = {
-            type: "kaiboard-agent-cmd",
-            id: relayCmd.id,
-            token: kaiToken,
-            cmd: relayCmd.cmd,
-            elements: relayCmd.elements,
-            boardId: relayCmd.boardId,
-            patches: relayCmd.patches,
-            ids: relayCmd.ids,
-            name: relayCmd.name,
-            parentId: relayCmd.parentId,
-            folderId: relayCmd.folderId,
-            mermaid: relayCmd.mermaid,
-            source: relayCmd.source,
-            opts: relayCmd.opts,
-          };
+          // 透传：不再按字段逐个「重建」—— 白名单漏字段会导致命令静默失效
+          //（folderId 就是这么丢过一次）。这里只补本客户端特有的 type / token。
+          const cmdMsg: CmdMsg = { ...relayCmd, type: "kaiboard-agent-cmd", token: kaiToken };
           // 用实时回调取当前画板，避免读 setting 读到 stale 值导致 write path 误判
           const activeBoardId = getBoardIdRef?.() || "";
           const resp = await executeCommand(apiRef, kaiToken, () => {}, cmdMsg, activeBoardId || undefined);
