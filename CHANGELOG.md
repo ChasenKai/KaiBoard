@@ -23,8 +23,8 @@
 本版把「Agent 共绘」内建为 KaiBoard 的一部分：AI Agent 可以直接在你正在看的画布上作图。**默认关闭，开关始终在你手上。**
 This release builds Agent co-draw into KaiBoard: an AI Agent can draw directly on the board you have open. **Off by default; the switch is always yours.**
 
-- **实时共绘**：在设置里开启后，Agent 直接作用于你当前打开的画板，增删改元素当场可见、可撤销，无需导出 / 导入的来回。
-  **Live co-draw**: once enabled in Settings, the Agent works on the board you have open — changes appear immediately and stay undoable, with no export/import round-trip.
+- **实时共绘**：在 **AI 面板**里开启后，Agent 直接作用于你当前打开的画板，增删改元素当场可见、可撤销，无需导出 / 导入的来回。
+  **Live co-draw**: once enabled in the **AI Panel**, the Agent works on the board you have open — changes appear immediately and stay undoable, with no export/import round-trip.
 - **一键接入**：面板里点「复制配置给 Agent」，把整段内容发给你的助手，重启客户端加载配置即可；换令牌只需点「更新令牌并重新复制」。
   **One-click setup**: click "Copy config to Agent" and hand the block to your assistant, then restart the client. To rotate the token, click "Update token & re-copy".
 - **活跃指示**：Agent 在某块画板上写入时，左侧文件树对应节点会持续高亮一段时间，停手后自动淡出；顶栏同时显示共绘状态点。
