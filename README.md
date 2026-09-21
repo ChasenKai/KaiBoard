@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="./assets/hero.png" alt="KaiBoard — free, open-source, local-first infinite whiteboard with Chinese & English handwriting" width="100%">
+  <img src="./assets/hero.png" alt="KaiBoard — free, open-source, local-first infinite whiteboard with Chinese & English handwriting; optional Agent co-draw" width="100%">
 </p>
 
 # KaiBoard
@@ -49,7 +49,7 @@ See [`docs/FEATURES.md`](docs/FEATURES.md) for the full feature list, [`docs/AGE
 </p>
 <p align="center"><em>Fig. 3 · Feature overview</em></p>
 
-<sub>* All images come from KaiBoard's **real running UI** and **real canvas exports** — nothing is a mockup. Board content is co-drawn by Kai and his AI agent, Buddy.</sub>
+<sub>* All images come from KaiBoard's <strong>real running UI</strong> and <strong>real canvas exports</strong> — nothing is a mockup. Board content is co-drawn by Kai and his AI agent, Buddy.</sub>
 
 
 ## 🚀 Quick start
