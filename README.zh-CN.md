@@ -43,12 +43,20 @@
 <p align="center">
   <img src="./assets/screenshot-welcome.png" alt="KaiBoard 空欢迎界面与侧栏文件树" width="100%">
 </p>
-<p align="center"><em>空欢迎界面与侧栏多画板文件树。</em></p>
+<p align="center"><em>图 1 · 空欢迎界面与侧栏多画板文件树</em></p>
 
 <p align="center">
   <img src="./assets/screenshot-howto.png" alt="如何使用 KaiBoard · 基础功能导览" width="100%">
 </p>
-<p align="center"><em>如何使用 KaiBoard —— 基础功能快速导览。</em></p>
+<p align="center"><em>图 2 · 如何使用 KaiBoard</em></p>
+
+<p align="center">
+  <img src="./assets/screenshot-features.png" alt="KaiBoard 功能介绍 —— 六张能力卡总览" width="100%">
+</p>
+<p align="center"><em>图 3 · 功能介绍</em></p>
+
+<sub>* 本文配图均来自 KaiBoard 的<strong>真实运行界面</strong>与<strong>真实画板导出</strong>；画板类内容由 Kai 与他的 AI Agent「Buddy」共绘。</sub>
+
 
 > **⚙ 两层设置，各管各的**：KaiBoard 现在有两处设置——① **画布内设置**（Excalidraw 自带，如视图缩放、主题、导出、快捷键等，由 Excalidraw 控制）；② **外壳设置**（右上角 ⚙，管语言、存储位置，以及我们新增的导入/导出备份、双链等入口）。两者职责不同、互不影响。
 

@@ -37,12 +37,20 @@ See [`docs/FEATURES.md`](docs/FEATURES.md) for the full feature list, [`docs/AGE
 <p align="center">
   <img src="./assets/screenshot-welcome.png" alt="KaiBoard welcome screen with sidebar file tree" width="100%">
 </p>
-<p align="center"><em>Welcome screen with the multi-board sidebar file tree.</em></p>
+<p align="center"><em>Fig. 1 · Welcome screen &amp; multi-board sidebar tree</em></p>
 
 <p align="center">
   <img src="./assets/screenshot-howto.png" alt="How to use KaiBoard — basic features walkthrough" width="100%">
 </p>
-<p align="center"><em>How to use KaiBoard — a quick tour of the basics.</em></p>
+<p align="center"><em>Fig. 2 · How to use KaiBoard</em></p>
+
+<p align="center">
+  <img src="./assets/screenshot-features.png" alt="KaiBoard feature overview — six capability cards" width="100%">
+</p>
+<p align="center"><em>Fig. 3 · Feature overview</em></p>
+
+<sub>* All images come from KaiBoard's **real running UI** and **real canvas exports** — nothing is a mockup. Board content is co-drawn by Kai and his AI agent, Buddy.</sub>
+
 
 ## 🚀 Quick start
 
