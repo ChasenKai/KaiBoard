@@ -57,6 +57,8 @@
 </p>
 <p align="center"><em>图 3 · 可乐 Kele —— 每一笔都是可编辑图元，不是贴图</em></p>
 
+<p align="center"><sub>😹 <strong>Agent 也有翻车的时候</strong>：这张就是手绘能力不够时画出来的。不同 AI / Agent 的绘画能力差异很大，也跟它对画布的理解、平时「练」得多不多有关 —— 换个模型或让它多画几次，效果会明显不同。（这一张我们故意留着，因为真实比完美更有用。）</sub></p>
+
 <p align="center">
   <img src="./assets/screenshot-welcome.png" alt="KaiBoard 空欢迎界面与侧栏文件树" width="100%">
 </p>

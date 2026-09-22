@@ -51,6 +51,8 @@ See [`docs/FEATURES.md`](docs/FEATURES.md) for the full feature list, [`docs/AGE
 </p>
 <p align="center"><em>Fig. 3 · Kele — every stroke is an editable element, not an image</em></p>
 
+<p align="center"><sub>😹 <strong>Agents flop too</strong> — this one came out of a weaker drawing attempt. Different AI agents vary a lot in how well they draw, and in how well they understand a canvas; switch models or just let it draw a few more times and the result changes a lot. We kept this one on purpose — honest beats perfect.</sub></p>
+
 <p align="center">
   <img src="./assets/screenshot-welcome.png" alt="KaiBoard welcome screen with sidebar file tree" width="100%">
 </p>
