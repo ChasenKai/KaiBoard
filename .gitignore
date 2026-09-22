@@ -29,3 +29,10 @@ public/favicon.png
 
 # 社交分享预览图：GitHub 仓库里不存二进制，发布后在 GitHub Settings 上传
 .github/social-preview.png
+
+# 私有工作区双保险：即使将来出现同名目录也绝不提交（internal/ 等实为本仓兄弟目录，见上）
+internal/
+
+# Python 字节码（scripts/ 下运行脚本会生成）
+__pycache__/
+*.pyc
