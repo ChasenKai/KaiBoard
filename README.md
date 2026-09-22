@@ -35,22 +35,38 @@ See [`docs/FEATURES.md`](docs/FEATURES.md) for the full feature list, [`docs/AGE
 ## 📸 Screenshots
 
 <p align="center">
+  <img src="./assets/agent-interaction.png" alt="KaiBoard Agent co-draw — the three on-screen cues: top bar badge, sidebar row marker, and the Agent cursor on the canvas" width="100%">
+</p>
+<p align="center"><em>Fig. 1 · Agent co-draw — three cues you can see on screen</em></p>
+
+<p align="center"><sub>① Top bar: the “Agent drawing / ready” pill with a breathing dot. ② Sidebar: that board's row gets a soft green tint, a breathing ring and a trailing “· Agent”. ③ Canvas: a green collaborator cursor with an “Agent” name tag, plus the elements it just wrote.</sub></p>
+
+<p align="center">
+  <img src="./assets/showcase-what-you-can-draw.png" alt="What you can draw on this board — flowcharts, system diagrams, illustrations, icons, handwriting" width="100%">
+</p>
+<p align="center"><em>Fig. 2 · What you can draw on it</em></p>
+
+<p align="center">
+  <img src="./assets/kele.png" alt="Kele the cat, drawn entirely with editable vector elements on the canvas" width="100%">
+</p>
+<p align="center"><em>Fig. 3 · Kele — every stroke is an editable element, not an image</em></p>
+
+<p align="center">
   <img src="./assets/screenshot-welcome.png" alt="KaiBoard welcome screen with sidebar file tree" width="100%">
 </p>
-<p align="center"><em>Fig. 1 · Welcome screen &amp; multi-board sidebar tree</em></p>
+<p align="center"><em>Fig. 4 · Welcome screen &amp; multi-board sidebar tree</em></p>
 
 <p align="center">
   <img src="./assets/screenshot-howto.png" alt="How to use KaiBoard — basic features walkthrough" width="100%">
 </p>
-<p align="center"><em>Fig. 2 · How to use KaiBoard</em></p>
+<p align="center"><em>Fig. 5 · How to use KaiBoard</em></p>
 
 <p align="center">
   <img src="./assets/screenshot-features.png" alt="KaiBoard feature overview — six capability cards" width="100%">
 </p>
-<p align="center"><em>Fig. 3 · Feature overview</em></p>
+<p align="center"><em>Fig. 6 · Feature overview</em></p>
 
 <sub>* All images come from KaiBoard's <strong>real running UI</strong> and <strong>real canvas exports</strong> — nothing is a mockup. Board content is co-drawn by Kai and his AI agent, Buddy.</sub>
-
 
 ## 🚀 Quick start
 

@@ -41,26 +41,38 @@
 ## 📸 截图
 
 <p align="center">
+  <img src="./assets/agent-interaction.png" alt="KaiBoard Agent 共绘 —— 界面上能看到的三个提示：顶栏角标、侧栏行标记、画布上的 Agent 光标" width="100%">
+</p>
+<p align="center"><em>图 1 · Agent 共绘 —— 界面上能看到的三个提示</em></p>
+
+<p align="center"><sub>① 顶栏：「Agent 共绘中 / 就绪」胶囊 + 呼吸圆点。② 左侧树：该板那行淡绿底 + 呼吸环 + 行尾「· Agent」。③ 画布：绿色协作者光标（带「Agent」名牌），以及它刚写入的元素。</sub></p>
+
+<p align="center">
+  <img src="./assets/showcase-what-you-can-draw.png" alt="这块白板上你能画出什么 —— 流程图、系统架构图、插画、图标、手写" width="100%">
+</p>
+<p align="center"><em>图 2 · 在这块白板上你能画出什么</em></p>
+
+<p align="center">
+  <img src="./assets/kele.png" alt="可乐 Kele —— 全部由画布上可编辑的矢量图元画出，不是图片" width="100%">
+</p>
+<p align="center"><em>图 3 · 可乐 Kele —— 每一笔都是可编辑图元，不是贴图</em></p>
+
+<p align="center">
   <img src="./assets/screenshot-welcome.png" alt="KaiBoard 空欢迎界面与侧栏文件树" width="100%">
 </p>
-<p align="center"><em>图 1 · 空欢迎界面与侧栏多画板文件树</em></p>
+<p align="center"><em>图 4 · 空欢迎界面与侧栏多画板文件树</em></p>
 
 <p align="center">
   <img src="./assets/screenshot-howto.png" alt="如何使用 KaiBoard · 基础功能导览" width="100%">
 </p>
-<p align="center"><em>图 2 · 如何使用 KaiBoard</em></p>
+<p align="center"><em>图 5 · 如何使用 KaiBoard</em></p>
 
 <p align="center">
   <img src="./assets/screenshot-features.png" alt="KaiBoard 功能介绍 —— 六张能力卡总览" width="100%">
 </p>
-<p align="center"><em>图 3 · 功能介绍</em></p>
+<p align="center"><em>图 6 · 功能介绍</em></p>
 
 <sub>* 本文配图均来自 KaiBoard 的<strong>真实运行界面</strong>与<strong>真实画板导出</strong>；画板类内容由 Kai 与他的 AI Agent「Buddy」共绘。</sub>
-
-
-> **⚙ 两层设置，各管各的**：KaiBoard 现在有两处设置——① **画布内设置**（Excalidraw 自带，如视图缩放、主题、导出、快捷键等，由 Excalidraw 控制）；② **外壳设置**（右上角 ⚙，管语言、存储位置，以及我们新增的导入/导出备份、双链等入口）。两者职责不同、互不影响。
-
-> **🌐 语言范围**：画布内 Excalidraw 原生支持数十种语言（由 Excalidraw 提供，我们不改）；KaiBoard 外壳额外做了**简体中文 / 繁体中文 / 英文**三种最基础的语言（覆盖主要用户群）。外壳文本量小且为独立层，只能覆盖我们自己写的 UI，无法替 Excalidraw 增删语言。
 
 ## 🚀 快速开始
 
