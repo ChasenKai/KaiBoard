@@ -293,7 +293,9 @@ body {
   animation: toast-in .18s ease-out;
 }
 
-/* 隐藏 Excalidraw 原生帮助按钮（KaiBoard 已自建帮助入口；升级 Excalidraw 后需回归） */
+/* 隐藏 Excalidraw 原生帮助按钮（KaiBoard 已自建帮助入口）。
+   🔴 2026-09-22 查：@excalidraw/excalidraw@0.18.1 dist 里已搜不到 `help-icon`，本规则疑似失效。
+   上游耦合台账见 internal/docs/product/UPSTREAM_COUPLINGS.md §2-1（升级时照 §4 复查）。 */
 .help-icon { display: none !important; }
 
 /* ---------- 侧栏选中高亮（多选跨文件夹时一眼看清） ---------- */
