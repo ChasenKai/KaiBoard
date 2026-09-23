@@ -33,11 +33,19 @@ import type {
   SocketId,
 } from "@excalidraw/excalidraw/types";
 // 命令内核不再自带副本，改为引用单一真源
-// （同级 mcp 仓的 packages/core/src，经 vite alias @agent-core 引用）。
+// （来自 npm 包 @kaibuddy/kaiboard-core —— 不再跨仓引用源码，确保 CI/CF 能构建）。
 // 加/改命令只需改那一处，两侧（MCP --dir 模式 与 页面端 relay 模式）同时生效。
-import { executeCommand as coreExecuteCommand } from "@agent-core/executor";
-import { SNAPSHOT_KEY } from "@agent-core/snapshot";
-import type { StorageAdapter, AgentCommand, AgentCmd, KbSource, Snapshot } from "@agent-core/types";
+import {
+  executeCommand as coreExecuteCommand,
+  SNAPSHOT_KEY,
+} from "@kaibuddy/kaiboard-core";
+import type {
+  StorageAdapter,
+  AgentCommand,
+  AgentCmd,
+  KbSource,
+  Snapshot,
+} from "@kaibuddy/kaiboard-core";
 
 const MSG_CMD = "kaiboard-agent-cmd";
 const MSG_RESP = "kaiboard-agent-resp";

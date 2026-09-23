@@ -1,22 +1,16 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { fileURLToPath } from "node:url";
-
-// 命令内核单一真源 = ../mcp/packages/core/src（同级 mcp 仓）。
-// 页面端不自带 core 副本，改为经 @agent-core 引用同一份。
-const coreTarget = fileURLToPath(new URL("../mcp/packages/core/src", import.meta.url));
 
 // KaiBoard 构建配置
-// - base 设为 "/"：配合 window.EXCALIDRAW_ASSET_PATH="/"，字体/资源从站点根 /fonts 加载（离线自托管）
+// - 🔴 命令内核来自 npm 包 @kaibuddy/kaiboard-core —— **不要改回跨仓引用 ../mcp/packages/core/src**：
+//   本地能跑（同级目录），但 CI / Cloudflare Pages 只 clone app 仓，会以
+//   `Could not load .../mcp/packages/core/src/... ENOENT` 构建失败（2026-09-23 实测踩到，
+//   后果是产品站停更近一个月而 GitHub 上已发布）。
+// - base "/"：配合 window.EXCALIDRAW_ASSET_PATH="/"，字体/资源从站点根 /fonts 加载（离线自托管）
 // - optimizeDeps target es2022：Excalidraw 0.18 需要
 // - assetsInlineLimit 0：字体文件不内联，保持独立以便离线拷贝
 export default defineConfig({
   plugins: [react()],
-  resolve: {
-    alias: {
-      "@agent-core": coreTarget,
-    },
-  },
   base: "/",
   optimizeDeps: {
     esbuildOptions: {
