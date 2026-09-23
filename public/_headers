@@ -1,0 +1,15 @@
+# Cloudflare Pages 响应头配置
+#
+# 🔑 为什么需要它：CF Pages 会给「带内容哈希的资源」自动设长缓存（那些天然不会用错版本），
+#   但对「没有内容哈希的静态页」（如 help.html）**不设 Cache-Control** → 浏览器会做启发式缓存
+#   → 用户可能在一段时间内看到旧版。这个文件把那类页面显式声明为「每次回源校验」。
+#
+# 影响面：只改 HTTP 响应头，不改任何内容；每次访问多一次校验请求（几十毫秒）。
+#
+# 语法：路径一行 + 缩进的头（CF Pages _headers 规范）
+
+/help.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
