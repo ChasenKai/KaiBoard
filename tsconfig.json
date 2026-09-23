@@ -16,11 +16,8 @@
     "noUnusedParameters": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "baseUrl": ".",
-    "paths": {
-      "@agent-core/*": ["../mcp/packages/core/src/*"]
-    }
+    "baseUrl": "."
   },
-  "include": ["src", "../mcp/packages/core/src"],
+  "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
