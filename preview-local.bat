@@ -3,9 +3,8 @@ chcp 65001 >nul
 cd /d "%~dp0"
 
 echo ============================================
-echo  KaiBoard local preview (fixed URLs)
-echo    AI    version -^> http://localhost:3000
-echo    Basic version -^> http://localhost:3001
+echo  KaiBoard local preview (fixed URL)
+echo    -> http://localhost:3000
 echo  Data lives in your browser per-origin,
 echo  so these URLs keep your boards forever.
 echo  Close the two popup windows to stop.
