@@ -236,7 +236,7 @@ Excalidraw 本身是**单画布**工具：一次只编辑一个场景，没有"�
 
 ### 2. ⚙ 两层设置，各管各的
 - ① **画布内设置（Excalidraw 自带）**：通过画布左上 / 右上菜单（视图缩放、主题、导出、快捷键等），由 Excalidraw 控制，KaiBoard 不干预。
-  其中菜单里的「帮助」与「Excalidraw 社群入口」**已由 KaiBoard 移除** —— 用的是 Excalidraw 官方 children API（`<MainMenu>`），不是 CSS 硬隐藏。理由：KaiBoard 已有自己的帮助入口，而上游的 GitHub / Discord 链接在本产品里会让用户困惑。
+  其中菜单里的「帮助」与「Excalidraw 社群入口」**保留原样** —— 上游未提供稳定的关闭方式，**不做 CSS 硬隐藏**（那会依赖 DOM 结构，上游一改顺序就可能隐藏错项）。关系记录（帮助入口有几处、哪些已隐藏）见内部文档 `internal/docs/product/UPSTREAM_COUPLINGS.md`。
 - ② **外壳设置（KaiBoard ⚙）**：管语言、存储位置，以及 KaiBoard 新增的入口（导入 / 导出备份、跳转链接等）。
 - 两者职责不同、互不影响；若找不到某项设置，先看它在画布内还是在外壳里。
 
