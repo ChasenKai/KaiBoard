@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Excalidraw, FONT_FAMILY, restore, WelcomeScreen, sceneCoordsToViewportCoords } from "@excalidraw/excalidraw";
+import {
+  Excalidraw,
+  FONT_FAMILY,
+  MainMenu,
+  WelcomeScreen,
+  restore,
+  sceneCoordsToViewportCoords,
+} from "@excalidraw/excalidraw";
 import { FAVICON_DATA_URI } from "./favicon";
 
 import {
@@ -1919,6 +1926,21 @@ export default function App() {
               },
             }}
           >
+            {/* 自定义主菜单：走官方 children API（非 CSS hack）。
+                **刻意不放 MainMenu.DefaultItems.Help 与 Socials** ——
+                KaiBoard 已有自己的帮助入口（HelpDialog），而 Excalidraw 的
+                GitHub / Discord 社群链接在本产品里会让用户困惑。
+                ⚠️ 因为替换了整个菜单，上游若新增 DefaultItems 不会自动出现
+                → 上游耦合台账：internal/docs/product/UPSTREAM_COUPLINGS.md */}
+            <MainMenu>
+              <MainMenu.DefaultItems.Export />
+              <MainMenu.DefaultItems.SaveAsImage />
+              <MainMenu.DefaultItems.CommandPalette />
+              <MainMenu.DefaultItems.ClearCanvas />
+              <MainMenu.Separator />
+              <MainMenu.DefaultItems.ToggleTheme />
+              <MainMenu.DefaultItems.ChangeCanvasBackground />
+            </MainMenu>
             <WelcomeScreen>
               <WelcomeScreen.Center>
                 <div className="kb-brand">
