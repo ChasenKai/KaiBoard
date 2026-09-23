@@ -18,6 +18,25 @@ updates:
       - "dependencies"
     # 绘图内核是固定版本策略（见 README「依赖版本与升级策略」）：
     # 补丁与小版本可提 PR，**大版本要人工评估**（可能破坏 .excalidraw 兼容）。
+    # 🔴 以下大版本会破坏兼容，**显式挡住**（2026-09-23 判定）：
+    #  · react / react-dom 18→19：我们锁 @excalidraw/excalidraw@0.18.1，它要求 React 18
+    #  · typescript 5→7：TS 7 是 Go 重写，生态兼容未知
+    #  · @vitejs/plugin-react 4→6：需要 vite 6，我们仍在 vite 5
     ignore:
-      - dependency-name: "@excalidraw/excalidraw"
+      # @excalidraw 大版本可能破坏 .excalidraw 文件兼容（原有规则）
+      - dependency-name: "@excalidraw/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@vitejs/plugin-react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "vite"
         update-types: ["version-update:semver-major"]
