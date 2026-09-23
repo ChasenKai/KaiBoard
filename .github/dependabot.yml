@@ -1,0 +1,23 @@
+# Dependabot —— 依赖自动更新（含安全补丁，会提 PR）
+#
+# 为什么只配 npm：本仓只有 npm 依赖（package.json + lockfile）。
+# GitHub Actions 目前未在本仓使用；一旦引入 workflow，请把 github-actions 加回来。
+#
+# 判据（见 cks-dev-release-local/open-source.md「门面文件」）：**有依赖清单才配，无依赖的仓配了是噪音。**
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+    labels:
+      - "dependencies"
+    # 绘图内核是固定版本策略（见 README「依赖版本与升级策略」）：
+    # 补丁与小版本可提 PR，**大版本要人工评估**（可能破坏 .excalidraw 兼容）。
+    ignore:
+      - dependency-name: "@excalidraw/excalidraw"
+        update-types: ["version-update:semver-major"]
