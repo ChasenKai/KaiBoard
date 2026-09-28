@@ -295,7 +295,7 @@ body {
 
 /* 隐藏 Excalidraw 原生帮助按钮（KaiBoard 已自建帮助入口）。
    🔴 2026-09-22 查：@excalidraw/excalidraw@0.18.1 dist 里已搜不到 `help-icon`，本规则疑似失效。
-   上游耦合台账见 internal/docs/product/UPSTREAM_COUPLINGS.md §2-1（升级时照 §4 复查）。 */
+   ⚠️ 本规则依赖上游 DOM 结构 —— 升级 Excalidraw 时须复查该选择器是否仍有效。 */
 .help-icon { display: none !important; }
 
 /* ---------- 侧栏选中高亮（多选跨文件夹时一眼看清） ---------- */
