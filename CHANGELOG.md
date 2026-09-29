@@ -18,48 +18,16 @@
 
 ## 当前版本 / Current version
 
-### v2.0.0-beta.2（2026-09-29）· 备份不再残缺 + 切回浏览器存储前先问 / Complete backups & ask before resetting storage
+### v2.0.0-beta.2（2026-09-29）· 存储与备份可靠性 / Storage & backup reliability
 
-修一个**会导致备份静默残缺**的问题：读文件夹里的画板时，原本整个枚举共用一个
-try —— 只要有一个文件读不出来（最典型：卡死/崩溃时留下的 0 字节 `.crswap` 临时文件），
-**整个枚举就中断，只返回已经读到的前几个**。实测 21 块画板只导出了 4 块，
-用户拿到残缺备份却以为问题出在导入。
-Fixes a bug that **silently produced incomplete backups**: reading the boards folder used a
-single `try` around the whole enumeration, so one unreadable file (typically a 0-byte `.crswap`
-left behind by a freeze/crash) **aborted the whole loop and returned only the boards read so far**.
-In practice 21 boards exported as 4, and the loss looked like an import problem.
+本版集中修正**存储可靠性**：图片不再跨画板复制、备份不再残缺、切换存储前会先问清楚。
+This build focuses on **storage reliability**: images no longer spread across boards, backups are no
+longer incomplete, and switching storage now asks first.
 
-- 逐文件隔离：坏一个只跳过那一个，其余照常读出；同时显式跳过 `.crswap` 等非画板文件。
-  Per-file isolation: one bad file is skipped alone; non-board files such as `.crswap` are ignored.
-- 导出全部前会**核对完整性**：缺了哪几块画板、跳过了哪些坏文件，都明确告诉你，由你决定是否继续。
-  "Export all" now **verifies completeness** first and names any missing board or skipped file,
-  leaving the decision to you.
-- 「切回浏览器存储」不再默默覆盖：两边都有数据时先问你要留下哪边的
-  （**用文件夹覆盖浏览器 / 保留浏览器里的数据 / 两边合并**），避免浏览器里残留的旧画板被默默带进来。
-  "Reset to browser storage" no longer silently overwrites: when both sides hold data it asks which
-  to keep (**overwrite browser with folder / keep the browser's data / merge both**), so stale boards
-  in the browser are not carried in unnoticed.
-- 「选择文件夹」的选项也改成同样的说法（**用文件夹覆盖浏览器 / 用浏览器覆盖文件夹 / 两边合并**），
-  两个方向一眼就能对上。
-  The folder‑selection dialog now uses the same phrasing (**overwrite browser with folder /
-  overwrite folder with browser / merge both**) so the two directions read the same way.
-
----
-
-### v2.0.0-beta.1（2026-09-29）· 图片不再跨画板复制 / Stop images from spreading across boards
-
-修补上一版遗漏的同类问题：除主保存路径外，**导出、复制、Agent 写入、导入、覆盖/合并文件夹、
-切回浏览器存储**等其他落盘入口此前仍会把「当前会话用过的全部图片」写进目标画板。
-现已统一为同一套裁剪口径。
-Fixes the same class of issue missed in the previous build: other save paths — **export, duplicate,
-Agent writes, import, folder overwrite/merge, and switching back to browser storage** — still wrote
-every image used in the session into the target board. All paths now share one pruning rule.
-
-- 任何落盘一律只保留**该画板元素实际引用到的**图片，空画板不再携带任何图片。
-  Every save now keeps only the images **actually referenced by that board's elements**;
-  a board with no images stays empty.
-- 修复后不会再出现「没放过图的画板却存着图片」的持续膨胀。
-  No more steady growth from "boards that never had images yet store images".
+- 任何落盘一律只保留**该画板元素实际引用到的**图片；空画板不再携带任何图片，
+  也不会再出现「没放过图的画板却存着图片」的持续膨胀。
+  Every save now keeps only the images **actually referenced by that board's elements**; a board
+  with no images stays empty, so the workspace no longer grows from images it never used.
 - 修复「覆盖文件夹 / 合并文件夹」把本机全部画板一次性写出去时不做裁剪的问题
   （曾导致几十个画板同时被灌进同一张图）。
   Fixed folder overwrite/merge writing every local board without pruning
@@ -67,9 +35,24 @@ every image used in the session into the target board. All paths now share one p
 - 修复 Agent 写入远端画板时「元素换了新的、图片却沿用旧的」导致的不匹配。
   Fixed a mismatch when the Agent wrote to a non-open board:
   elements were replaced while images were left over from the old board.
-- 修复同一时刻被重复启动时，页面可能并存多个中继长轮询的问题。
-  Fixed duplicate relay long-polling loops when the client was started twice in one tick.
-
+- 修复同一个页面在同一时刻可能并存多个中继长轮询的问题（会成倍增加请求与内存占用）。
+  Fixed several duplicate relay long-polling loops coexisting in one page
+  (which multiplied both network traffic and memory use).
+- 修复**备份可能静默残缺**：读文件夹里的画板时，只要有一个文件读不出来
+  （最典型：卡死/崩溃时留下的 0 字节 `.crswap` 临时文件），整个读取就会中断、只带上已读到的前几个。
+  实测 21 块画板只导出了 4 块。现在改为逐文件隔离，并在导出前**核对完整性**、缺了什么都明确告诉你。
+  Fixed **silently incomplete backups**: one unreadable file in the boards folder (typically a
+  0-byte `.crswap` left by a freeze/crash) aborted the whole read and kept only the boards read so
+  far — 21 boards exported as 4. Reading is now per-file isolated, and "Export all" verifies
+  completeness first and names anything missing.
+- 「切回浏览器存储」不再默默覆盖：两边都有数据时先问你要留下哪边的，避免浏览器里残留的旧画板被默默带进来。
+  "Reset to browser storage" no longer silently overwrites: when both sides hold data it asks which
+  to keep, so stale boards left in the browser are not carried in unnoticed.
+- 「选择文件夹」与「切回浏览器存储」两个弹窗改用同一套说法
+  （**用文件夹覆盖浏览器 / 用浏览器覆盖文件夹 / 两边合并**），两个方向一眼就能对上。
+  The folder-selection and storage-reset dialogs now use the same wording
+  (**overwrite browser with folder / overwrite folder with browser / merge both**), so the two
+  directions read the same way.
 
 ---
 
