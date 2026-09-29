@@ -189,7 +189,7 @@ const zhCN: Dict = {
   set_actualFs: "文件夹存储",
   set_actualIdb: "浏览器内置数据库（默认）",
   set_permWarning:
-    "你选择的是文件夹存储，但浏览器对该文件夹的授权已失效 —— 数据现在其实存在浏览器里，不会写进文件夹。点下面的按钮重新授权即可恢复（只需点一次）。",
+    "浏览器已收回该文件夹的授权 —— 数据现在写进浏览器存储，不在文件夹里（不会丢，但不在你预期的位置）。重新授权时请在弹窗里选「允许」；选「仅本次允许」的话，下次打开会再次失效。",
   set_reauthorize: "重新授权文件夹",
   set_storageReauthed: "已重新授权，之后的改动会写进文件夹。",
   set_storageReauthFailed: "授权未通过（可能点了「不允许」）。数据仍存在浏览器里，可再试一次。",
@@ -453,7 +453,7 @@ const zhTW: Dict = {
   set_actualFs: "資料夾儲存",
   set_actualIdb: "瀏覽器內建資料庫（預設）",
   set_permWarning:
-    "你選擇的是資料夾儲存，但瀏覽器對該資料夾的授權已失效 —— 資料現在其實存在瀏覽器裡，不會寫進資料夾。點下面的按鈕重新授權即可恢復（只需點一次）。",
+    "瀏覽器已收回該資料夾的授權 —— 資料現在寫進瀏覽器儲存，不在資料夾裡（不會遺失，但不在你預期的位置）。重新授權時請在彈窗裡選「允許」；選「僅本次允許」的話，下次開啟會再次失效。",
   set_reauthorize: "重新授權資料夾",
   set_storageReauthed: "已重新授權，之後的變更會寫進資料夾。",
   set_storageReauthFailed: "授權未通過（可能點了「不允許」）。資料仍存在瀏覽器裡，可再試一次。",
@@ -718,7 +718,7 @@ const en: Dict = {
   set_actualFs: "Folder storage",
   set_actualIdb: "Browser database (default)",
   set_permWarning:
-    "Folder storage is selected, but the browser's permission for that folder is no longer valid — data is currently going to the browser database, not the folder. Click below to re-authorize (one click).",
+    "The browser has revoked this folder's permission, so data is going to the browser database instead of the folder (nothing is lost, but it is not where you expect). When re-authorizing, choose \"Allow\" — \"Allow this time\" expires again on the next visit.",
   set_reauthorize: "Re-authorize folder",
   set_storageReauthed: "Re-authorized. Changes will now be written to the folder.",
   set_storageReauthFailed:

@@ -2201,9 +2201,10 @@ export default function App() {
                 </p>
                 {storageState.wantsFs && storageState.perm !== "granted" && (
                   <>
-                    <p className="set-hint" style={{ color: "#b45309", fontWeight: 600 }}>
-                      ⚠️ {t("set_permWarning")}
-                    </p>
+                    {/* 这是**授权被收回之后**的提醒，不是"首次授权"入口。
+                        首次/主动切换文件夹时，浏览器自己会弹窗，不需要这里提示。
+                        样式刻意保持与其它 set-hint 一致（2026-09-29 Kai：原来橙色加粗太显眼）。 */}
+                    <p className="set-hint">{t("set_permWarning")}</p>
                     <div className="set-row">
                       <button className="btn" onClick={handleReauthorize}>
                         {t("set_reauthorize")}
