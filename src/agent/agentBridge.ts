@@ -25,6 +25,9 @@ import {
   restoreNode as dbRestoreNode,
 } from "../db";
 import type { BoardData, FileNode } from "../db";
+// 🔴 图片裁剪唯一实现：Agent 写入也必须只带本板引用的图片，
+//   否则每写一步就把「进程内全量文件库」灌进目标板（与 App.tsx 同类 bug 的第二副本）。
+import { pruneFilesToScene } from "../sceneFiles";
 // 仅类型导入（编译期擦除、零运行时成本）：把 BridgeAPI 锚定到 Excalidraw 的**真实签名**，
 // 使 tsc 能校验我们每一次对 excalidrawAPI 的调用（见 BridgeAPI 的注释）。
 import type {
@@ -384,7 +387,7 @@ export function createAppStorageAdapter(api: BridgeAPI, currentBoardId: string |
       }
       return {
         elements: [...api.getSceneElements()],
-        files: api.getFiles ? api.getFiles() : {},
+        files: pruneFilesToScene(api.getFiles ? api.getFiles() : {}, api.getSceneElements()),
         appState: api.getAppState ? api.getAppState() : {},
       };
     },
@@ -435,7 +438,7 @@ export function createAppStorageAdapter(api: BridgeAPI, currentBoardId: string |
           await dbPutBoard({
             id,
             elements: els,
-            files: api.getFiles ? api.getFiles() : {},
+            files: pruneFilesToScene(api.getFiles ? api.getFiles() : {}, els),
             appState: api.getAppState ? api.getAppState() : {},
           });
         }

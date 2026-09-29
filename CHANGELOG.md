@@ -18,6 +18,22 @@
 
 ## 当前版本 / Current version
 
+### v2.0.0-beta.1（2026-09-29）· 图片不再跨画板复制 / Stop images from spreading across boards
+
+修补上一版遗漏的同类问题：除主保存路径外，**导出、复制、Agent 写入**等其他落盘入口此前仍会把
+「当前会话用过的全部图片」写进目标画板。现已统一为同一套裁剪口径。
+Fixes the same class of issue missed in the previous build: other save paths — **export, duplicate,
+and Agent writes** — still wrote every image used in the session into the target board.
+All paths now share one pruning rule.
+
+- 任何落盘一律只保留**该画板元素实际引用到的**图片，空画板不再携带任何图片。
+  Every save now keeps only the images **actually referenced by that board's elements**;
+  a board with no images stays empty.
+- 修复后不会再出现「没放过图的画板却存着图片」的持续膨胀。
+  No more steady growth from "boards that never had images yet store images".
+
+---
+
 ### v2.0.0-beta.0（2026-09-29）· 存储与保存优化 / Storage & save improvements
 
 本版集中优化**保存与存储**环节；画布绘制与交互不变。

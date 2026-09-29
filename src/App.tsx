@@ -30,6 +30,8 @@ import { getStorageState, reauthorizeFolder, type StorageState } from "./db";
 import { t, getLang, setLang, LANGS, isLang, detectBrowserLang, type Lang } from "./i18n";
 import { fsSupported, fsCopyFromIdb, fsMergeFromIdb, fsPeekFolder, fsExportAll } from "./fsStore";
 import { startFsWatcher } from "./fsWatcher";
+// 落盘前裁剪图片到本板实际引用（唯一实现；所有写 board.files 的路径都必须经过它）
+import { pruneFilesToScene } from "./sceneFiles";
 import { useIntegration, CollabPanel } from "./agent/agentIntegration";
 import AnnouncementBar from "./AnnouncementBar";
 import Sidebar from "./Sidebar";
@@ -205,19 +207,9 @@ export default function App() {
     if (!api) return;
     const els = api.getSceneElements();
     const st = api.getAppState();
-    // 🔴【P0】只保存**本板元素实际引用到的**图片，绝不能把整个文件库原样写回。
-    //   Excalidraw 的 getFiles() 返回的是**进程内累积**的文件库（含你这次会话切过的
-    //   所有板的图片，因为载入时只 addFiles 不清理）。原样写回 = 图片在板与板之间
-    //   互相复制 → 工作区被重复图片撑爆（实测 60 板 / 92.5MB，其中 97% 是图片；
-    //   甚至出现「这板没放过图片却有 11 张」）。
-    let fl = api.getFiles();
-    try {
-      const used = new Set<string>();
-      for (const e of (els as any[]) || []) {
-        if (e && !e.isDeleted && e.type === "image" && typeof e.fileId === "string") used.add(e.fileId);
-      }
-      fl = Object.fromEntries(Object.entries(fl || {}).filter(([fid]) => used.has(fid)));
-    } catch { /* 取不到引用就退化为原行为 */ }
+    // 🔴【P0】只保存**本板元素实际引用到的**图片。判据与实现见 ./sceneFiles.ts
+    //   （唯一的正确口径；所有落盘点都必须经过它）。
+    const fl = pruneFilesToScene(api.getFiles(), els);
     setSaveState("saving");
     try {
       await saveBoard(cur, els, st, fl);
@@ -827,7 +819,7 @@ export default function App() {
       if (cur && cur !== id && apiRef.current) {
         const els = apiRef.current.getSceneElements();
         const st = apiRef.current.getAppState();
-        const fl = apiRef.current.getFiles();
+        const fl = pruneFilesToScene(apiRef.current.getFiles(), els);
         await saveBoard(cur, els, st, fl);
       }
       // 不重置 lastSavedHashRef：让 loadBoardIntoCanvas 在载入后对齐新画板指纹，
@@ -968,11 +960,12 @@ export default function App() {
       // 若导出的正是当前画板，先把未落盘的改动 flush，避免导出旧内容
       if (activeIdRef.current === nodeId && apiRef.current) {
         clearSaveTimers();
+        const els = apiRef.current.getSceneElements();
         await saveBoard(
           nodeId,
-          apiRef.current.getSceneElements(),
+          els,
           apiRef.current.getAppState(),
-          apiRef.current.getFiles()
+          pruneFilesToScene(apiRef.current.getFiles(), els)
         );
       }
       const board = await getBoard(nodeId);
@@ -986,11 +979,12 @@ export default function App() {
     async (nodeId: string) => {
       if (activeIdRef.current !== nodeId || !apiRef.current) return;
       clearSaveTimers();
+      const els = apiRef.current.getSceneElements();
       await saveBoard(
         nodeId,
-        apiRef.current.getSceneElements(),
+        els,
         apiRef.current.getAppState(),
-        apiRef.current.getFiles()
+        pruneFilesToScene(apiRef.current.getFiles(), els)
       );
     },
     [saveBoard, clearSaveTimers]
@@ -1047,11 +1041,12 @@ export default function App() {
       if (!node) return;
       if (node.type === "board" && activeIdRef.current === nodeId && apiRef.current) {
         clearSaveTimers();
+        const els = apiRef.current.getSceneElements();
         await saveBoard(
           nodeId,
-          apiRef.current.getSceneElements(),
+          els,
           apiRef.current.getAppState(),
-          apiRef.current.getFiles()
+          pruneFilesToScene(apiRef.current.getFiles(), els)
         );
       }
       const newId = await cloneSubtree(nodeId, node.parentId, t("name_copy"));
