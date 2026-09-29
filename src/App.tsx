@@ -135,6 +135,11 @@ export default function App() {
   const maxWaitTimer = useRef<number | null>(null);
   const toastTimer = useRef<number | null>(null);
   const loadingRef = useRef(false);
+  // 🔴 载入失败 / 元素被 restore 全部丢弃 → **抑制自动保存**（2026-09-29 实损修复）
+  // 为什么必须有：载入失败时画布会被清空成空场景；此时只要发生一次 flush
+  // （切标签页 / 关页面 / 2s 防抖兜底）→ runSave() 会把**空场景写回**，把用户内容**永久覆盖**。
+  // 实操就是这一条丢了 Kai-脸谱 的内容。
+  const loadFailedRef = useRef(false);
   const lastSavedHashRef = useRef<string>("");
   // 已为「这个确切状态」排程过保存的指纹：相同 hash 的 onChange 直接略过，
   // 避免防抖在 500ms 窗口内被反复重置而永远到不了落盘（→ 一直「保存中」）。
@@ -183,6 +188,14 @@ export default function App() {
     if (maxWaitTimer.current) { clearTimeout(maxWaitTimer.current); maxWaitTimer.current = null; }
     const cur = activeIdRef.current;
     if (!cur) { pendingHashRef.current = ""; dirtySinceRef.current = 0; return; }
+    // 🔴 载入失败后**绝不落盘**：否则会把被清空的场景写回，覆盖用户原内容（2026-09-29 实损）
+    if (loadFailedRef.current) {
+      pendingHashRef.current = ""; dirtySinceRef.current = 0;
+      if (saveTimer.current) { clearTimeout(saveTimer.current); saveTimer.current = null; }
+      if (maxWaitTimer.current) { clearTimeout(maxWaitTimer.current); maxWaitTimer.current = null; }
+      setSaveState("idle");
+      return;
+    }
     const api = apiRef.current;
     if (!api) return;
     const els = api.getSceneElements();
@@ -515,6 +528,7 @@ export default function App() {
   const handleChange = useCallback(
     (elements: any, appState: any) => {
       if (loadingRef.current) return; // 程序化载入期间不保存
+      if (loadFailedRef.current) return; // 🔴 载入失败期间不排程保存（防止把空场景写回覆盖原内容）
       const id = activeIdRef.current;
       if (!id) return;
       // 标记层实时跟随：用 RAF 异步重算，避免在 Excalidraw onChange 同步周期内 setState 触发死循环
@@ -668,6 +682,7 @@ export default function App() {
       const board = await getBoard(id);
       if (!board) {
         // 新画板默认小赖体（Xiaolai=100，中文手写）
+        loadFailedRef.current = false; // 合法的空板 → 允许保存
         api.updateScene({ elements: [], appState: { currentItemFontFamily: (FONT_FAMILY as any).Xiaolai } });
         // 对齐指纹（含视图态），避免载入后的 onChange 误判为「有变更」而触发一次无谓落盘
         lastSavedHashRef.current = computeSceneHash([], api.getAppState());
@@ -688,6 +703,22 @@ export default function App() {
       if (restored.elements.length < rawEls.length) {
         showToast(t("toast_incompatibleSkipped", { n: rawEls.length - restored.elements.length }));
       }
+      // 🔴 【P0】原有元素、但 restore 后**一个不剩** → 这**不是**"板子是空的"，而是载入失败。
+      //   绝不能让空场景成为"已保存基线"（否则一次 flush 就把用户内容永久覆盖）。
+      //   → 标记载入失败（抑制落盘）+ 明确告警，**不动存储里的原数据**。
+      if (rawEls.length > 0 && restored.elements.length === 0) {
+        loadFailedRef.current = true;
+        try {
+          api.updateScene({ elements: [], appState: { currentItemFontFamily: (FONT_FAMILY as any).Xiaolai } });
+        } catch { /* noop */ }
+        lastSavedHashRef.current = computeSceneHash([], api.getAppState());
+        showToast(t("toast_incompatibleBlank"));
+        console.error(
+          "[KaiBoard] 画板元素被 restore 全部丢弃（raw=%d）→ 已抑制自动保存，存储中的原数据未被改动。boardId=%s",
+          rawEls.length, id
+        );
+        return;
+      }
       if (restored.files && Object.keys(restored.files).length) {
         try {
           api.addFiles(Object.values(restored.files));
@@ -700,6 +731,7 @@ export default function App() {
         elements: restored.elements,
         appState: { ...restored.appState, currentItemFontFamily: (FONT_FAMILY as any).Xiaolai },
       });
+      loadFailedRef.current = false; // 载入成功 → 恢复正常保存
       setCommentCount(
         restored.elements.filter((e: any) => e && !e.isDeleted && (e as any).customData?.__kbComment?.text).length
       );
@@ -709,8 +741,12 @@ export default function App() {
       markSaved();
     } catch (err) {
       console.error("[KaiBoard] 画板载入失败，已降级为空白画布：", err);
+      // 🔴 【P0】同上：载入失败必须**抑制落盘**，并且把指纹对齐到空场景，
+      //   否则切标签页 / 关页面时的 flush 会把空场景写回，永久覆盖用户内容。
+      loadFailedRef.current = true;
       try {
         api.updateScene({ elements: [], appState: { currentItemFontFamily: (FONT_FAMILY as any).Xiaolai } });
+        lastSavedHashRef.current = computeSceneHash([], api.getAppState());
       } catch {
         /* noop */
       }
