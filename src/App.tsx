@@ -25,6 +25,8 @@ import {
   getBackend,
 } from "./db";
 import type { FileNode, BoardData } from "./db";
+// 🔴 存储状态可见性 + 用户手势下的重新授权（2026-09-29）
+import { getStorageState, reauthorizeFolder, type StorageState } from "./db";
 import { t, getLang, setLang, LANGS, isLang, detectBrowserLang, type Lang } from "./i18n";
 import { fsSupported, fsCopyFromIdb, fsMergeFromIdb, fsPeekFolder, fsExportAll } from "./fsStore";
 import { startFsWatcher } from "./fsWatcher";
@@ -116,6 +118,9 @@ export default function App() {
   const [markers, setMarkers] = useState<{ x: number; y: number; count: number; ids: string[] }[]>([]);
   const [showCommentMarkers, setShowCommentMarkers] = useState(true);
   const [folderName, setFolderName] = useState<string | null>(null);
+  // 🔴 「实际生效的存储」+ 文件夹授权状态。UI 必须看它，而不是设置项 storageMode
+  //   （否则会出现"界面显示文件夹存储、实际写在浏览器里"的谎报 —— 2026-09-29）
+  const [storageState, setStorageState] = useState<StorageState>(() => getStorageState());
   // 侧栏多选态：被选中的画板 id 集合（文件夹勾选会递归展开为其下画板）
   const [selected, setSelected] = useState<Set<string>>(new Set());
   // 侧栏「当前导航到的文件夹」= 键盘 Ctrl+V 的粘贴目标（贴近 Windows 资源管理器「当前所在位置」语义）。
@@ -410,10 +415,27 @@ export default function App() {
     await setSetting("storageMode", "idb");
     await setSetting("storageFolderHandle", null);
     setFolderName(null);
+    setStorageState(getStorageState());
     agent.reportFolder(null);
     await refreshNodes();
     showToast(t("set_storageReset"));
   }, [refreshNodes, showToast, agent.reportFolder]);
+
+  /**
+   * 🔴 用户手势下的「重新授权文件夹」。
+   * 为什么必须由**按钮**触发：`requestPermission()` 只有在用户手势里调用，浏览器才会弹窗；
+   * 页面加载时（无手势）调用会被**直接拒绝且不弹窗**，那正是"授权掉了却悄无声息"的成因。
+   */
+  const handleReauthorize = useCallback(async () => {
+    const r = await reauthorizeFolder();
+    setStorageState({ ...r.state });
+    if (r.ok) {
+      await refreshNodes();
+      showToast(t("set_storageReauthed"));
+    } else {
+      showToast(t("set_storageReauthFailed"));
+    }
+  }, [refreshNodes, showToast]);
 
   // ----- 初始加载：恢复上次的 UI 状态 -----
   useEffect(() => {
@@ -435,6 +457,9 @@ export default function App() {
       setLang(initialLang);
       setLangState(initialLang);
       if (storageMode === "filesystem" && handle) setFolderName(handle.name ?? null);
+      // 设置加载完后刷新「实际存储状态」（ensureStorage 已跑过，这里同步一次给 UI）
+      try { await ensureStorage(); } catch { /* noop */ }
+      setStorageState({ ...getStorageState() });
 
       // 先决定存储后端（IndexedDB / 文件夹），再读数据
       await ensureStorage();
@@ -2159,6 +2184,26 @@ export default function App() {
                     </span>
                   )}
                 </div>
+                {/* 🔴 「实际生效的存储」+ 授权状态。必须看 storageState（真实后端），
+                    不能只看设置项 —— 否则会出现"显示文件夹存储、其实写在浏览器里"的谎报。 */}
+                <p className="set-current" style={{ fontWeight: 600 }}>
+                  {t("set_actualStorage")}
+                  {storageState.mode === "fs"
+                    ? `${t("set_actualFs")}${storageState.folderName ? `（${storageState.folderName}）` : ""}`
+                    : t("set_actualIdb")}
+                </p>
+                {storageState.wantsFs && storageState.perm !== "granted" && (
+                  <>
+                    <p className="set-hint" style={{ color: "#b45309", fontWeight: 600 }}>
+                      ⚠️ {t("set_permWarning")}
+                    </p>
+                    <div className="set-row">
+                      <button className="btn" onClick={handleReauthorize}>
+                        {t("set_reauthorize")}
+                      </button>
+                    </div>
+                  </>
+                )}
                 {<p className="set-hint">{t("set_dirHint")}</p>}
                 <div className="set-row">
                   <button className="btn" onClick={handleResetStorage}>

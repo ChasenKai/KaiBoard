@@ -60,6 +60,40 @@ let ensurePromise: Promise<void> | null = null;
  * - 默认 idb（IndexedDB，浏览器系统盘）。
  * - 若设置里 storageMode==="filesystem" 且存有目录句柄，且权限已授予，则切到 fs（文件夹文件存储）。
  */
+/** 文件夹授权状态 */
+export type StoragePerm = "granted" | "prompt" | "denied" | "none" | "unsupported";
+
+/**
+ * **实际生效**的存储状态。
+ * 🔴 为什么必须暴露它：UI 原来只看设置项 `storageMode` 就显示"文件夹存储"，
+ *   而实际后端可能因为授权失效**静默降级成了 IndexedDB** —— 于是界面在撒谎，
+ *   用户以为数据在文件夹里，其实在浏览器里（2026-09-29 实况）。
+ */
+export interface StorageState {
+  /** 真正在用的后端（UI 必须显示这个） */
+  mode: "idb" | "fs";
+  /** 设置项是否要求用文件夹 */
+  wantsFs: boolean;
+  folderName: string | null;
+  /** 文件夹授权状态（wantsFs 时才有意义） */
+  perm: StoragePerm;
+}
+
+let storageState: StorageState = { mode: "idb", wantsFs: false, folderName: null, perm: "none" };
+
+/** 取当前实际存储状态（供 UI 显示"我现在到底存在哪"）。 */
+export function getStorageState(): StorageState {
+  return storageState;
+}
+
+/**
+ * 决定当前用哪个存储后端。幂等（只跑一次）。
+ * - 默认 idb（IndexedDB，浏览器系统盘）。
+ * - 若设置里 storageMode==="filesystem" 且存有目录句柄，且权限已授予，则切到 fs。
+ * - ⚠️ **页面加载时没有用户手势** → `requestPermission()` 会被浏览器**直接拒绝且不弹窗**，
+ *   因此这里**不再"假装成功"**：失败就如实记为需要重新授权，由设置界面的按钮
+ *   （用户手势）去调 `reauthorizeFolder()`。
+ */
 export function ensureStorage(): Promise<void> {
   if (!ensurePromise) {
     ensurePromise = (async () => {
@@ -67,30 +101,74 @@ export function ensureStorage(): Promise<void> {
         const mode = await getSetting<string>("storageMode", "idb");
         const handle = await getSetting<any>("storageFolderHandle", null);
         if (mode === "filesystem" && handle) {
-          const q = handle.queryPermission
-            ? await handle.queryPermission({ mode: "readwrite" })
-            : "denied";
-          if (q === "granted") {
-            await fs.initFsStore(handle);
-            backend = "fs";
-            return;
+          const folderName = handle.name ?? null;
+          if (!fs.fsSupported()) {
+            storageState = { mode: "idb", wantsFs: true, folderName, perm: "unsupported" };
+          } else {
+            const q = handle.queryPermission
+              ? await handle.queryPermission({ mode: "readwrite" })
+              : "denied";
+            if (q === "granted") {
+              await fs.initFsStore(handle);
+              backend = "fs";
+              storageState = { mode: "fs", wantsFs: true, folderName, perm: "granted" };
+              return;
+            }
+            // 顺手试一次（部分浏览器对已持久化的授权会直接放行）；失败也不假装
+            let r: string = "denied";
+            try {
+              r = handle.requestPermission
+                ? await handle.requestPermission({ mode: "readwrite" })
+                : "denied";
+            } catch {
+              r = "denied";
+            }
+            if (r === "granted") {
+              await fs.initFsStore(handle);
+              backend = "fs";
+              storageState = { mode: "fs", wantsFs: true, folderName, perm: "granted" };
+              return;
+            }
+            // 🔴 授权不可用 → 降级为 idb，但**如实记录**（UI 会据此提示"需重新授权"）
+            storageState = { mode: "idb", wantsFs: true, folderName, perm: q === "denied" ? "denied" : "prompt" };
           }
-          const r = handle.requestPermission
-            ? await handle.requestPermission({ mode: "readwrite" })
-            : "denied";
-          if (r === "granted") {
-            await fs.initFsStore(handle);
-            backend = "fs";
-            return;
-          }
+        } else {
+          storageState = { mode: "idb", wantsFs: false, folderName: null, perm: "none" };
         }
       } catch {
-        /* 任何异常都回退到 IndexedDB，保证可用 */
+        /* 任何异常都回退到 IndexedDB，保证可用；但状态如实上报 */
+        storageState = { ...storageState, mode: "idb" };
       }
       backend = "idb";
     })();
   }
   return ensurePromise;
+}
+
+/**
+ * **在用户手势下**重新申请文件夹授权（必须由按钮点击调用）。
+ * 成功则立刻切到文件夹后端，后续读写都进文件夹；失败则维持 idb 并把状态报给 UI。
+ */
+export async function reauthorizeFolder(): Promise<{ ok: boolean; state: StorageState }> {
+  try {
+    const mode = await getSetting<string>("storageMode", "idb");
+    const handle = await getSetting<any>("storageFolderHandle", null);
+    if (mode !== "filesystem" || !handle) return { ok: false, state: storageState };
+    const r = handle.requestPermission
+      ? await handle.requestPermission({ mode: "readwrite" })
+      : "denied";
+    if (r === "granted") {
+      await fs.initFsStore(handle);
+      backend = "fs";
+      storageState = { mode: "fs", wantsFs: true, folderName: handle.name ?? null, perm: "granted" };
+      return { ok: true, state: storageState };
+    }
+    storageState = { mode: "idb", wantsFs: true, folderName: handle.name ?? null, perm: r === "denied" ? "denied" : "prompt" };
+    return { ok: false, state: storageState };
+  } catch {
+    storageState = { ...storageState, mode: "idb", perm: "denied" };
+    return { ok: false, state: storageState };
+  }
 }
 
 export function getBackend(): "idb" | "fs" {
