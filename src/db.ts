@@ -167,8 +167,13 @@ export async function reauthorizeFolder(): Promise<{ ok: boolean; state: Storage
     const mode = await getSetting<string>("storageMode", "idb");
     const handle = await getSetting<any>("storageFolderHandle", null);
     if (mode !== "filesystem" || !handle) return { ok: false, state: storageState };
-    const r = handle.requestPermission
-      ? await withTimeout<string>(handle.requestPermission({ mode: "readwrite" }), 10000, "denied")
+    // 🔴 这里**刻意不加超时**（与 ensureStorage 的无手势路径不同）：
+    //   本函数由「重新授权」按钮触发 = 有用户手势 → 浏览器一定会弹授权框，
+    //   requestPermission 的 promise 会等到用户点完才 resolve。
+    //   若套上超时，用户思考/点击超过时限就会被误判为「拒绝」，
+    //   于是**授权明明成功了却报失败、不切到文件夹** —— 那是比"等待"更糟的错。
+    const r: string = handle.requestPermission
+      ? await handle.requestPermission({ mode: "readwrite" }).catch(() => "denied")
       : "denied";
     if (r === "granted") {
       await fs.initFsStore(handle);
