@@ -1,5 +1,8 @@
 import { listNodes, listAllNodes, getAllBoards, putNode, putBoard, putNodes, getMaxOrder, type FileNode, type BoardData } from "./db";
 import { t } from "./i18n";
+// 🔴 导入也必须裁剪图片：旧备份/旧导出文件里可能带着历史脏 files（未被引用的图）。
+//   不裁剪 = 把过去的污染原样复活到新工作区（2026-09-29 实测通路）。
+import { pruneFilesToScene } from "./sceneFiles";
 
 function triggerDownload(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
@@ -158,7 +161,7 @@ async function importScene(scene: any, fileName: string, defaultParentId: string
     id,
     elements: scene.elements || [],
     appState,
-    files: scene.files || {},
+    files: pruneFilesToScene(scene.files || {}, scene.elements || []),
   });
   return id;
 }
@@ -193,7 +196,7 @@ async function importWorkspace(files: FileNode[], boards: BoardData[]): Promise<
     const bid = newId(b.id);
     const appState = b.appState || {};
     delete appState.collaborators;
-    await putBoard({ ...b, id: bid, appState });
+    await putBoard({ ...b, id: bid, appState, files: pruneFilesToScene(b.files, b.elements) });
     if (!files.some((f) => f.id === b.id)) {
       fileNodes.push({
         id: bid,

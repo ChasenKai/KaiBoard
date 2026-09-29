@@ -406,7 +406,7 @@ export default function App() {
     resetBackend();
     if (data) {
       for (const n of data.nodes) await putNode(n);
-      for (const b of data.boards) await putBoard(b);
+      for (const b of data.boards) await putBoard({ ...b, files: pruneFilesToScene(b.files, b.elements) });
     }
     await setSetting("storageMode", "idb");
     await setSetting("storageFolderHandle", null);
@@ -1014,7 +1014,8 @@ export default function App() {
           id: newId,
           elements: board?.elements ? JSON.parse(JSON.stringify(board.elements)) : [],
           appState: board?.appState ? JSON.parse(JSON.stringify(board.appState)) : {},
-          files: board?.files ? JSON.parse(JSON.stringify(board.files)) : {},
+          // 副本同样只带本板引用到的图片：否则会把源板的历史脏 files 原样继承一份
+          files: pruneFilesToScene(board?.files || {}, board?.elements || []),
         });
       } else {
         await putNode({

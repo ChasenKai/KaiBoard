@@ -398,8 +398,11 @@ export function createAppStorageAdapter(api: BridgeAPI, currentBoardId: string |
       els = await normalizeForScene(api, els);
       if (isRemote(target)) {
         const b = await dbGetBoard(target!);
+        // 🔴 elements 换成新的了，files 就必须跟着按新 elements 重算：
+        //   沿用旧板 files = 「元素与图片来自两个不同来源」→ 落盘后出现
+        //   引用不到图的裂图、或带一堆没人引用的孤儿图（实测污染入口之一）。
         const next: BoardData = b
-          ? { ...b, elements: els }
+          ? { ...b, elements: els, files: pruneFilesToScene(b.files, els) }
           : { id: target!, elements: els, appState: {}, files: {} };
         await dbPutBoard(next);
         try {

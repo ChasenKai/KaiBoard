@@ -20,17 +20,28 @@
 
 ### v2.0.0-beta.1（2026-09-29）· 图片不再跨画板复制 / Stop images from spreading across boards
 
-修补上一版遗漏的同类问题：除主保存路径外，**导出、复制、Agent 写入**等其他落盘入口此前仍会把
-「当前会话用过的全部图片」写进目标画板。现已统一为同一套裁剪口径。
+修补上一版遗漏的同类问题：除主保存路径外，**导出、复制、Agent 写入、导入、覆盖/合并文件夹、
+切回浏览器存储**等其他落盘入口此前仍会把「当前会话用过的全部图片」写进目标画板。
+现已统一为同一套裁剪口径。
 Fixes the same class of issue missed in the previous build: other save paths — **export, duplicate,
-and Agent writes** — still wrote every image used in the session into the target board.
-All paths now share one pruning rule.
+Agent writes, import, folder overwrite/merge, and switching back to browser storage** — still wrote
+every image used in the session into the target board. All paths now share one pruning rule.
 
 - 任何落盘一律只保留**该画板元素实际引用到的**图片，空画板不再携带任何图片。
   Every save now keeps only the images **actually referenced by that board's elements**;
   a board with no images stays empty.
 - 修复后不会再出现「没放过图的画板却存着图片」的持续膨胀。
   No more steady growth from "boards that never had images yet store images".
+- 修复「覆盖文件夹 / 合并文件夹」把本机全部画板一次性写出去时不做裁剪的问题
+  （曾导致几十个画板同时被灌进同一张图）。
+  Fixed folder overwrite/merge writing every local board without pruning
+  (which had stamped the same image into dozens of boards at once).
+- 修复 Agent 写入远端画板时「元素换了新的、图片却沿用旧的」导致的不匹配。
+  Fixed a mismatch when the Agent wrote to a non-open board:
+  elements were replaced while images were left over from the old board.
+- 修复同一时刻被重复启动时，页面可能并存多个中继长轮询的问题。
+  Fixed duplicate relay long-polling loops when the client was started twice in one tick.
+
 
 ---
 

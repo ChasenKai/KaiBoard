@@ -37,6 +37,17 @@ interface RelayCmd {
 
 let running = false;
 let abortCtl: AbortController | null = null;
+/**
+ * 实例代号：每 start/stop 递增。循环只在「自己那一代仍是最新」时才继续跑。
+ * 🔴 为什么需要它：start() 与 pollLoop() 之间有多处 await（读设置），
+ *   若同一 tick 内被调用两次（例：开关切换时 toggle 与 useEffect 同时触发、
+ *   或 Excalidraw 重挂载时 handleApiReady 与 effect 同时触发），
+ *   两次调用都会走到 `running = true` 并各自 spawn 一个 while 循环 →
+ *   页面上并存多个长轮询（重复请求、重复上报、重复执行命令），
+ *   而且 `abortCtl` 是模块级共享的，旧循环会被新循环的 controller 覆盖，
+ *   单靠 abort 无法把旧循环收干净。代号机制保证「只有最新一代存活」。
+ */
+let generation = 0;
 let apiRef: BridgeAPI | null = null;
 /**
  * 取「当前打开的画板 id」的回调（由调用方注入，每次轮询取最新值）。
@@ -58,11 +69,13 @@ function reportStatus(s: "idle" | "connecting" | "connected" | "error") {
   onStatusRef?.(s);
 }
 
-async function pollLoop() {
+async function pollLoop(myGen: number) {
   const url = await getSetting<string>("agentRelayUrl", "http://127.0.0.1:8787").then((u) => u.replace(/\/$/, ""));
   const bridgeToken = await getSetting<string>("agentRelayToken", "");
   const kaiToken = await getSetting<string>("agentCollabToken", "");
 
+  // 已被更新的 start/stop 取代 → 本循环直接不启动（防并发循环）
+  if (myGen !== generation) return;
   if (!running || !apiRef || !bridgeToken || !kaiToken) {
     reportStatus("idle");
     return;
@@ -71,7 +84,7 @@ async function pollLoop() {
   reportStatus("connecting");
   abortCtl = new AbortController();
 
-  while (running) {
+  while (running && myGen === generation) {
     if (!apiRef) break;
     try {
       // 上报当前打开的画板，供中继按 boardId 路由命令
@@ -81,7 +94,7 @@ async function pollLoop() {
         method: "GET",
         signal: abortCtl.signal,
       });
-      if (!running) break;
+      if (!running || myGen !== generation) break;
       if (res.status === 200) {
         errorBackoff = 1500; // 连接成功，重置退避
         reportStatus("connected");
@@ -136,12 +149,14 @@ export async function startAgentRelayClient(
   onStatusRef = onStatus || null;
   lastStatus = null;   // 新实例：确保首条状态一定上报
   errorBackoff = 1500; // 重置退避
+  const myGen = ++generation;
   running = true;
-  pollLoop();
+  pollLoop(myGen);
 }
 
 /** 停止轮询客户端。 */
 export async function stopAgentRelayClient(): Promise<void> {
+  generation++; // 让所有在途的 pollLoop 实例失效（含并发残留的那些）
   running = false;
   if (abortCtl) {
     abortCtl.abort();

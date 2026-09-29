@@ -14,6 +14,16 @@ declare global {
 }
 
 import type { FileNode, BoardData } from "./db";
+// 落盘前裁剪图片到本板实际引用（唯一实现，见 ./sceneFiles.ts）。
+// 🔴 这两个批量写函数（覆盖 / 合并）会把**本机全部画板**一次性写进文件夹：
+//   若不裁剪，本机 IndexedDB 里带的历史脏 files 会被整体放大到文件夹，
+//   表现为「几十个画板同时被灌进同一张图」——2026-09-29 实测的批量污染正是此路径。
+import { pruneFilesToScene } from "./sceneFiles";
+
+/** 写一个画板前，把它的 files 裁剪到 elements 实际引用的范围。 */
+function pruned(b: BoardData): BoardData {
+  return { ...b, files: pruneFilesToScene(b.files, b.elements) };
+}
 
 let DATA_DIR: any = null; // kaiboard-data 目录句柄
 let BOARDS_DIR: any = null;
@@ -324,7 +334,7 @@ export async function fsCopyFromIdb(idb: {
     /* 搬不动就算了，绝不因此让「覆盖」失败 */
   }
   await writeTree(nodes);
-  for (const b of boards) await writeBoard(b);
+  for (const b of boards) await writeBoard(pruned(b));
   return { movedToTrash };
 }
 
@@ -369,7 +379,7 @@ export async function fsMergeFromIdb(idb: {
   }
 
   await writeTree([...merged.values()]);
-  for (const b of toWrite) await writeBoard(b);
+  for (const b of toWrite) await writeBoard(pruned(b));
   return { added, updated, kept: remote.length };
 }
 

@@ -1,5 +1,7 @@
 import { openDB, type IDBPDatabase } from "idb";
 import * as fs from "./fsStore";
+// 写盘咽喉处的图片裁剪（见 putBoard 的注释）：唯一实现，无自身依赖，不构成循环引用。
+import { pruneFilesToScene } from "./sceneFiles";
 
 export interface FileNode {
   id: string;
@@ -294,13 +296,22 @@ export async function getTreeMtime(): Promise<number> {
   return 0;
 }
 
+/**
+ * 写画板 —— **两个存储后端（IndexedDB / 文件夹）共同的唯一咽喉**。
+ *
+ * 🔴 在这里强制 `files` 只保留本板元素实际引用到的图片（判据与实现见 ./sceneFiles.ts）。
+ *   为什么放在这一层而不是各调用点：调用点有十几个，且今后还会新增；
+ *   把不变式钉在咽喉上，**按构造就安全**，不依赖每个调用方自觉 —— 2026-09-29 的
+ *   反复污染正是因为「只在看得见的那几处修了，漏掉的路径继续原样写回全库」。
+ *   调用点若已自行裁剪，这里是幂等的，不产生额外副作用。
+ */
 export async function putBoard(board: BoardData): Promise<void> {
   await ensureStorage();
-  if (backend === "fs") return fs.fsPutBoard(board);
+  const safe: BoardData = { ...board, files: pruneFilesToScene(board.files, board.elements) };
+  if (backend === "fs") return fs.fsPutBoard(safe);
   const db = await getDB();
-  await db.put("boards", board);
+  await db.put("boards", safe);
 }
-
 /** 批量写文件树节点（一次落盘，避免逐节点重复写整棵 tree.json）。仅用于导入等批量场景。 */
 export async function putNodes(nodes: FileNode[]): Promise<void> {
   if (!nodes.length) return;
