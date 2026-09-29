@@ -1,4 +1,6 @@
 import { listNodes, listAllNodes, getAllBoards, putNode, putBoard, putNodes, getMaxOrder, type FileNode, type BoardData } from "./db";
+// 导出前核对：文件夹枚举时被跳过的坏文件（.crswap 等）要能让用户看见，不能静默残缺。
+import { fsGetLastSkippedBoardFiles } from "./fsStore";
 import { t } from "./i18n";
 // 🔴 导入也必须裁剪图片：旧备份/旧导出文件里可能带着历史脏 files（未被引用的图）。
 //   不裁剪 = 把过去的污染原样复活到新工作区（2026-09-29 实测通路）。
@@ -63,6 +65,23 @@ export async function exportAll(): Promise<boolean> {
   );
   // 画板只保留：未删除节点的画板 + 孤儿画板（无树节点，重新导入时会自动补建）
   const boards = (await getAllBoards()).filter((b) => !trashedIds.has(b.id));
+
+  // 🔴 导出前的完整性护栏（2026-09-29 实损）：
+  //   绝不静默导出一个残缺备份 —— 实测 21 个画板只导出了 4 个，
+  //   用户拿到备份却缺内容，还以为是「导入」出的问题。
+  //   这里把「树里有画板节点、但备份里没有对应数据」列出来，让用户在下载前就知道。
+  const gotIds = new Set(boards.map((b) => b.id));
+  const missing = files.filter((f) => f.type === "board" && !gotIds.has(f.id));
+  const broken = fsGetLastSkippedBoardFiles();
+  if (missing.length || broken.length) {
+    const lines = [
+      t("exportAll_incomplete", { n: missing.length }),
+      missing.length ? t("exportAll_incompleteList", { names: missing.map((f) => f.name).join("、").slice(0, 300) }) : "",
+      broken.length ? t("exportAll_incompleteBroken", { files: broken.slice(0, 5).join(", ") }) : "",
+      t("exportAll_incompleteHint"),
+    ].filter(Boolean);
+    if (!window.confirm(lines.join("\n\n"))) return false; // 用户可选择放弃这次导出
+  }
 
   // 新建顶层文件夹，把所有「当前根层节点」挂到它下面
   const rootId = crypto.randomUUID();

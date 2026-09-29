@@ -206,22 +206,43 @@ const zhCN: Dict = {
   set_themeDark: "深色",
   about_version: "当前版本",
   set_storageReset: "已恢复浏览器默认存储。",
+  set_storageResetKept: "已切回浏览器默认存储，保留了浏览器里原有的内容。",
   set_storageMerged: "已切换到文件夹存储，两边数据已合并（同一项目取较新的一版）。",
   set_storageAdopted: "已切换到文件夹存储，本次以文件夹中的数据为准，未写入任何内容。",
 
   fsq_title: "该文件夹里已经有 KaiBoard 数据",
   fsq_desc:
-    "所选文件夹里已存在 {n} 个项目（其中 {b} 个画板文件）——通常是你在另一台电脑上用同一个云盘目录建的。请选择这次如何处理，KaiBoard 不会替你做决定：",
-  fsq_merge: "合并（推荐）",
+    "所选文件夹里已存在 {n} 个项目（其中 {b} 个画板文件）——通常是你在另一台电脑上用同一个云盘目录建的。请选择这次要留下哪边的数据，KaiBoard 不会替你做决定：",
+  fsq_merge: "两边合并（都保留）",
   fsq_mergeDesc:
-    "两边的数据都保留：文件夹里有而本机没有的照单收下，本机有而文件夹没有的写进去；同一个项目两边都有时，以最后修改时间较新的那一版为准。不会丢东西。",
-  fsq_useFolder: "以文件夹为准",
+    "文件夹里有、本机没有的 → 收进来；本机有、文件夹没有的 → 写过去；两边都有的同一块画板 → 保留最后修改时间较新的那一版。什么都不会丢。",
+  fsq_useFolder: "用文件夹覆盖浏览器",
   fsq_useFolderDesc:
-    "本次一个字节都不写入，直接使用文件夹里的现有数据。本机浏览器里原有的数据仍留在原处不会被删除，日后「恢复浏览器默认存储」还能看到。",
-  fsq_overwrite: "以本机为准（覆盖文件夹）",
+    "本次不往文件夹写任何东西，直接用文件夹里的数据。浏览器里原来的数据不会被删除，切回浏览器存储时还在。",
+  fsq_overwrite: "用浏览器覆盖文件夹",
   fsq_overwriteDesc:
-    "危险：用本机数据整体改写文件夹的目录树，文件夹里多出来的项目将从列表中消失（画板文件本身仍留在磁盘上，但 KaiBoard 不再显示）。只有在你确认文件夹里是过期数据时才选。",
+    "危险：用本机浏览器的数据整体改写文件夹的目录树，文件夹里多出来的项目将从列表中消失（画板文件本身仍留在磁盘上，但 KaiBoard 不再显示）。只有确认文件夹里是过期数据时才选。",
   fsq_cancel: "取消",
+
+  rst_title: "切回浏览器存储：两边数据不一样",
+  rst_desc:
+    "浏览器里现在有 {bn} 个项目（{bb} 块画板），所选文件夹里有 {fn} 个项目（{fb} 块画板），两边内容不一致（通常是浏览器里残留了以前清理过的旧画板）。请选择切回来之后要看到哪边的数据：",
+  rst_useFolder: "用文件夹覆盖浏览器",
+  rst_useFolderDesc:
+    "把文件夹里的内容写进浏览器，浏览器现有内容会被替换成文件夹的那一份。适合「文件夹才是最新、最全」时。",
+  rst_keepBrowser: "保留浏览器里的数据",
+  rst_keepBrowserDesc:
+    "不导入文件夹的内容，浏览器保持现在的样子。适合「浏览器里的才是我要的」时。文件夹本身不会被改动，只是不再使用。",
+  rst_merge: "两边合并（都保留）",
+  rst_mergeDesc:
+    "文件夹里有、浏览器没有的 → 补进来；同一块画板两边都有 → 保留较新的一版。什么都不会丢，但两边残留的旧画板也会一并留着。",
+  rst_cancel: "取消",
+
+  exportAll_incomplete: "⚠️ 有 {n} 块画板的数据没能读到，这次备份是【不完整】的。",
+  exportAll_incompleteList: "缺的画板：{names}",
+  exportAll_incompleteBroken: "跳过的损坏文件：{files}",
+  exportAll_incompleteHint:
+    "常见原因：之前卡死/崩溃时在文件夹里留下了 0 字节的 .crswap 临时文件。建议先清理它们再重新导出。确定要现在导出一个不完整的备份吗？",
 
   ...agentStrings,
 
@@ -470,22 +491,43 @@ const zhTW: Dict = {
   set_themeDark: "深色",
   about_version: "目前版本",
   set_storageReset: "已恢復瀏覽器預設儲存。",
+  set_storageResetKept: "已切回瀏覽器預設儲存，保留了瀏覽器裡原有的內容。",
   set_storageMerged: "已切換到資料夾儲存，兩邊資料已合併（同一項目取較新的一版）。",
   set_storageAdopted: "已切換到資料夾儲存，本次以資料夾中的資料為準，未寫入任何內容。",
 
   fsq_title: "該資料夾裡已經有 KaiBoard 資料",
   fsq_desc:
-    "所選資料夾裡已存在 {n} 個項目（其中 {b} 個畫板檔案）——通常是你在另一台電腦上用同一個雲端目錄建立的。請選擇這次如何處理，KaiBoard 不會替你決定：",
-  fsq_merge: "合併（建議）",
+    "所選資料夾裡已存在 {n} 個項目（其中 {b} 個畫板檔案）——通常是你在另一台電腦上用同一個雲端目錄建立的。請選擇這次要留下哪邊的資料，KaiBoard 不會替你決定：",
+  fsq_merge: "兩邊合併（都保留）",
   fsq_mergeDesc:
-    "兩邊的資料都保留：資料夾裡有而本機沒有的照單收下，本機有而資料夾沒有的寫進去；同一個項目兩邊都有時，以最後修改時間較新的那一版為準。不會遺失資料。",
-  fsq_useFolder: "以資料夾為準",
+    "資料夾有、本機沒有的 → 收進來；本機有、資料夾沒有的 → 寫過去；兩邊都有的同一塊畫板 → 保留最後修改時間較新的那一版。不會遺失資料。",
+  fsq_useFolder: "用資料夾覆蓋瀏覽器",
   fsq_useFolderDesc:
-    "本次完全不寫入，直接使用資料夾裡的現有資料。本機瀏覽器裡原有的資料仍留在原處不會被刪除，日後「恢復瀏覽器預設儲存」還能看到。",
-  fsq_overwrite: "以本機為準（覆蓋資料夾）",
+    "本次不往資料夾寫任何東西，直接用資料夾裡的資料。瀏覽器裡原有的資料不會被刪除，切回瀏覽器儲存時還在。",
+  fsq_overwrite: "用瀏覽器覆蓋資料夾",
   fsq_overwriteDesc:
-    "危險：用本機資料整體改寫資料夾的目錄樹，資料夾裡多出來的項目將從清單中消失（畫板檔案本身仍留在磁碟上，但 KaiBoard 不再顯示）。只有在你確認資料夾裡是過期資料時才選。",
+    "危險：用本機瀏覽器的資料整體改寫資料夾的目錄樹，資料夾裡多出來的項目將從清單中消失（畫板檔案本身仍留在磁碟上，但 KaiBoard 不再顯示）。只有確認資料夾裡是過期資料時才選。",
   fsq_cancel: "取消",
+
+  rst_title: "切回瀏覽器儲存：兩邊資料不一樣",
+  rst_desc:
+    "瀏覽器裡現在有 {bn} 個項目（{bb} 塊畫板），所選資料夾裡有 {fn} 個項目（{fb} 塊畫板），兩邊內容不一致（通常是瀏覽器裡殘留了以前清理過的舊畫板）。請選擇切回來之後要看到哪邊的資料：",
+  rst_useFolder: "用資料夾覆蓋瀏覽器",
+  rst_useFolderDesc:
+    "把資料夾裡的內容寫進瀏覽器，瀏覽器現有內容會被替換成資料夾的那一份。適合「資料夾才是最新、最全」時。",
+  rst_keepBrowser: "保留瀏覽器裡的資料",
+  rst_keepBrowserDesc:
+    "不匯入資料夾的內容，瀏覽器保持現在的樣子。適合「瀏覽器裡的才是我要的」時。資料夾本身不會被改動，只是不再使用。",
+  rst_merge: "兩邊合併（都保留）",
+  rst_mergeDesc:
+    "資料夾有、瀏覽器沒有的 → 補進來；同一塊畫板兩邊都有 → 保留較新的一版。什麼都不會丟，但兩邊殘留的舊畫板也會一併留著。",
+  rst_cancel: "取消",
+
+  exportAll_incomplete: "⚠️ 有 {n} 塊畫板的資料沒能讀到，這次備份是【不完整】的。",
+  exportAll_incompleteList: "缺的畫板：{names}",
+  exportAll_incompleteBroken: "跳過的損壞檔案：{files}",
+  exportAll_incompleteHint:
+    "常見原因：之前卡死/崩潰時在資料夾裡留下了 0 位元組的 .crswap 臨時檔案。建議先清理它們再重新匯出。確定要現在匯出一個不完整的備份嗎？",
 
   ...agentStringsTw,
 
@@ -732,6 +774,7 @@ const en: Dict = {
   set_storageSwitchedMovedTrash:
     "Switched to folder storage. {n} leftover board files that are not in the tree were moved to _trash/ (**not deleted** — move them back manually if needed).",
   set_storageReset: "Reset to browser default storage.",
+  set_storageResetKept: "Switched back to browser default storage; the browser's existing content was kept.",
   set_appearance: "Appearance",
   set_theme: "Theme",
   set_themeLight: "Light",
@@ -742,17 +785,37 @@ const en: Dict = {
 
   fsq_title: "This folder already contains KaiBoard data",
   fsq_desc:
-    "The selected folder already holds {n} item(s), including {b} board file(s) — usually created on another computer pointing at the same cloud folder. Choose how to proceed; KaiBoard will not decide for you:",
-  fsq_merge: "Merge (recommended)",
+    "The selected folder already holds {n} item(s), including {b} board file(s) — usually created on another computer pointing at the same cloud folder. Choose which side's data to keep; KaiBoard will not decide for you:",
+  fsq_merge: "Merge both sides (keep everything)",
   fsq_mergeDesc:
-    "Keep both sides: items only in the folder are adopted, items only on this machine are written in, and for items present on both the more recently modified version wins. Nothing is lost.",
-  fsq_useFolder: "Use the folder's data",
+    "Items only in the folder → adopted; items only on this machine → written in; a board present on both sides → the more recently modified version wins. Nothing is lost.",
+  fsq_useFolder: "Overwrite browser with folder",
   fsq_useFolderDesc:
-    "Write nothing this time and simply use what's already in the folder. Your existing browser-local data stays where it is and can be seen again via 'Reset to browser default storage'.",
-  fsq_overwrite: "Use this machine (overwrite folder)",
+    "Write nothing to the folder this time and use the folder's data as-is. Your existing browser-local data is not deleted and is still there when you switch back to browser storage.",
+  fsq_overwrite: "Overwrite folder with browser",
   fsq_overwriteDesc:
-    "Dangerous: rewrites the folder's tree with this machine's data; extra items in the folder disappear from the list (their board files remain on disk but KaiBoard no longer shows them). Only pick this if you're sure the folder holds stale data.",
+    "Dangerous: rewrites the folder's tree from this browser's data; extra items in the folder disappear from the list (their board files remain on disk but KaiBoard no longer shows them). Only pick this if you're sure the folder holds stale data.",
   fsq_cancel: "Cancel",
+
+  rst_title: "Back to browser storage: the two sides differ",
+  rst_desc:
+    "The browser currently holds {bn} item(s) ({bb} boards), while the selected folder holds {fn} item(s) ({fb} boards) — the two differ, usually because the browser still keeps old boards you cleaned up earlier. Choose which data you want to see after switching back:",
+  rst_useFolder: "Overwrite browser with folder",
+  rst_useFolderDesc:
+    "Write the folder's content into the browser; the browser's current content is replaced by the folder's copy. Pick this when the folder is the newer, fuller side.",
+  rst_keepBrowser: "Keep the browser's data",
+  rst_keepBrowserDesc:
+    "Do not import the folder's content; the browser stays exactly as it is now. Pick this when the browser holds what you want. The folder itself is left untouched — it is simply no longer used.",
+  rst_merge: "Merge both sides (keep everything)",
+  rst_mergeDesc:
+    "Items only in the folder → added; a board present on both sides → the newer version wins. Nothing is lost, but stale boards left on either side will also remain.",
+  rst_cancel: "Cancel",
+
+  exportAll_incomplete: "⚠️ {n} board(s) could not be read — this backup is INCOMPLETE.",
+  exportAll_incompleteList: "Missing boards: {names}",
+  exportAll_incompleteBroken: "Unreadable files skipped: {files}",
+  exportAll_incompleteHint:
+    "Usual cause: an earlier freeze/crash left a 0-byte .crswap temp file in the folder. Cleaning those up and exporting again is recommended. Export an incomplete backup anyway?",
 
   ...agentStringsEn,
 

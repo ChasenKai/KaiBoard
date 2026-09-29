@@ -175,18 +175,50 @@ export async function fsDeleteBoard(id: string): Promise<void> {
 export async function fsGetAllFiles(): Promise<FileNode[]> {
   return fsListNodes();
 }
+/**
+ * 上一次枚举 boards/ 时**读不出来的**文件名（`.crswap` 残片、半截写入等）。
+ * 供「导出全部」在下载前给用户明确提示 —— 绝不静默导出一个残缺备份。
+ */
+let lastSkippedBoardFiles: string[] = [];
+export function fsGetLastSkippedBoardFiles(): string[] {
+  return [...lastSkippedBoardFiles];
+}
+
+/**
+ * 读出文件夹里的**全部**画板。
+ *
+ * 🔴 2026-09-29 实损修复：原实现把**整个 for-await 枚举包在一个 try 里**，
+ *   任何单个文件 JSON 解析失败（最典型：卡死/崩溃时 Chrome 在 boards/ 留下的
+ *   0 字节 `.crswap` 临时文件）→ 直接跳出循环 → **静默返回「已经读到的前几个」**。
+ *   后果是「导出全部」导出一个残缺备份：实测 21 个画板只导出了 4 个，
+ *   用户以为丢数据是导入的锅，其实是导出根本没带上。
+ *   现在改为**逐文件隔离**：坏一个只跳过那一个，其余照常读出，并记账待报。
+ *   同时显式跳过非 `.json` 条目（`.crswap` 等），从源头避开这类文件。
+ */
 export async function fsGetAllBoards(): Promise<BoardData[]> {
   const out: BoardData[] = [];
+  const skipped: string[] = [];
+  if (!BOARDS_DIR) {
+    lastSkippedBoardFiles = skipped;
+    return out;
+  }
   try {
-    for await (const [, h] of BOARDS_DIR.entries() as any) {
-      if (typeof h.getFile !== "function") continue;
-      const file = await h.getFile();
-      const text = await file.text();
-      out.push(JSON.parse(text));
+    for await (const [name, h] of BOARDS_DIR.entries() as any) {
+      if (typeof h.getFile !== "function") continue; // 子目录
+      const nm = String(name);
+      if (!nm.endsWith(".json")) continue; // .crswap / .tmp 等非画板文件
+      try {
+        const file = await h.getFile();
+        const text = await file.text();
+        out.push(JSON.parse(text));
+      } catch {
+        skipped.push(nm); // 单个坏文件不再拖垮整次枚举
+      }
     }
   } catch {
-    /* 目录为空或不可用 */
+    /* 目录整体不可用（句柄失效等）—— 此时 out 为空，交由上层提示 */
   }
+  lastSkippedBoardFiles = skipped;
   return out;
 }
 

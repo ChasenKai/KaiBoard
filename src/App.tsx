@@ -20,6 +20,7 @@ import {
   getSetting,
   setSetting,
   ensureStorage,
+  putNodes,
   activateFsBackend,
   resetBackend,
   getBackend,
@@ -132,6 +133,13 @@ export default function App() {
   const [clipboard, setClipboard] = useState<{ ids: string[]; op: "cut" | "copy" } | null>(null);
   // 所选文件夹里已有 KaiBoard 数据时，先弹窗让用户决定合并/以文件夹为准/覆盖
   const [folderConflict, setFolderConflict] = useState<{ handle: any; nodes: number; boards: number } | null>(null);
+  // 🔴 「切回浏览器存储」也不能默默覆盖：浏览器里可能残留着以前清理过的旧画板。
+  //   两边都有数据且不一致时，先弹窗让用户选留哪边（2026-09-29 Kai 实报）。
+  const [resetConflict, setResetConflict] = useState<{
+    folder: { nodes: FileNode[]; boards: BoardData[] };
+    browserNodes: number;
+    browserBoards: number;
+  } | null>(null);
 
   const apiRef = useRef<any>(null);
   // 最近一次画布指针的场景坐标（用于把批注锚定到「点击点」而非元素中心）
@@ -393,29 +401,103 @@ export default function App() {
     [folderConflict, applyFolderStorage, showToast],
   );
 
-  const handleResetStorage = useCallback(async () => {
-    // 切回前，先把文件夹存储期间的新增/修改合并回 IndexedDB，保证无缝（不因切换丢失视图）
-    let data: { nodes: FileNode[]; boards: BoardData[] } | null = null;
-    if (getBackend() === "fs") {
-      try {
-        data = await fsExportAll();
-      } catch {
-        data = null;
+  /**
+   * 真正执行「切回浏览器存储」。mode：
+   *   useFolder   = 用文件夹覆盖浏览器（把文件夹内容写进 IndexedDB）
+   *   keepBrowser = 保留浏览器里的数据（不导入文件夹）
+   *   merge       = 两边合并（同 id 取 updatedAt 较新的一版）
+   *
+   * 顺序要点：必须先 resetBackend()（把写目标切回 IndexedDB），再读写 IDB 侧；
+   * folderData 由调用方在处理前用 fsExportAll() 取好（resetBackend 之后就取不到了）。
+   */
+  const applyResetStorage = useCallback(
+    async (
+      mode: "useFolder" | "keepBrowser" | "merge",
+      folderData: { nodes: FileNode[]; boards: BoardData[] } | null,
+    ) => {
+      resetBackend(); // 之后 putNode / putBoard 一律落 IndexedDB
+      if (folderData && mode !== "keepBrowser") {
+        if (mode === "useFolder") {
+          for (const n of folderData.nodes) await putNode(n);
+          for (const b of folderData.boards) await putBoard(b);
+        } else {
+          // merge：以本机（IDB）现有数据为底，文件夹里有而本机没有的补进来；
+          // 同 id 时取最后修改时间较新的一方。
+          const localNodes = await listAllNodes();
+          const localBoards = await getAllBoards();
+          const localNodeById = new Map(localNodes.map((n) => [n.id, n]));
+          const localBoardById = new Map(localBoards.map((b) => [b.id, b]));
+          const folderNodeById = new Map(folderData.nodes.map((n) => [n.id, n]));
+
+          for (const fn of folderData.nodes) {
+            const ln = localNodeById.get(fn.id);
+            if (!ln || (fn.updatedAt ?? 0) > (ln.updatedAt ?? 0)) {
+              localNodeById.set(fn.id, fn);
+            }
+          }
+          for (const fb of folderData.boards) {
+            const ln = localNodeById.get(fb.id);
+            const fn = folderNodeById.get(fb.id);
+            const localIsNewer = (ln?.updatedAt ?? 0) >= (fn?.updatedAt ?? 0);
+            if (!localBoardById.has(fb.id) || !localIsNewer) await putBoard(fb);
+          }
+          await putNodes([...localNodeById.values()]);
+        }
       }
+      await setSetting("storageMode", "idb");
+      await setSetting("storageFolderHandle", null);
+      setFolderName(null);
+      setStorageState(getStorageState());
+      agent.reportFolder(null);
+      await refreshNodes();
+      showToast(mode === "keepBrowser" ? t("set_storageResetKept") : t("set_storageReset"));
+    },
+    [refreshNodes, showToast, agent.reportFolder],
+  );
+
+  /**
+   * 切回浏览器存储入口。
+   * 🔴 绝不静默覆盖：两边都有数据且不一致时先弹窗（2026-09-29 Kai 实报——
+   *   浏览器里残留的旧画板会被默默带进来，恢复后的界面与预期不符）。
+   *   只有一边有数据（或文件夹为空）时无需打扰，直接沿用「用文件夹覆盖浏览器」。
+   */
+  const handleResetStorage = useCallback(async () => {
+    if (getBackend() !== "fs") {
+      await applyResetStorage("useFolder", null);
+      return;
     }
-    resetBackend();
-    if (data) {
-      for (const n of data.nodes) await putNode(n);
-      for (const b of data.boards) await putBoard({ ...b, files: pruneFilesToScene(b.files, b.elements) });
+    let folderData: { nodes: FileNode[]; boards: BoardData[] } | null = null;
+    try {
+      folderData = await fsExportAll();
+    } catch {
+      folderData = null;
     }
-    await setSetting("storageMode", "idb");
-    await setSetting("storageFolderHandle", null);
-    setFolderName(null);
-    setStorageState(getStorageState());
-    agent.reportFolder(null);
-    await refreshNodes();
-    showToast(t("set_storageReset"));
-  }, [refreshNodes, showToast, agent.reportFolder]);
+    let browserNodes = 0;
+    let browserBoards = 0;
+    try {
+      browserNodes = (await listAllNodes()).length;
+      browserBoards = (await getAllBoards()).length;
+    } catch {
+      /* 读不到就当空，走默认路径 */
+    }
+    const folderHas = !!folderData && folderData.nodes.length > 0;
+    if (folderHas && browserNodes > 0) {
+      // 两边都有 → 问用户
+      setResetConflict({ folder: folderData!, browserNodes, browserBoards });
+      return;
+    }
+    await applyResetStorage("useFolder", folderData);
+  }, [applyResetStorage]);
+
+  const resolveResetConflict = useCallback(
+    async (mode: "useFolder" | "keepBrowser" | "merge") => {
+      const c = resetConflict;
+      if (!c) return;
+      setResetConflict(null);
+      await applyResetStorage(mode, c.folder);
+    },
+    [resetConflict, applyResetStorage],
+  );
 
   /**
    * 🔴 用户手势下的「重新授权文件夹」。
@@ -2274,6 +2356,54 @@ export default function App() {
               <span className="spacer" />
               <button className="mini" onClick={() => setFolderConflict(null)}>
                 {t("fsq_cancel")}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {resetConflict && (
+        <>
+          <div className="modal-backdrop" onClick={() => setResetConflict(null)} />
+          <div className="modal">
+            <div className="modal-head">
+              <strong>{t("rst_title")}</strong>
+              <button className="modal-close" onClick={() => setResetConflict(null)} title={t("rst_cancel")}>
+                ✕
+              </button>
+            </div>
+            <div className="modal-body">
+              <p className="set-desc">
+                {t("rst_desc", {
+                  bn: resetConflict.browserNodes,
+                  bb: resetConflict.browserBoards,
+                  fn: resetConflict.folder.nodes.filter((n) => !(n as any).deletedAt).length,
+                  fb: resetConflict.folder.boards.length,
+                })}
+              </p>
+              <div className="set-section">
+                <button className="btn" onClick={() => resolveResetConflict("useFolder")}>
+                  {t("rst_useFolder")}
+                </button>
+                <p className="set-experimental">{t("rst_useFolderDesc")}</p>
+              </div>
+              <div className="set-section">
+                <button className="btn" onClick={() => resolveResetConflict("keepBrowser")}>
+                  {t("rst_keepBrowser")}
+                </button>
+                <p className="set-experimental">{t("rst_keepBrowserDesc")}</p>
+              </div>
+              <div className="set-section">
+                <button className="btn" onClick={() => resolveResetConflict("merge")}>
+                  {t("rst_merge")}
+                </button>
+                <p className="set-experimental">{t("rst_mergeDesc")}</p>
+              </div>
+            </div>
+            <div className="modal-foot">
+              <span className="spacer" />
+              <button className="mini" onClick={() => setResetConflict(null)}>
+                {t("rst_cancel")}
               </button>
             </div>
           </div>
