@@ -461,9 +461,12 @@ export default function App() {
       setLang(initialLang);
       setLangState(initialLang);
       if (storageMode === "filesystem" && handle) setFolderName(handle.name ?? null);
-      // 设置加载完后刷新「实际存储状态」（ensureStorage 已跑过，这里同步一次给 UI）
-      try { await ensureStorage(); } catch { /* noop */ }
-      setStorageState({ ...getStorageState() });
+      // 🔴 刷新「实际存储状态」给 UI —— 但**绝不阻塞初始化**：
+      //   ensureStorage 里要碰权限 API，而权限 API 在无手势时可能挂住；
+      //   若在这里 await，会把整个页面初始化一起卡死（2026-09-29 排查）。
+      void ensureStorage().finally(() => {
+        try { setStorageState({ ...getStorageState() }); } catch { /* noop */ }
+      });
 
       // 先决定存储后端（IndexedDB / 文件夹），再读数据
       await ensureStorage();

@@ -81,6 +81,20 @@ export interface StorageState {
 
 let storageState: StorageState = { mode: "idb", wantsFs: false, folderName: null, perm: "none" };
 
+/**
+ * 🔴 给浏览器权限 API 加**超时兜底**（2026-09-29 加固）。
+ * 为什么必须有：`requestPermission()` 在**没有用户手势**时，部分浏览器**既不 resolve 也不 reject** ——
+ * 直接 await 会**永久挂住**，连带把「存储初始化」乃至页面初始化卡死
+ * （症状：左侧树读不出来 + 画布一直显示加载态）。
+ * 超时即视为未授权（安全方向：宁可降级到浏览器存储，也不能挂住）。
+ */
+function withTimeout<T>(p: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return Promise.race([
+    p.catch(() => fallback),
+    new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms)),
+  ]);
+}
+
 /** 取当前实际存储状态（供 UI 显示"我现在到底存在哪"）。 */
 export function getStorageState(): StorageState {
   return storageState;
@@ -105,8 +119,9 @@ export function ensureStorage(): Promise<void> {
           if (!fs.fsSupported()) {
             storageState = { mode: "idb", wantsFs: true, folderName, perm: "unsupported" };
           } else {
+            // ⚠️ 全部包超时：权限 API 在无手势时可能挂住（见 withTimeout 注释）
             const q = handle.queryPermission
-              ? await handle.queryPermission({ mode: "readwrite" })
+              ? await withTimeout<string>(handle.queryPermission({ mode: "readwrite" }), 3000, "denied")
               : "denied";
             if (q === "granted") {
               await fs.initFsStore(handle);
@@ -116,13 +131,9 @@ export function ensureStorage(): Promise<void> {
             }
             // 顺手试一次（部分浏览器对已持久化的授权会直接放行）；失败也不假装
             let r: string = "denied";
-            try {
-              r = handle.requestPermission
-                ? await handle.requestPermission({ mode: "readwrite" })
-                : "denied";
-            } catch {
-              r = "denied";
-            }
+            r = handle.requestPermission
+              ? await withTimeout<string>(handle.requestPermission({ mode: "readwrite" }), 5000, "denied")
+              : "denied";
             if (r === "granted") {
               await fs.initFsStore(handle);
               backend = "fs";
@@ -155,7 +166,7 @@ export async function reauthorizeFolder(): Promise<{ ok: boolean; state: Storage
     const handle = await getSetting<any>("storageFolderHandle", null);
     if (mode !== "filesystem" || !handle) return { ok: false, state: storageState };
     const r = handle.requestPermission
-      ? await handle.requestPermission({ mode: "readwrite" })
+      ? await withTimeout<string>(handle.requestPermission({ mode: "readwrite" }), 10000, "denied")
       : "denied";
     if (r === "granted") {
       await fs.initFsStore(handle);
