@@ -18,6 +18,30 @@
 
 ## 当前版本 / Current version
 
+### v2.0.0-beta.3（2026-09-29）· 「覆盖」名副其实 / "Overwrite" now really overwrites
+
+上一版新增的「切回浏览器存储」弹窗里，**「用文件夹覆盖浏览器」并没有真的覆盖**：
+它只是把文件夹的内容逐条写进去，浏览器里多出来的旧画板照样留着，于是选完「覆盖」
+看到的却不是文件夹的那一份。
+In the storage-reset dialog added in the previous build, **"overwrite browser with folder" did not
+actually overwrite**: it only wrote the folder's items in, leaving boards that exist solely in the
+browser untouched — so choosing "overwrite" still did not show you the folder's content.
+
+- **「用文件夹覆盖浏览器」现在会先清空浏览器侧再写入** —— 选完之后你看到的就是文件夹里的东西，
+  名副其实。浏览器里多出来的旧画板会消失（文件夹里的内容不受影响）。
+  **"Overwrite browser with folder" now clears the browser side first, then writes** — what you see
+  afterwards is exactly what the folder holds. Boards that existed only in the browser are removed;
+  the folder itself is untouched.
+- 修复弹窗里「浏览器里有 N 个项目」的数字：此前取值时后端还是文件夹，两侧显示的是同一组数字。
+  Fixed the counts shown in that dialog: they used to read the folder on both sides and display the
+  same numbers.
+- 去掉几处会**原样显示出来的星号**（`**未删除**`、`**清掉**` 等）。这类文案是纯文本显示，
+  星号不会变粗体、只会多出两个星号字符。
+  Removed literal asterisks that were being shown to users verbatim (`**not deleted**`,
+  `**cleared**`, …) — these strings render as plain text, so the asterisks just appeared as noise.
+
+---
+
 ### v2.0.0-beta.2（2026-09-29）· 存储与备份可靠性 / Storage & backup reliability
 
 本版集中修正**存储可靠性**：图片不再跨画板复制、备份不再残缺、切换存储前会先问清楚。

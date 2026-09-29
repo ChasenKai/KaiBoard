@@ -21,6 +21,8 @@ import {
   setSetting,
   ensureStorage,
   putNodes,
+  getIdbWorkspaceCounts,
+  clearIdbWorkspace,
   activateFsBackend,
   resetBackend,
   getBackend,
@@ -416,8 +418,18 @@ export default function App() {
       folderData: { nodes: FileNode[]; boards: BoardData[] } | null,
     ) => {
       resetBackend(); // 之后 putNode / putBoard 一律落 IndexedDB
+      // 先把设置改掉，再动数据：避免中间任何一次 ensureStorage 读到「仍是 filesystem」而切回文件夹。
+      await setSetting("storageMode", "idb");
+      await setSetting("storageFolderHandle", null);
       if (folderData && mode !== "keepBrowser") {
         if (mode === "useFolder") {
+          // 🔴「覆盖」必须是真覆盖：先清空浏览器侧（保留 settings），
+          //   否则浏览器里多出来的旧画板会残留 → 用户选「覆盖」却看到两边混合（2026-09-29 实报）。
+          try {
+            await clearIdbWorkspace();
+          } catch {
+            /* 清不掉就退化为逐个覆盖写入（至少不丢文件夹的数据） */
+          }
           for (const n of folderData.nodes) await putNode(n);
           for (const b of folderData.boards) await putBoard(b);
         } else {
@@ -444,8 +456,6 @@ export default function App() {
           await putNodes([...localNodeById.values()]);
         }
       }
-      await setSetting("storageMode", "idb");
-      await setSetting("storageFolderHandle", null);
       setFolderName(null);
       setStorageState(getStorageState());
       agent.reportFolder(null);
@@ -472,18 +482,13 @@ export default function App() {
     } catch {
       folderData = null;
     }
-    let browserNodes = 0;
-    let browserBoards = 0;
-    try {
-      browserNodes = (await listAllNodes()).length;
-      browserBoards = (await getAllBoards()).length;
-    } catch {
-      /* 读不到就当空，走默认路径 */
-    }
+    // ⚠️ 必须**直接读 IndexedDB**：此刻后端还是 fs，listAllNodes()/getAllBoards() 读到的是文件夹，
+    //    那会让弹框两侧显示同一组数字（2026-09-29 实测踩到）。
+    const browser = await getIdbWorkspaceCounts();
     const folderHas = !!folderData && folderData.nodes.length > 0;
-    if (folderHas && browserNodes > 0) {
+    if (folderHas && browser.nodes > 0) {
       // 两边都有 → 问用户
-      setResetConflict({ folder: folderData!, browserNodes, browserBoards });
+      setResetConflict({ folder: folderData!, browserNodes: browser.nodes, browserBoards: browser.boards });
       return;
     }
     await applyResetStorage("useFolder", folderData);

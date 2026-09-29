@@ -199,7 +199,7 @@ const zhCN: Dict = {
   set_storageUnavailable: "当前浏览器不支持文件夹存储（File System Access API），已保留浏览器默认存储。",
   set_storageSwitched: "已切换到文件夹存储，数据已复制到所选位置。",
   set_storageSwitchedMovedTrash:
-    "已切换到文件夹存储；另有 {n} 个不在目录树里的旧画板文件已移到 _trash/（**未删除**，需要时手动移回即可）。",
+    "已切换到文件夹存储；另有 {n} 个不在目录树里的旧画板文件已移到 _trash/（未删除，需要时手动移回即可）。",
   set_appearance: "外观",
   set_theme: "主题",
   set_themeLight: "浅色",
@@ -229,7 +229,7 @@ const zhCN: Dict = {
     "浏览器里现在有 {bn} 个项目（{bb} 块画板），所选文件夹里有 {fn} 个项目（{fb} 块画板），两边内容不一致（通常是浏览器里残留了以前清理过的旧画板）。请选择切回来之后要看到哪边的数据：",
   rst_useFolder: "用文件夹覆盖浏览器",
   rst_useFolderDesc:
-    "把文件夹里的内容写进浏览器，浏览器现有内容会被替换成文件夹的那一份。适合「文件夹才是最新、最全」时。",
+    "浏览器里原有的内容会被清掉，换成文件夹的那一份（浏览器里多出来的旧画板会消失）。切换后你看到的就是文件夹里的东西。适合「文件夹才是最新、最全」时。",
   rst_keepBrowser: "保留浏览器里的数据",
   rst_keepBrowserDesc:
     "不导入文件夹的内容，浏览器保持现在的样子。适合「浏览器里的才是我要的」时。文件夹本身不会被改动，只是不再使用。",
@@ -484,7 +484,7 @@ const zhTW: Dict = {
   set_storageUnavailable: "目前瀏覽器不支援資料夾儲存（File System Access API），已保留瀏覽器預設儲存。",
   set_storageSwitched: "已切換到資料夾儲存，資料已複製到所選位置。",
   set_storageSwitchedMovedTrash:
-    "已切換到資料夾儲存；另有 {n} 個不在目錄樹裡的舊畫板檔案已移到 _trash/（**未刪除**，需要時手動移回即可）。",
+    "已切換到資料夾儲存；另有 {n} 個不在目錄樹裡的舊畫板檔案已移到 _trash/（未刪除，需要時手動移回即可）。",
   set_appearance: "外觀",
   set_theme: "主題",
   set_themeLight: "淺色",
@@ -514,7 +514,7 @@ const zhTW: Dict = {
     "瀏覽器裡現在有 {bn} 個項目（{bb} 塊畫板），所選資料夾裡有 {fn} 個項目（{fb} 塊畫板），兩邊內容不一致（通常是瀏覽器裡殘留了以前清理過的舊畫板）。請選擇切回來之後要看到哪邊的資料：",
   rst_useFolder: "用資料夾覆蓋瀏覽器",
   rst_useFolderDesc:
-    "把資料夾裡的內容寫進瀏覽器，瀏覽器現有內容會被替換成資料夾的那一份。適合「資料夾才是最新、最全」時。",
+    "瀏覽器裡原有的內容會被清掉，換成資料夾的那一份（瀏覽器裡多出來的舊畫板會消失）。切換後你看到的就是資料夾裡的東西。適合「資料夾才是最新、最全」時。",
   rst_keepBrowser: "保留瀏覽器裡的資料",
   rst_keepBrowserDesc:
     "不匯入資料夾的內容，瀏覽器保持現在的樣子。適合「瀏覽器裡的才是我要的」時。資料夾本身不會被改動，只是不再使用。",
@@ -772,7 +772,7 @@ const en: Dict = {
     "This browser doesn't support folder storage (File System Access API); browser default storage is kept.",
   set_storageSwitched: "Switched to folder storage; data copied to the selected location.",
   set_storageSwitchedMovedTrash:
-    "Switched to folder storage. {n} leftover board files that are not in the tree were moved to _trash/ (**not deleted** — move them back manually if needed).",
+    "Switched to folder storage. {n} leftover board files that are not in the tree were moved to _trash/ (not deleted — move them back manually if needed).",
   set_storageReset: "Reset to browser default storage.",
   set_storageResetKept: "Switched back to browser default storage; the browser's existing content was kept.",
   set_appearance: "Appearance",
@@ -802,7 +802,7 @@ const en: Dict = {
     "The browser currently holds {bn} item(s) ({bb} boards), while the selected folder holds {fn} item(s) ({fb} boards) — the two differ, usually because the browser still keeps old boards you cleaned up earlier. Choose which data you want to see after switching back:",
   rst_useFolder: "Overwrite browser with folder",
   rst_useFolderDesc:
-    "Write the folder's content into the browser; the browser's current content is replaced by the folder's copy. Pick this when the folder is the newer, fuller side.",
+    "The browser's existing content is cleared and replaced by the folder's copy (boards that exist only in the browser disappear). After switching you see exactly what the folder holds. Pick this when the folder is the newer, fuller side.",
   rst_keepBrowser: "Keep the browser's data",
   rst_keepBrowserDesc:
     "Do not import the folder's content; the browser stays exactly as it is now. Pick this when the browser holds what you want. The folder itself is left untouched — it is simply no longer used.",

@@ -204,6 +204,40 @@ export function resetBackend(): void {
   backend = "idb";
 }
 
+/**
+ * 直接读 **IndexedDB 侧**的工作区规模（**刻意不看当前后端**）。
+ *
+ * 🔴 用途：「切回浏览器存储」的弹框要显示「浏览器里现在有多少」。
+ *   若用 listAllNodes()/getAllBoards()，在还没切回 idb 时它们读的是**文件夹**，
+ *   于是弹框两侧显示同一组数字 —— 2026-09-29 实测踩到。
+ */
+export async function getIdbWorkspaceCounts(): Promise<{ nodes: number; boards: number }> {
+  try {
+    const db = await getDB();
+    const files = (await db.getAll("files")) as FileNode[];
+    const boards = (await db.getAll("boards")) as BoardData[];
+    return { nodes: files.length, boards: boards.length };
+  } catch {
+    return { nodes: 0, boards: 0 };
+  }
+}
+
+/**
+ * 清空 **IndexedDB 侧**的工作区（`files` + `boards`，**保留 `settings`**）。
+ *
+ * 🔴 用途：「用文件夹覆盖浏览器」—— 名字里的「覆盖」必须名副其实。
+ *   原先只逐个 putNode/putBoard，浏览器里多出来的旧画板会原样留着，
+ *   用户按「覆盖」预期看到与文件夹一致的内容，实际却多出一堆残留
+ *   （2026-09-29 Kai 实报：「选了用文件夹覆盖浏览器，结果和当时看到的不一样」）。
+ */
+export async function clearIdbWorkspace(): Promise<void> {
+  const db = await getDB();
+  const tx = db.transaction(["files", "boards"], "readwrite");
+  await tx.objectStore("files").clear();
+  await tx.objectStore("boards").clear();
+  await tx.done;
+}
+
 const alive = (n: FileNode) => !n.deletedAt;
 
 /** 全部节点（含回收站中的） */
