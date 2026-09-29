@@ -18,31 +18,10 @@
 
 ## 当前版本 / Current version
 
-### v2.0.0-beta.3（2026-09-29）· 「覆盖」名副其实 / "Overwrite" now really overwrites
+### v2.0.0-beta.3（2026-09-29）· 存储可靠性修订 / Storage reliability
 
-上一版新增的「切回浏览器存储」弹窗里，**「用文件夹覆盖浏览器」并没有真的覆盖**：
-它只是把文件夹的内容逐条写进去，浏览器里多出来的旧画板照样留着，于是选完「覆盖」
-看到的却不是文件夹的那一份。
-In the storage-reset dialog added in the previous build, **"overwrite browser with folder" did not
-actually overwrite**: it only wrote the folder's items in, leaving boards that exist solely in the
-browser untouched — so choosing "overwrite" still did not show you the folder's content.
-
-- **「用文件夹覆盖浏览器」现在会先清空浏览器侧再写入** —— 选完之后你看到的就是文件夹里的东西，
-  名副其实。浏览器里多出来的旧画板会消失（文件夹里的内容不受影响）。
-  **"Overwrite browser with folder" now clears the browser side first, then writes** — what you see
-  afterwards is exactly what the folder holds. Boards that existed only in the browser are removed;
-  the folder itself is untouched.
-- 修复弹窗里「浏览器里有 N 个项目」的数字：此前取值时后端还是文件夹，两侧显示的是同一组数字。
-  Fixed the counts shown in that dialog: they used to read the folder on both sides and display the
-  same numbers.
-- 去掉几处会**原样显示出来的星号**（`**未删除**`、`**清掉**` 等）。这类文案是纯文本显示，
-  星号不会变粗体、只会多出两个星号字符。
-  Removed literal asterisks that were being shown to users verbatim (`**not deleted**`,
-  `**cleared**`, …) — these strings render as plain text, so the asterisks just appeared as noise.
-
----
-
-### v2.0.0-beta.2（2026-09-29）· 存储与备份可靠性 / Storage & backup reliability
+> 本条目合并了当日 `v2.0.0-beta.0` 之后的全部内部迭代（原 beta.1 / beta.2 / beta.3 已合并为一条）。
+> Consolidates every internal iteration made on 2026-09-29 after `v2.0.0-beta.0`.
 
 本版集中修正**存储可靠性**：图片不再跨画板复制、备份不再残缺、切换存储前会先问清楚。
 This build focuses on **storage reliability**: images no longer spread across boards, backups are no
@@ -56,8 +35,8 @@ longer incomplete, and switching storage now asks first.
   （曾导致几十个画板同时被灌进同一张图）。
   Fixed folder overwrite/merge writing every local board without pruning
   (which had stamped the same image into dozens of boards at once).
-- 修复 Agent 写入远端画板时「元素换了新的、图片却沿用旧的」导致的不匹配。
-  Fixed a mismatch when the Agent wrote to a non-open board:
+- 修复 Agent 写入非当前画板时「元素换了新的、图片却沿用旧的」导致的不匹配。
+  Fixed a mismatch when the Agent wrote to a board that was not open:
   elements were replaced while images were left over from the old board.
 - 修复同一个页面在同一时刻可能并存多个中继长轮询的问题（会成倍增加请求与内存占用）。
   Fixed several duplicate relay long-polling loops coexisting in one page
@@ -72,11 +51,23 @@ longer incomplete, and switching storage now asks first.
 - 「切回浏览器存储」不再默默覆盖：两边都有数据时先问你要留下哪边的，避免浏览器里残留的旧画板被默默带进来。
   "Reset to browser storage" no longer silently overwrites: when both sides hold data it asks which
   to keep, so stale boards left in the browser are not carried in unnoticed.
+- 该弹窗里的「**用文件夹覆盖浏览器**」原来是假覆盖（只逐条写入、不清浏览器），
+  现在**会先清空浏览器侧再写入** —— 选完之后你看到的就是文件夹里的东西，名副其实。
+  In that dialog, **"overwrite browser with folder" used to be a fake overwrite** (it only wrote the
+  folder's items in without clearing the browser); it now **clears the browser side first**, so what
+  you see afterwards is exactly what the folder holds.
+- 修复上述弹窗里「浏览器里有 N 个项目」的数字：此前取值时后端还是文件夹，两侧显示的是同一组数字。
+  Fixed the counts shown in that dialog: they used to read the folder on both sides and display the
+  same numbers.
 - 「选择文件夹」与「切回浏览器存储」两个弹窗改用同一套说法
   （**用文件夹覆盖浏览器 / 用浏览器覆盖文件夹 / 两边合并**），两个方向一眼就能对上。
   The folder-selection and storage-reset dialogs now use the same wording
   (**overwrite browser with folder / overwrite folder with browser / merge both**), so the two
   directions read the same way.
+- 去掉几处会**原样显示出来的星号**（`**未删除**`、`**清掉**` 等）。这类文案是纯文本显示，
+  星号不会变粗体、只会多出两个星号字符。
+  Removed literal asterisks that were being shown to users verbatim (`**not deleted**`,
+  `**cleared**`, …) — these strings render as plain text, so the asterisks just appeared as noise.
 
 ---
 
