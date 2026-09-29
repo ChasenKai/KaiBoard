@@ -2181,7 +2181,10 @@ export default function App() {
                   <button className="btn" onClick={handleChooseFolder}>
                     {t("set_chooseFolder")}
                   </button>
-                  {folderName && (
+                  {/* 只在「文件夹需要重新授权」时才显示所选文件夹 —— 平时下方那行
+                      「当前实际使用：文件夹存储（X）」已含文件夹名，两行并列对用户是重复信息
+                      （2026-09-29 Kai 指出）。 */}
+                  {folderName && storageState.perm !== "granted" && (
                     <span className="set-current">
                       {t("set_currentFolder")}
                       {folderName}
