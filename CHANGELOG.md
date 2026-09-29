@@ -18,6 +18,20 @@
 
 ## 当前版本 / Current version
 
+### v2.0.0-beta.0（2026-09-29）· 存储与保存优化 / Storage & save improvements
+
+本版集中优化**保存与存储**环节；画布绘制与交互不变。
+This release focuses on the **save and storage** layers; drawing and interaction are unchanged.
+
+- **保存条件收紧**：仅在画板正常载入后才允许落盘，异常情况下不再写入不符合预期的内容。
+  **Stricter save conditions**: writing happens only after a board loads successfully, so unexpected content is never persisted.
+- **只保存本画板用到的图片**：不再把整个图片缓存写入当前画板，工作区体积不再随使用持续增长。
+  **Only this board's images are kept**: the whole in-memory image cache is no longer written into every board, so the workspace no longer keeps growing with use.
+- **存储位置显示实际状态**：设置中直接显示当前实际使用的存储；文件夹需重新授权时给出提示与一键操作。
+  **Storage location shows the real state**: settings now display what is actually in use, with a notice and one-click action when the folder needs re-authorizing.
+- **切换文件夹时整理旧文件**：不在目录树中的旧画板文件会被移到 `kaiboard-data/_trash/`（搬移，不删除）。
+  **Tidier folder on switch**: board files that are not part of the tree are moved to `kaiboard-data/_trash/` (moved, not deleted).
+
 ### v2.0.0-beta（2026-09-20）· Agent 共绘公测版 / Agent co-draw public beta
 
 本版把「Agent 共绘」内建为 KaiBoard 的一部分：AI Agent 可以直接在你正在看的画布上作图。**默认关闭，开关始终在你手上。**
