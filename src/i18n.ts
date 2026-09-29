@@ -198,6 +198,8 @@ const zhCN: Dict = {
   set_close: "关闭",
   set_storageUnavailable: "当前浏览器不支持文件夹存储（File System Access API），已保留浏览器默认存储。",
   set_storageSwitched: "已切换到文件夹存储，数据已复制到所选位置。",
+  set_storageSwitchedMovedTrash:
+    "已切换到文件夹存储；另有 {n} 个不在目录树里的旧画板文件已移到 _trash/（**未删除**，需要时手动移回即可）。",
   set_appearance: "外观",
   set_theme: "主题",
   set_themeLight: "浅色",
@@ -460,6 +462,8 @@ const zhTW: Dict = {
   set_close: "關閉",
   set_storageUnavailable: "目前瀏覽器不支援資料夾儲存（File System Access API），已保留瀏覽器預設儲存。",
   set_storageSwitched: "已切換到資料夾儲存，資料已複製到所選位置。",
+  set_storageSwitchedMovedTrash:
+    "已切換到資料夾儲存；另有 {n} 個不在目錄樹裡的舊畫板檔案已移到 _trash/（**未刪除**，需要時手動移回即可）。",
   set_appearance: "外觀",
   set_theme: "主題",
   set_themeLight: "淺色",
@@ -725,6 +729,8 @@ const en: Dict = {
   set_storageUnavailable:
     "This browser doesn't support folder storage (File System Access API); browser default storage is kept.",
   set_storageSwitched: "Switched to folder storage; data copied to the selected location.",
+  set_storageSwitchedMovedTrash:
+    "Switched to folder storage. {n} leftover board files that are not in the tree were moved to _trash/ (**not deleted** — move them back manually if needed).",
   set_storageReset: "Reset to browser default storage.",
   set_appearance: "Appearance",
   set_theme: "Theme",

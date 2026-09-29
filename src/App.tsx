@@ -338,20 +338,24 @@ export default function App() {
         getAllBoards: () => Promise.resolve(boards),
       };
       await activateFsBackend(handle);
-      if (mode === "overwrite") await fsCopyFromIdb(src);
+      let movedTrash = 0;
+      if (mode === "overwrite") movedTrash = (await fsCopyFromIdb(src)).movedToTrash;
       else if (mode === "merge") await fsMergeFromIdb(src);
       // useFolder：一个字节都不写，直接采用文件夹里的现有数据
       await setSetting("storageMode", "filesystem");
       await setSetting("storageFolderHandle", handle);
       setFolderName(handle.name ?? null);
+      setStorageState(getStorageState());
       agent.reportFolder(handle.name ?? null);
       await refreshNodes();
       showToast(
-        mode === "merge"
-          ? t("set_storageMerged")
-          : mode === "useFolder"
-            ? t("set_storageAdopted")
-            : t("set_storageSwitched"),
+        mode === "overwrite" && movedTrash > 0
+          ? t("set_storageSwitchedMovedTrash", { n: movedTrash })
+          : mode === "merge"
+            ? t("set_storageMerged")
+            : mode === "useFolder"
+              ? t("set_storageAdopted")
+              : t("set_storageSwitched"),
       );
     },
     [refreshNodes, showToast, agent.reportFolder],

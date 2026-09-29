@@ -288,11 +288,44 @@ export async function fsPeekFolder(rootDir: any): Promise<{ nodes: number; board
 export async function fsCopyFromIdb(idb: {
   listAllNodes: () => Promise<FileNode[]>;
   getAllBoards: () => Promise<BoardData[]>;
-}): Promise<void> {
+}): Promise<{ movedToTrash: number }> {
   const nodes = await idb.listAllNodes();
   const boards = await idb.getAllBoards();
+  // 🔴 2026-09-29：覆盖前，先把文件夹里「不在新树里」的多余画板文件
+  //   移到 `_trash/<时间戳>/` —— **搬走，不删除**（可手动恢复）。
+  //   背景：原实现只替换 tree.json、不处理多余文件 → 用户看到的文件夹里
+  //   积着一堆"对不上的"旧文件（体积也虚高）。现在默认搬走，让文件夹呈现
+  //   一份干净一致的状态 + 一个平行的 `_trash/`。
+  //   只动 `boards/` 下的 `.json`；其它文件与目录一律不碰。
+  let movedToTrash = 0;
+  try {
+    const keep = new Set(nodes.map((n) => n.id));
+    const trashRoot = await DATA_DIR.getDirectoryHandle("_trash", { create: true });
+    const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const batch = await trashRoot.getDirectoryHandle(stamp, { create: true });
+    for await (const [name] of (BOARDS_DIR as any).entries()) {
+      const nm = String(name);
+      if (!nm.endsWith(".json")) continue;
+      if (keep.has(nm.slice(0, -5))) continue; // -5 = 去掉 ".json"，剩下就是画板 id
+      try {
+        const fh = await BOARDS_DIR.getFileHandle(nm);
+        const file = await fh.getFile();
+        const dst = await batch.getFileHandle(nm, { create: true });
+        const w = await dst.createWritable();
+        await w.write(await file.arrayBuffer());
+        await w.close();
+        await BOARDS_DIR.removeEntry(nm);
+        movedToTrash++;
+      } catch {
+        /* 单个文件搬不动不影响其它 */
+      }
+    }
+  } catch {
+    /* 搬不动就算了，绝不因此让「覆盖」失败 */
+  }
   await writeTree(nodes);
   for (const b of boards) await writeBoard(b);
+  return { movedToTrash };
 }
 
 /**
