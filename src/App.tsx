@@ -200,7 +200,19 @@ export default function App() {
     if (!api) return;
     const els = api.getSceneElements();
     const st = api.getAppState();
-    const fl = api.getFiles();
+    // 🔴【P0】只保存**本板元素实际引用到的**图片，绝不能把整个文件库原样写回。
+    //   Excalidraw 的 getFiles() 返回的是**进程内累积**的文件库（含你这次会话切过的
+    //   所有板的图片，因为载入时只 addFiles 不清理）。原样写回 = 图片在板与板之间
+    //   互相复制 → 工作区被重复图片撑爆（实测 60 板 / 92.5MB，其中 97% 是图片；
+    //   甚至出现「这板没放过图片却有 11 张」）。
+    let fl = api.getFiles();
+    try {
+      const used = new Set<string>();
+      for (const e of (els as any[]) || []) {
+        if (e && !e.isDeleted && e.type === "image" && typeof e.fileId === "string") used.add(e.fileId);
+      }
+      fl = Object.fromEntries(Object.entries(fl || {}).filter(([fid]) => used.has(fid)));
+    } catch { /* 取不到引用就退化为原行为 */ }
     setSaveState("saving");
     try {
       await saveBoard(cur, els, st, fl);
