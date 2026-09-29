@@ -189,7 +189,7 @@ const zhCN: Dict = {
   set_actualFs: "文件夹存储",
   set_actualIdb: "浏览器内置数据库（默认）",
   set_permWarning:
-    "浏览器已收回该文件夹的授权 —— 数据现在写进浏览器存储，不在文件夹里（不会丢，但不在你预期的位置）。重新授权时请在弹窗里选「允许」；选「仅本次允许」的话，下次打开会再次失效。",
+    "浏览器已收回该文件夹的授权 —— 数据现在写进浏览器存储，不在文件夹里（不会丢，但不在你预期的位置）。重新授权时请在弹窗里选「每次访问都允许」；选「本次允许」的话，下次打开会再次失效。",
   set_reauthorize: "重新授权文件夹",
   set_storageReauthed: "已重新授权，之后的改动会写进文件夹。",
   set_storageReauthFailed: "授权未通过（可能点了「不允许」）。数据仍存在浏览器里，可再试一次。",
@@ -453,7 +453,7 @@ const zhTW: Dict = {
   set_actualFs: "資料夾儲存",
   set_actualIdb: "瀏覽器內建資料庫（預設）",
   set_permWarning:
-    "瀏覽器已收回該資料夾的授權 —— 資料現在寫進瀏覽器儲存，不在資料夾裡（不會遺失，但不在你預期的位置）。重新授權時請在彈窗裡選「允許」；選「僅本次允許」的話，下次開啟會再次失效。",
+    "瀏覽器已收回該資料夾的授權 —— 資料現在寫進瀏覽器儲存，不在資料夾裡（不會遺失，但不在你預期的位置）。重新授權時請在彈窗裡選「每次訪問都允許」；選「本次允許」的話，下次開啟會再次失效。",
   set_reauthorize: "重新授權資料夾",
   set_storageReauthed: "已重新授權，之後的變更會寫進資料夾。",
   set_storageReauthFailed: "授權未通過（可能點了「不允許」）。資料仍存在瀏覽器裡，可再試一次。",
@@ -718,7 +718,7 @@ const en: Dict = {
   set_actualFs: "Folder storage",
   set_actualIdb: "Browser database (default)",
   set_permWarning:
-    "The browser has revoked this folder's permission, so data is going to the browser database instead of the folder (nothing is lost, but it is not where you expect). When re-authorizing, choose \"Allow\" — \"Allow this time\" expires again on the next visit.",
+    "The browser has revoked this folder's permission, so data is going to the browser database instead of the folder (nothing is lost, but it is not where you expect). When re-authorizing, pick \"Allow on every visit\" — \"Allow this time\" expires again on the next visit.",
   set_reauthorize: "Re-authorize folder",
   set_storageReauthed: "Re-authorized. Changes will now be written to the folder.",
   set_storageReauthFailed:
