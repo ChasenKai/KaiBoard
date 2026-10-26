@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@excalidraw/excalidraw": "0.18.1",
-    "@excalidraw/mermaid-to-excalidraw": "2.2.2",
+    "@excalidraw/mermaid-to-excalidraw": "2.3.0",
     "@kaibuddy/kaiboard-core": "^0.4.2",
     "idb": "^8.0.0",
     "pptxgenjs": "^4.0.1",
